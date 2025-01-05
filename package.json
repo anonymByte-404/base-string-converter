@@ -1,0 +1,21 @@
+{
+    "name": "cli-base-string-converter",
+    "version": "0.1.0",
+    "description": "A command-line interface (CLI) application that converts between strings (sequences of characters or words) and various numeral bases (binary, decimal, hexadecimal), utilizing Inquirer for interactive user input",
+    "main": "src/main.js",
+    "scripts": {
+        "start": "node src/main.js"
+    },
+    "private": true,
+    "keywords": [
+        "cli",
+        "inquirer",
+        "nodejs",
+        "interactive"
+    ],
+    "author": "anonymByte-404",
+    "license": "MIT",
+    "dependencies": {
+        "inquirer": "^12.3.0"
+    }
+}
