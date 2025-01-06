@@ -1,8 +1,8 @@
 /**
- * Handles string to base stringInput.
- * Prompts the user to select the base for stringInput.
- * @param {*} inquirer - The tool used to prompt the user for input.
- * @param {*} baseChoices - The list of base options to choose from.
+ * Handles string-to-base stringInput.
+ * Prompts the user to select the base for conversion.
+ * @param {object} inquirer - The library used to interactively prompt the user for input.
+ * @param {Array} baseChoices - The list of base options to choose from.
  */
 export function stringConverter(inquirer, baseChoices) {
     inquirer
@@ -15,11 +15,13 @@ export function stringConverter(inquirer, baseChoices) {
             }
         ])
         .then((answers) => {
-            switch (answers.selectedBase) {
-                case 'Base 2':
-                    return stringToBinary(inquirer)
-                default:
-                    console.log('Conversion function for this base is not available.')
+            const match = answers.selectedBase.match(/Base (\d+)/)
+
+            if (match) {
+                const base = parseInt(match[1], 10)
+                return stringToBase(inquirer, `Base ${base}`, base)
+            } else {
+                console.log('Conversion function for this base is currently not supported.')
             }
         })
         .catch((error) => {
@@ -28,29 +30,33 @@ export function stringConverter(inquirer, baseChoices) {
 }
 
 /**
- * Prompts the user to input a string and converts it to binary.
- * @param {*} inquirer - The tool used to prompt the user for input.
+ * Converts a string into a specified numeral system (e.g., binary, ternary, hexadecimal).
+ * @param {object} inquirer - The library used to interactively prompt the user for input.
+ * @param {string} name - The name of the numeral system (e.g., "Binary").
+ * @param {number} base - The base of the numeral system to convert to (e.g., 2 for binary).
  */
-function stringToBinary(inquirer) {
+function stringToBase(inquirer, name, base) {
     inquirer
         .prompt([
             {
                 type: 'input',
                 name: 'stringInput',
-                message: 'Enter the string you would like to convert to binary:'
+                message: `Enter the string you would like to convert to ${name}:`
             }
         ])
         .then((answers) => {
             const inputString = answers.stringInput.trim()
 
-            // Converts each character in the string to its binary equivalent
-            const newArray = Array.from(inputString)
-                .map(char => char.charCodeAt(0).toString(2).padStart(8, '0')) // Convert to 8-bit binary
+            // Dynamically calculates the width for padding based on the base
+            const maxWidth = Math.ceil(Math.log2(256) / Math.log2(base)) // Max width for ASCII values
 
-            const result = newArray.join(' ') // Join the binary array into a single string with spaces
-            console.log(`Converted Binary: ${result}`)
+            // Converts each character to its representation in the target numeral system
+            const result = Array.from(inputString)
+                .map(char => char.charCodeAt(0).toString(base).padStart(maxWidth, '0')) // Convert and pad
+                .join(' ') // Join with spaces for readability
+            console.log(`Converted ${name}: ${result}`)
         })
         .catch((error) => {
-            console.error('An error occured during string to binary conversion:', error)
+            console.error(`An error occured during string-to-${name} conversion:`, error)
         })
 }
