@@ -4,6 +4,39 @@
  * This module allows users to convert ternary data into various numeral systems
  * or plain text. Includes an intuitive interface for conversion options.
  */
+var __awaiter =
+  (this && this.__awaiter) ||
+  function (thisArg, _arguments, P, generator) {
+    function adopt(value) {
+      return value instanceof P
+        ? value
+        : new P(function (resolve) {
+            resolve(value)
+          })
+    }
+    return new (P || (P = Promise))(function (resolve, reject) {
+      function fulfilled(value) {
+        try {
+          step(generator.next(value))
+        } catch (e) {
+          reject(e)
+        }
+      }
+      function rejected(value) {
+        try {
+          step(generator['throw'](value))
+        } catch (e) {
+          reject(e)
+        }
+      }
+      function step(result) {
+        result.done
+          ? resolve(result.value)
+          : adopt(result.value).then(fulfilled, rejected)
+      }
+      step((generator = generator.apply(thisArg, _arguments || [])).next())
+    })
+  }
 const choices = [
   'String',
   'Base 2',
@@ -14,8 +47,15 @@ const choices = [
  *
  * @param inquirer - Library for interactive CLI prompts.
  * @param main - Callback function to return to the main menu.
+ * @param typewriterEffect - Function for text typing animation.
+ * @param fadeOutEffect - Function for text fade-out animation.
  */
-export function ternaryConverter(inquirer, main) {
+export function ternaryConverter(
+  inquirer,
+  main,
+  typewriterEffect,
+  fadeOutEffect
+) {
   const startTernaryConversion = () => {
     inquirer
       .prompt([
@@ -29,7 +69,13 @@ export function ternaryConverter(inquirer, main) {
       .then((answers) => {
         const { selectedConversionBase } = answers
         if (selectedConversionBase === 'String') {
-          return ternaryToString(inquirer, startTernaryConversion, main)
+          return ternaryToString(
+            inquirer,
+            startTernaryConversion,
+            main,
+            typewriterEffect,
+            fadeOutEffect
+          )
         }
         const match = selectedConversionBase.match(/Base (\d+)/)
         if (match) {
@@ -39,11 +85,19 @@ export function ternaryConverter(inquirer, main) {
             `Base ${base}`,
             base,
             startTernaryConversion,
-            main
+            main,
+            typewriterEffect,
+            fadeOutEffect
           )
         }
         console.log('Unsupported base. Please select another option.')
-        askNextAction(inquirer, startTernaryConversion, main)
+        askNextAction(
+          inquirer,
+          startTernaryConversion,
+          main,
+          typewriterEffect,
+          fadeOutEffect
+        )
       })
       .catch((error) => {
         console.error('Error during base selection:', error)
@@ -58,7 +112,13 @@ export function ternaryConverter(inquirer, main) {
  * @param callback - Function to restart the ternary conversion process.
  * @param main - Callback function to return to the main menu.
  */
-function ternaryToString(inquirer, callback, main) {
+function ternaryToString(
+  inquirer,
+  callback,
+  main,
+  typewriterEffect,
+  fadeOutEffect
+) {
   inquirer
     .prompt([
       {
@@ -75,7 +135,7 @@ function ternaryToString(inquirer, callback, main) {
         .map((ter) => String.fromCharCode(parseInt(ter, 3)))
         .join('')
       console.log(`Converted String: "${result}"`)
-      askNextAction(inquirer, callback, main)
+      askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect)
     })
     .catch((error) => {
       console.error('Error during ternary-to-string conversion:', error)
@@ -90,7 +150,15 @@ function ternaryToString(inquirer, callback, main) {
  * @param callback - Function to restart the ternary conversion process.
  * @param main - Callback function to return to the main menu.
  */
-function ternaryToBase(inquirer, name, base, callback, main) {
+function ternaryToBase(
+  inquirer,
+  name,
+  base,
+  callback,
+  main,
+  typewriterEffect,
+  fadeOutEffect
+) {
   inquirer
     .prompt([
       {
@@ -106,7 +174,7 @@ function ternaryToBase(inquirer, name, base, callback, main) {
         .map((ter) => parseInt(ter, 3).toString(base))
         .join(' ')
       console.log(`Converted to ${name}: ${result}`)
-      askNextAction(inquirer, callback, main)
+      askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect)
     })
     .catch((error) => {
       console.error(`Error during ternary-to-${name} conversion:`, error)
@@ -132,7 +200,13 @@ function validateTernaryInput(input) {
  * @param callback - Function to restart the ternary conversion process.
  * @param main - Callback function to return to the main menu.
  */
-function askNextAction(inquirer, callback, main) {
+function askNextAction(
+  inquirer,
+  callback,
+  main,
+  typewriterEffect,
+  fadeOutEffect
+) {
   inquirer
     .prompt([
       {
@@ -146,20 +220,25 @@ function askNextAction(inquirer, callback, main) {
         ],
       },
     ])
-    .then((answers) => {
-      switch (answers.nextAction) {
-        case 'Convert another ternary data.':
-          callback()
-          break
-        case 'Return to Main Menu.':
-          console.log('Returning to the main menu...')
-          main()
-          break
-        case 'Exit the application.':
-          console.log('Thank you for using the application. Goodbye!')
-          process.exit(0)
-      }
-    })
+    .then((answers) =>
+      __awaiter(this, void 0, void 0, function* () {
+        switch (answers.nextAction) {
+          case 'Convert another ternary data.':
+            callback()
+            break
+          case 'Return to Main Menu.':
+            console.log('Returning to the main menu...')
+            main()
+            break
+          case 'Exit the application.':
+            // Typing animation. You can adjust the delay (default: 50ms) for faster/slower typing.
+            yield typewriterEffect('Thanks for using the app. Goodbye!', 50)
+            // Fade-out animation. You can adjust the fade steps (default: 10) and delay (default: 100ms) for different effects.
+            yield fadeOutEffect('Closing the application...', 10, 100)
+            process.exit(0) // Exit the app
+        }
+      })
+    )
     .catch((error) => {
       console.error('Error while handling next action:', error)
     })

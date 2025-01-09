@@ -5,14 +5,55 @@
  * (e.g., binary, hexadecimal). It guides users through an interactive
  * menu to select their desired conversion format and processes the input accordingly.
  */
+var __awaiter =
+  (this && this.__awaiter) ||
+  function (thisArg, _arguments, P, generator) {
+    function adopt(value) {
+      return value instanceof P
+        ? value
+        : new P(function (resolve) {
+            resolve(value)
+          })
+    }
+    return new (P || (P = Promise))(function (resolve, reject) {
+      function fulfilled(value) {
+        try {
+          step(generator.next(value))
+        } catch (e) {
+          reject(e)
+        }
+      }
+      function rejected(value) {
+        try {
+          step(generator['throw'](value))
+        } catch (e) {
+          reject(e)
+        }
+      }
+      function step(result) {
+        result.done
+          ? resolve(result.value)
+          : adopt(result.value).then(fulfilled, rejected)
+      }
+      step((generator = generator.apply(thisArg, _arguments || [])).next())
+    })
+  }
 /**
  * Starts the string conversion process by providing a list of numeral systems.
  *
  * @param inquirer - The library used for interactive CLI prompts.
  * @param baseChoices - List of numeral systems (e.g., "Base 2", "Base 16").
  * @param main - Callback to return to the main menu.
+ * @param typewriterEffect - Function for text typing animation.
+ * @param fadeOutEffect - Function for text fade-out animation.
  */
-export function stringConverter(inquirer, baseChoices, main) {
+export function stringConverter(
+  inquirer,
+  baseChoices,
+  main,
+  typewriterEffect,
+  fadeOutEffect
+) {
   const startStringConversion = () => {
     inquirer
       .prompt([
@@ -32,11 +73,19 @@ export function stringConverter(inquirer, baseChoices, main) {
             `Base ${base}`,
             base,
             startStringConversion,
-            main
+            main,
+            typewriterEffect,
+            fadeOutEffect
           )
         } else {
           console.log('Unsupported base. Please try another option.')
-          askNextAction(inquirer, startStringConversion, main)
+          askNextAction(
+            inquirer,
+            startStringConversion,
+            main,
+            typewriterEffect,
+            fadeOutEffect
+          )
         }
       })
       .catch((error) => {
@@ -57,7 +106,15 @@ export function stringConverter(inquirer, baseChoices, main) {
  * @param callback - Function to restart the string conversion process.
  * @param main - Callback to return to the main menu.
  */
-function stringToBase(inquirer, name, base, callback, main) {
+function stringToBase(
+  inquirer,
+  name,
+  base,
+  callback,
+  main,
+  typewriterEffect,
+  fadeOutEffect
+) {
   inquirer
     .prompt([
       {
@@ -77,7 +134,7 @@ function stringToBase(inquirer, name, base, callback, main) {
         )
         .join(' ')
       console.log(`Converted to ${name}: ${result}`)
-      askNextAction(inquirer, callback, main)
+      askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect)
     })
     .catch((error) => {
       console.error(`Error during conversion to ${name}:`, error)
@@ -92,7 +149,13 @@ function stringToBase(inquirer, name, base, callback, main) {
  * @param callback - Function to restart the string conversion process.
  * @param main - Callback to return to the main menu.
  */
-function askNextAction(inquirer, callback, main) {
+function askNextAction(
+  inquirer,
+  callback,
+  main,
+  typewriterEffect,
+  fadeOutEffect
+) {
   inquirer
     .prompt([
       {
@@ -106,20 +169,25 @@ function askNextAction(inquirer, callback, main) {
         ],
       },
     ])
-    .then((answers) => {
-      switch (answers.nextAction) {
-        case 'Convert another string.':
-          callback()
-          break
-        case 'Return to Main Menu.':
-          console.log('Returning to the main menu...')
-          main()
-          break
-        case 'Exit the application.':
-          console.log('Thank you for using the application. Goodbye!')
-          process.exit(0)
-      }
-    })
+    .then((answers) =>
+      __awaiter(this, void 0, void 0, function* () {
+        switch (answers.nextAction) {
+          case 'Convert another string.':
+            callback()
+            break
+          case 'Return to Main Menu.':
+            console.log('Returning to the main menu...')
+            main()
+            break
+          case 'Exit the application.':
+            // Typing animation. You can adjust the delay (default: 50ms) for faster/slower typing.
+            yield typewriterEffect('Thanks for using the app. Goodbye!', 50)
+            // Fade-out animation. You can adjust the fade steps (default: 10) and delay (default: 100ms) for different effects.
+            yield fadeOutEffect('Closing the application...', 10, 100)
+            process.exit(0) // Exit the app
+        }
+      })
+    )
     .catch((error) => {
       console.error('Error while deciding the next step:', error)
     })

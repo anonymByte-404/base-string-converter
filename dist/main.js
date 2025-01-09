@@ -10,7 +10,11 @@ import inquirer from 'inquirer'
 import { stringConverter } from './handleConversion/stringConverter.js'
 import { binaryConverter } from './handleConversion/binaryConverter.js'
 import { ternaryConverter } from './handleConversion/ternaryConverter.js'
-/**
+import { quaternaryConverter } from './handleConversion/quaternaryConverter.js'
+import { quinaryConverter } from './handleConversion/quinaryConversion.js'
+import { senaryConverter } from './handleConversion/senaryConverter.js'
+import { typewriterEffect, fadeOutEffect } from './utils/textAnimation.js'
+/*
  * List of available base options for conversions.
  * Includes bases from 2 (binary) to 64.
  */
@@ -49,7 +53,13 @@ const main = () => {
     .then((answers) => {
       if (answers.conversionType === 'String') {
         // Handle string-based conversions
-        stringConverter(inquirer, baseChoices, main)
+        stringConverter(
+          inquirer,
+          baseChoices,
+          main,
+          typewriterEffect,
+          fadeOutEffect
+        )
       } else if (answers.conversionType === 'Base') {
         // Show base conversion options
         inquirer
@@ -66,11 +76,38 @@ const main = () => {
             switch (selectedBase) {
               case 'Base 2':
                 // Handle binary conversions
-                binaryConverter(inquirer, main)
+                binaryConverter(inquirer, main, typewriterEffect, fadeOutEffect)
                 break
               case 'Base 3':
                 // Handle ternary conversions
-                ternaryConverter(inquirer, main)
+                ternaryConverter(
+                  inquirer,
+                  main,
+                  typewriterEffect,
+                  fadeOutEffect
+                )
+                break
+              case 'Base 4':
+                // Handle quaternary conversions
+                quaternaryConverter(
+                  inquirer,
+                  main,
+                  typewriterEffect,
+                  fadeOutEffect
+                )
+                break
+              // Handle quinary conversions
+              case 'Base 5':
+                quinaryConverter(
+                  inquirer,
+                  main,
+                  typewriterEffect,
+                  fadeOutEffect
+                )
+                break
+              // Handle senary conversions
+              case 'Base 6':
+                senaryConverter(inquirer, main, typewriterEffect, fadeOutEffect)
                 break
               default:
                 // Inform the user about unsupported bases

@@ -1,8 +1,8 @@
 /**
- * Binary Conversion Module
+ * Quinary Conversion Module
  *
- * This module helps users convert binary data into different formats,
- * like text (strings) or numeral systems (Base 3 to Base 64).
+ * This module helps users convert quinary data into different formats,
+ * like text (strings) or numeral systems (Base 6 to Base 64).
  * It uses a simple menu to guide users through the conversion process.
  */
 var __awaiter =
@@ -40,12 +40,12 @@ var __awaiter =
   }
 const choices = [
   'String',
-  ...Array.from({ length: 62 }, (_, i) => `Base ${i + 3}`),
+  ...Array.from({ length: 59 }, (_, i) => `Base ${i + 6}`),
 ]
 /**
- * Start the binary conversion process.
+ * Start the quinary conversion process.
  *
- * Displays a menu where users can choose to convert binary data into text
+ * Displays a menu where users can choose to convert quinary data into text
  * or a numeral system. Handles user input and guides them through the steps.
  *
  * @param inquirer - The library for interactive menus and prompts.
@@ -53,28 +53,28 @@ const choices = [
  * @param typewriterEffect - Function for text typing animation.
  * @param fadeOutEffect - Function for text fade-out animation.
  */
-export function binaryConverter(
+export function quinaryConverter(
   inquirer,
   main,
   typewriterEffect,
   fadeOutEffect
 ) {
-  const startBinaryConversion = () => {
+  const startQuinaryConversion = () => {
     inquirer
       .prompt([
         {
           type: 'list',
           name: 'selectedConversionBase',
-          message: 'What format do you want to convert the binary data to?',
+          message: 'What format do you want to convert the quinary data to?',
           choices: choices,
         },
       ])
       .then((answers) => {
         switch (answers.selectedConversionBase) {
           case 'String':
-            binaryToString(
+            quinaryToString(
               inquirer,
-              startBinaryConversion,
+              startQuinaryConversion,
               main,
               typewriterEffect,
               fadeOutEffect
@@ -84,11 +84,11 @@ export function binaryConverter(
             const match = answers.selectedConversionBase.match(/Base (\d+)/)
             if (match) {
               const base = parseInt(match[1], 10)
-              binaryToBase(
+              quinaryToBase(
                 inquirer,
                 `Base ${base}`,
                 base,
-                startBinaryConversion,
+                startQuinaryConversion,
                 main,
                 typewriterEffect,
                 fadeOutEffect
@@ -99,7 +99,7 @@ export function binaryConverter(
               )
               askNextAction(
                 inquirer,
-                startBinaryConversion,
+                startQuinaryConversion,
                 main,
                 typewriterEffect,
                 fadeOutEffect
@@ -115,46 +115,44 @@ export function binaryConverter(
         )
       })
   }
-  startBinaryConversion()
+  startQuinaryConversion()
 }
 /**
- * Convert binary data into text.
+ * Convert quinary data into text.
  *
- * Asks the user to provide binary data, validates it, and converts it
+ * Asks the user to provide quinary data, validates it, and converts it
  * into readable text (ASCII characters).
  *
  * @param inquirer - The library for interactive menus and prompts.
- * @param callback - Function to restart the binary conversion process.
+ * @param callback - Function to restart the quinary conversion process.
  * @param main - Function to return to the main menu.
  */
-function binaryToString(
+function quinaryToString(
   inquirer,
   callback,
   main,
   typewriterEffect,
   fadeOutEffect
 ) {
-  const promptBinaryInput = () => {
+  const promptQuinaryInput = () => {
     inquirer
       .prompt([
         {
           type: 'input',
-          name: 'binaryInput',
-          message: 'Enter the binary data (separate groups with spaces):',
+          name: 'quinaryInput',
+          message: 'Enter the quinary data (separate groups with spaces):',
         },
       ])
       .then((answers) => {
-        const binaryArray = answers.binaryInput.trim().split(' ')
-        // Check if all inputs are valid binary numbers (0s and 1s).
-        if (!binaryArray.every((bin) => /^[01]+$/.test(bin))) {
-          console.log(
-            'Invalid input. Please enter binary numbers (only 0s and 1s).'
-          )
-          return promptBinaryInput()
+        const quinaryArray = answers.quinaryInput.trim().split(' ')
+        // Check if all inputs are valid quinary numbers (0-4).
+        if (!quinaryArray.every((quin) => /^[0-4]+$/.test(quin))) {
+          console.log('Invalid input. Please enter quinary numbers (only 0-4).')
+          return promptQuinaryInput()
         }
-        // Convert binary numbers to text.
-        const result = binaryArray
-          .map((bin) => String.fromCharCode(parseInt(bin, 2)))
+        // Convert quinary numbers to text.
+        const result = quinaryArray
+          .map((quin) => String.fromCharCode(parseInt(quin, 5)))
           .join('')
         console.log(`Here is your text: "${result}"`)
         askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect)
@@ -163,21 +161,21 @@ function binaryToString(
         console.error('Error during conversion to text:', error)
       })
   }
-  promptBinaryInput()
+  promptQuinaryInput()
 }
 /**
- * Convert binary data into a different numeral system.
+ * Convert quinary data into a different numeral system.
  *
- * Asks the user to provide binary data, validates it, and converts it into
- * the specified numeral system (e.g., Base 5, Base 16, etc.).
+ * Asks the user to provide quinary data, validates it, and converts it into
+ * the specified numeral system (e.g., Base 6, Base 16, etc.).
  *
  * @param inquirer - The library for interactive menus and prompts.
- * @param name - The name of the numeral system (e.g., "Base 5").
- * @param base - The numeral system's base (e.g., 5 for Base 5).
- * @param callback - Function to restart the binary conversion process.
+ * @param name - The name of the numeral system (e.g., "Base 6").
+ * @param base - The numeral system's base (e.g., 6 for Base 6).
+ * @param callback - Function to restart the quinary conversion process.
  * @param main - Function to return to the main menu.
  */
-function binaryToBase(
+function quinaryToBase(
   inquirer,
   name,
   base,
@@ -186,27 +184,25 @@ function binaryToBase(
   typewriterEffect,
   fadeOutEffect
 ) {
-  const promptBinaryInput = () => {
+  const promptQuinaryInput = () => {
     inquirer
       .prompt([
         {
           type: 'input',
-          name: 'binaryInput',
-          message: `Enter the binary data (separate groups with spaces) to convert to ${name}:`,
+          name: 'quinaryInput',
+          message: `Enter the quinary data (separate groups with spaces) to convert to ${name}:`,
         },
       ])
       .then((answers) => {
-        const binaryArray = answers.binaryInput.trim().split(' ')
-        // Check if all inputs are valid binary numbers (0s and 1s).
-        if (!binaryArray.every((bin) => /^[01]+$/.test(bin))) {
-          console.log(
-            'Invalid input. Please enter binary numbers (only 0s and 1s).'
-          )
-          return promptBinaryInput()
+        const quinaryArray = answers.quinaryInput.trim().split(' ')
+        // Check if all inputs are valid quinary numbers (0-4).
+        if (!quinaryArray.every((quin) => /^[0-4]+$/.test(quin))) {
+          console.log('Invalid input. Please enter quinary numbers (only 0-4).')
+          return promptQuinaryInput()
         }
-        // Convert binary numbers to the specified base.
-        const result = binaryArray
-          .map((bin) => parseInt(bin, 2).toString(base))
+        // Convert quinary numbers to the specified base.
+        const result = quinaryArray
+          .map((quin) => parseInt(quin, 5).toString(base))
           .join(' ')
         console.log(`Here is your converted data in ${name}: ${result}`)
         askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect)
@@ -215,7 +211,7 @@ function binaryToBase(
         console.error(`Error during conversion to ${name}:`, error)
       })
   }
-  promptBinaryInput()
+  promptQuinaryInput()
 }
 /**
  * Ask the user what they want to do next after completing a conversion.
@@ -223,7 +219,7 @@ function binaryToBase(
  * Provides options to convert again, go back to the main menu, or quit the app.
  *
  * @param inquirer - The library for interactive menus and prompts.
- * @param callback - Function to restart the binary conversion process.
+ * @param callback - Function to restart the quinary conversion process.
  * @param main - Function to return to the main menu.
  */
 function askNextAction(
@@ -240,7 +236,7 @@ function askNextAction(
         name: 'nextAction',
         message: 'What would you like to do next?',
         choices: [
-          'Convert binary data again.',
+          'Convert quinary data again.',
           'Go back to the Main Menu.',
           'Exit the application.',
         ],
@@ -249,7 +245,7 @@ function askNextAction(
     .then((answers) =>
       __awaiter(this, void 0, void 0, function* () {
         switch (answers.nextAction) {
-          case 'Convert binary data again.':
+          case 'Convert quinary data again.':
             callback()
             break
           case 'Go back to the Main Menu.':
