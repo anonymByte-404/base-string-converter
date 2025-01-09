@@ -19,8 +19,15 @@ const choices = [
  *
  * @param inquirer - The library for interactive menus and prompts.
  * @param main - Function to return to the main menu.
+ * @param typewriterEffect - Function for text typing animation.
+ * @param fadeOutEffect - Function for text fade-out animation.
  */
-export function binaryConverter(inquirer: any, main: () => void): void {
+export function binaryConverter(
+  inquirer: any,
+  main: () => void,
+  typewriterEffect: (text: string, delay: number) => Promise<void>,
+  fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>
+): void {
   const startBinaryConversion = (): void => {
     inquirer
       .prompt([
@@ -34,7 +41,13 @@ export function binaryConverter(inquirer: any, main: () => void): void {
       .then((answers: { selectedConversionBase: string }) => {
         switch (answers.selectedConversionBase) {
           case 'String':
-            binaryToString(inquirer, startBinaryConversion, main)
+            binaryToString(
+              inquirer,
+              startBinaryConversion,
+              main,
+              typewriterEffect,
+              fadeOutEffect
+            )
             break
           default: {
             const match = answers.selectedConversionBase.match(/Base (\d+)/)
@@ -45,13 +58,21 @@ export function binaryConverter(inquirer: any, main: () => void): void {
                 `Base ${base}`,
                 base,
                 startBinaryConversion,
-                main
+                main,
+                typewriterEffect,
+                fadeOutEffect
               )
             } else {
               console.log(
                 `Sorry, conversions for this format are not available yet.`
               )
-              askNextAction(inquirer, startBinaryConversion, main)
+              askNextAction(
+                inquirer,
+                startBinaryConversion,
+                main,
+                typewriterEffect,
+                fadeOutEffect
+              )
             }
           }
         }
@@ -80,7 +101,9 @@ export function binaryConverter(inquirer: any, main: () => void): void {
 function binaryToString(
   inquirer: any,
   callback: () => void,
-  main: () => void
+  main: () => void,
+  typewriterEffect: (text: string, delay: number) => Promise<void>,
+  fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>
 ): void {
   const promptBinaryInput = (): void => {
     inquirer
@@ -107,7 +130,7 @@ function binaryToString(
           .map((bin) => String.fromCharCode(parseInt(bin, 2)))
           .join('')
         console.log(`Here is your text: "${result}"`)
-        askNextAction(inquirer, callback, main)
+        askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect)
       })
       .catch((error: unknown) => {
         console.error('Error during conversion to text:', error)
@@ -134,7 +157,9 @@ function binaryToBase(
   name: string,
   base: number,
   callback: () => void,
-  main: () => void
+  main: () => void,
+  typewriterEffect: (text: string, delay: number) => Promise<void>,
+  fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>
 ): void {
   const promptBinaryInput = (): void => {
     inquirer
@@ -161,7 +186,7 @@ function binaryToBase(
           .map((bin) => parseInt(bin, 2).toString(base))
           .join(' ')
         console.log(`Here is your converted data in ${name}: ${result}`)
-        askNextAction(inquirer, callback, main)
+        askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect)
       })
       .catch((error: unknown) => {
         console.error(`Error during conversion to ${name}:`, error)
@@ -183,7 +208,9 @@ function binaryToBase(
 function askNextAction(
   inquirer: any,
   callback: () => void,
-  main: () => void
+  main: () => void,
+  typewriterEffect: (text: string, delay: number) => Promise<void>,
+  fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>
 ): void {
   inquirer
     .prompt([
@@ -198,7 +225,7 @@ function askNextAction(
         ],
       },
     ])
-    .then((answers: { nextAction: string }) => {
+    .then(async (answers: { nextAction: string }) => {
       switch (answers.nextAction) {
         case 'Convert binary data again.':
           callback()
@@ -208,8 +235,11 @@ function askNextAction(
           main()
           break
         case 'Exit the application.':
-          console.log('Thanks for using the app. Goodbye!')
-          process.exit(0)
+          // Typing animation. You can adjust the delay (default: 50ms) for faster/slower typing.
+          await typewriterEffect('Thanks for using the app. Goodbye!', 50)
+          // Fade-out animation. You can adjust the fade steps (default: 10) and delay (default: 100ms) for different effects.
+          await fadeOutEffect('Closing the application...', 10, 100)
+          process.exit(0) // Exit the app
       }
     })
     .catch((error: unknown) => {

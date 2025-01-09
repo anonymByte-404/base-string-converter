@@ -12,11 +12,15 @@
  * @param inquirer - The library used for interactive CLI prompts.
  * @param baseChoices - List of numeral systems (e.g., "Base 2", "Base 16").
  * @param main - Callback to return to the main menu.
+ * @param typewriterEffect - Function for text typing animation.
+ * @param fadeOutEffect - Function for text fade-out animation.
  */
 export function stringConverter(
   inquirer: any,
   baseChoices: string[],
-  main: () => void
+  main: () => void,
+  typewriterEffect: (text: string, delay: number) => Promise<void>,
+  fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>
 ): void {
   const startStringConversion = (): void => {
     inquirer
@@ -38,11 +42,19 @@ export function stringConverter(
             `Base ${base}`,
             base,
             startStringConversion,
-            main
+            main,
+            typewriterEffect,
+            fadeOutEffect
           )
         } else {
           console.log('Unsupported base. Please try another option.')
-          askNextAction(inquirer, startStringConversion, main)
+          askNextAction(
+            inquirer,
+            startStringConversion,
+            main,
+            typewriterEffect,
+            fadeOutEffect
+          )
         }
       })
       .catch((error: unknown) => {
@@ -70,7 +82,9 @@ function stringToBase(
   name: string,
   base: number,
   callback: () => void,
-  main: () => void
+  main: () => void,
+  typewriterEffect: (text: string, delay: number) => Promise<void>,
+  fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>
 ): void {
   inquirer
     .prompt([
@@ -94,7 +108,7 @@ function stringToBase(
         .join(' ')
 
       console.log(`Converted to ${name}: ${result}`)
-      askNextAction(inquirer, callback, main)
+      askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect)
     })
     .catch((error: unknown) => {
       console.error(`Error during conversion to ${name}:`, error)
@@ -113,7 +127,9 @@ function stringToBase(
 function askNextAction(
   inquirer: any,
   callback: () => void,
-  main: () => void
+  main: () => void,
+  typewriterEffect: (text: string, delay: number) => Promise<void>,
+  fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>
 ): void {
   inquirer
     .prompt([
@@ -128,7 +144,7 @@ function askNextAction(
         ],
       },
     ])
-    .then((answers: { nextAction: string }) => {
+    .then(async (answers: { nextAction: string }) => {
       switch (answers.nextAction) {
         case 'Convert another string.':
           callback()
@@ -138,8 +154,11 @@ function askNextAction(
           main()
           break
         case 'Exit the application.':
-          console.log('Thank you for using the application. Goodbye!')
-          process.exit(0)
+          // Typing animation. You can adjust the delay (default: 50ms) for faster/slower typing.
+          await typewriterEffect('Thanks for using the app. Goodbye!', 50)
+          // Fade-out animation. You can adjust the fade steps (default: 10) and delay (default: 100ms) for different effects.
+          await fadeOutEffect('Closing the application...', 10, 100)
+          process.exit(0) // Exit the app
       }
     })
     .catch((error: unknown) => {
