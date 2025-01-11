@@ -18,6 +18,9 @@ import { septenaryConverter } from './handleConversion/septenaryConverter.js'
 import { octalConverter } from './handleConversion/octalConverter.js'
 import { nonaryConverter } from './handleConversion/nonaryConverter.js'
 import { typewriterEffect, fadeOutEffect } from './utils/textAnimation.js'
+import { decimalConverter } from './handleConversion/decimalConverter.js'
+import { undecimalConverter } from './handleConversion/undecimalConverter.js'
+import { duodecimalConverter } from './handleConversion/duodecimalConverter.js'
 
 /*
  * List of available base options for conversions.
@@ -161,6 +164,30 @@ const main = (): void => {
               // Handle nonary conversions
               case 'Base 9':
                 nonaryConverter(inquirer, main, typewriterEffect, fadeOutEffect)
+                break
+              case 'Base 10':
+                decimalConverter(
+                  inquirer,
+                  main,
+                  typewriterEffect,
+                  fadeOutEffect
+                )
+                break
+              case 'Base 11':
+                undecimalConverter(
+                  inquirer,
+                  main,
+                  typewriterEffect,
+                  fadeOutEffect
+                )
+                break
+              case 'Base 12':
+                duodecimalConverter(
+                  inquirer,
+                  main,
+                  typewriterEffect,
+                  fadeOutEffect
+                )
                 break
               default:
                 // Inform the user about unsupported bases
