@@ -53,6 +53,9 @@ import { typewriterEffect, fadeOutEffect } from './utils/textAnimation.js'
 import { decimalConverter } from './handleConversion/decimalConverter.js'
 import { undecimalConverter } from './handleConversion/undecimalConverter.js'
 import { duodecimalConverter } from './handleConversion/duodecimalConverter.js'
+import { tridecimalConverter } from './handleConversion/tridecimalConverter.js'
+import { tetradecimalConverter } from './handleConversion/tetradecimalConverter.js'
+import { pentadecimalConverter } from './handleConversion/pentadecimalConverter.js'
 /*
  * List of available base options for conversions.
  * Includes bases from 2 (binary) to 64.
@@ -210,6 +213,30 @@ const main = () => {
                 break
               case 'Base 12':
                 duodecimalConverter(
+                  inquirer,
+                  main,
+                  typewriterEffect,
+                  fadeOutEffect
+                )
+                break
+              case 'Base 13':
+                tridecimalConverter(
+                  inquirer,
+                  main,
+                  typewriterEffect,
+                  fadeOutEffect
+                )
+                break
+              case 'Base 14':
+                tetradecimalConverter(
+                  inquirer,
+                  main,
+                  typewriterEffect,
+                  fadeOutEffect
+                )
+                break
+              case 'Base 15':
+                pentadecimalConverter(
                   inquirer,
                   main,
                   typewriterEffect,
