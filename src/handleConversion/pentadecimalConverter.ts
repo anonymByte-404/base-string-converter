@@ -9,7 +9,7 @@
 const choices = [
   'String',
   ...Array.from({ length: 50 }, (_, i) => `Base ${i + 16}`), // Adjusted for Base 16+
-];
+]
 
 /**
  * Start the pentadecimal conversion process.
@@ -48,12 +48,12 @@ export function pentadecimalConverter(
               main,
               typewriterEffect,
               fadeOutEffect
-            );
-            break;
+            )
+            break
           default: {
-            const match = answers.selectedConversionBase.match(/Base (\d+)/);
+            const match = answers.selectedConversionBase.match(/Base (\d+)/)
             if (match) {
-              const base = parseInt(match[1], 10);
+              const base = parseInt(match[1], 10)
               pentadecimalToBase(
                 inquirer,
                 `Base ${base}`,
@@ -62,18 +62,18 @@ export function pentadecimalConverter(
                 main,
                 typewriterEffect,
                 fadeOutEffect
-              );
+              )
             } else {
               console.log(
                 `Sorry, conversions for this format are not available yet.`
-              );
+              )
               askNextAction(
                 inquirer,
                 startPentadecimalConversion,
                 main,
                 typewriterEffect,
                 fadeOutEffect
-              );
+              )
             }
           }
         }
@@ -82,11 +82,11 @@ export function pentadecimalConverter(
         console.error(
           'Something went wrong while selecting a conversion option:',
           error
-        );
-      });
-  };
+        )
+      })
+  }
 
-  startPentadecimalConversion();
+  startPentadecimalConversion()
 }
 
 /**
@@ -118,29 +118,29 @@ function pentadecimalToString(
         },
       ])
       .then((answers: { pentadecimalInput: string }) => {
-        const pentadecimalArray = answers.pentadecimalInput.trim().split(' ');
+        const pentadecimalArray = answers.pentadecimalInput.trim().split(' ')
 
         // Validate if all inputs are valid pentadecimal numbers (0-9 and A-E for 10-14).
         if (!pentadecimalArray.every((num) => /^[0-9A-E]+$/.test(num))) {
           console.log(
             'Invalid input. Please enter pentadecimal numbers (0-9 and A-E).'
-          );
-          return promptPentadecimalInput();
+          )
+          return promptPentadecimalInput()
         }
 
         // Convert pentadecimal numbers to text.
         const result = pentadecimalArray
           .map((num) => String.fromCharCode(parseInt(num, 15)))
-          .join('');
-        console.log(`Here is your text: "${result}"`);
-        askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect);
+          .join('')
+        console.log(`Here is your text: "${result}"`)
+        askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect)
       })
       .catch((error: unknown) => {
-        console.error('Error during conversion to text:', error);
-      });
-  };
+        console.error('Error during conversion to text:', error)
+      })
+  }
 
-  promptPentadecimalInput();
+  promptPentadecimalInput()
 }
 
 /**
@@ -176,29 +176,29 @@ function pentadecimalToBase(
         },
       ])
       .then((answers: { pentadecimalInput: string }) => {
-        const pentadecimalArray = answers.pentadecimalInput.trim().split(' ');
+        const pentadecimalArray = answers.pentadecimalInput.trim().split(' ')
 
         // Validate if all inputs are valid pentadecimal numbers (0-9 and A-E for 10-14).
         if (!pentadecimalArray.every((num) => /^[0-9A-E]+$/.test(num))) {
           console.log(
             'Invalid input. Please enter pentadecimal numbers (0-9 and A-E).'
-          );
-          return promptPentadecimalInput();
+          )
+          return promptPentadecimalInput()
         }
 
         // Convert pentadecimal numbers to the specified base.
         const result = pentadecimalArray
           .map((num) => parseInt(num, 15).toString(base))
-          .join(' ');
-        console.log(`Here is your converted data in ${name}: ${result}`);
-        askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect);
+          .join(' ')
+        console.log(`Here is your converted data in ${name}: ${result}`)
+        askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect)
       })
       .catch((error: unknown) => {
-        console.error(`Error during conversion to ${name}:`, error);
-      });
-  };
+        console.error(`Error during conversion to ${name}:`, error)
+      })
+  }
 
-  promptPentadecimalInput();
+  promptPentadecimalInput()
 }
 
 /**
@@ -235,19 +235,19 @@ function askNextAction(
     .then(async (answers: { nextAction: string }) => {
       switch (answers.nextAction) {
         case 'Convert pentadecimal data again.':
-          callback();
-          break;
+          callback()
+          break
         case 'Go back to the Main Menu.':
-          console.log('Returning to the Main Menu...');
-          main();
-          break;
+          console.log('Returning to the Main Menu...')
+          main()
+          break
         case 'Exit the application.':
-          await typewriterEffect('Thanks for using the app. Goodbye!', 50);
-          await fadeOutEffect('Closing the application...', 10, 100);
-          process.exit(0); // Exit the app
+          await typewriterEffect('Thanks for using the app. Goodbye!', 50)
+          await fadeOutEffect('Closing the application...', 10, 100)
+          process.exit(0) // Exit the app
       }
     })
     .catch((error: unknown) => {
-      console.error('Error while deciding the next action:', error);
-    });
+      console.error('Error while deciding the next action:', error)
+    })
 }
