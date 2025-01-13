@@ -47,6 +47,11 @@ const choices = [
  *
  * Displays a menu where users can choose to convert pentadecimal data into text
  * or a numeral system. Handles user input and guides them through the steps.
+ *
+ * @param inquirer - The library for interactive menus and prompts.
+ * @param main - Function to return to the main menu.
+ * @param typewriterEffect - Function to display text with a typewriter effect.
+ * @param fadeOutEffect - Function to fade out text with animation.
  */
 export function pentadecimalConverter(
   inquirer,
@@ -122,6 +127,8 @@ export function pentadecimalConverter(
  * @param inquirer - The library for interactive menus and prompts.
  * @param callback - Function to restart the pentadecimal conversion process.
  * @param main - Function to return to the main menu.
+ * @param typewriterEffect - Function to display text with a typewriter effect.
+ * @param fadeOutEffect - Function to fade out text with animation.
  */
 function pentadecimalToString(
   inquirer,
@@ -166,6 +173,14 @@ function pentadecimalToString(
  *
  * Asks the user to provide pentadecimal data, validates it, and converts it into
  * the specified numeral system (e.g., Base 16, Base 17, etc.).
+ *
+ * @param inquirer - The library for interactive menus and prompts.
+ * @param name - A string describing the base format (e.g., "Base 16").
+ * @param base - The numeric base to convert the pentadecimal data into.
+ * @param callback - Function to restart the pentadecimal conversion process.
+ * @param main - Function to return to the main menu.
+ * @param typewriterEffect - Function to display text with a typewriter effect.
+ * @param fadeOutEffect - Function to fade out text with animation.
  */
 function pentadecimalToBase(
   inquirer,
@@ -211,6 +226,12 @@ function pentadecimalToBase(
  * Ask the user what they want to do next after completing a conversion.
  *
  * Provides options to convert again, go back to the main menu, or quit the app.
+ *
+ * @param inquirer - The library for interactive menus and prompts.
+ * @param callback - Function to restart the pentadecimal conversion process.
+ * @param main - Function to return to the main menu.
+ * @param typewriterEffect - Function to display text with a typewriter effect.
+ * @param fadeOutEffect - Function to fade out text with animation.
  */
 function askNextAction(
   inquirer,

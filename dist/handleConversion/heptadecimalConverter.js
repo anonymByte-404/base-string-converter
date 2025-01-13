@@ -1,7 +1,7 @@
 /**
- * Tetradecimal Conversion Module
+ * Heptadecimal Conversion Module
  *
- * This module helps users convert tetradecimal data into different formats,
+ * This module helps users convert heptadecimal data into different formats,
  * like text (strings) or other numeral systems.
  * It uses a simple menu to guide users through the conversion process.
  */
@@ -40,42 +40,42 @@ var __awaiter =
   }
 const choices = [
   'String',
-  ...Array.from({ length: 51 }, (_, i) => `Base ${i + 15}`), // Adjusted for Base 15+
+  ...Array.from({ length: 50 }, (_, i) => `Base ${i + 2}`), // Adjusted for Base 2+
 ]
 /**
- * Start the tetradecimal conversion process.
+ * Start the heptadecimal conversion process.
  *
- * Displays a menu where users can choose to convert tetradecimal data into text
+ * Displays a menu where users can choose to convert heptadecimal data into text
  * or a numeral system. Handles user input and guides them through the steps.
  *
- * @param inquirer - Library for interactive menus and prompts.
+ * @param inquirer - The library for interactive menus and prompts.
  * @param main - Function to return to the main menu.
- * @param typewriterEffect - Function for typewriter animation.
- * @param fadeOutEffect - Function for fade-out animation.
+ * @param typewriterEffect - Function to display text with a typewriter effect.
+ * @param fadeOutEffect - Function to fade out text with animation.
  */
-export function tetradecimalConverter(
+export function heptadecimalConverter(
   inquirer,
   main,
   typewriterEffect,
   fadeOutEffect
 ) {
-  const startTetradecimalConversion = () => {
+  const startHeptadecimalConversion = () => {
     inquirer
       .prompt([
         {
           type: 'list',
           name: 'selectedConversionBase',
           message:
-            'What format do you want to convert the tetradecimal data to?',
+            'What format do you want to convert the heptadecimal data to?',
           choices: choices,
         },
       ])
       .then((answers) => {
         switch (answers.selectedConversionBase) {
           case 'String':
-            tetradecimalToString(
+            heptadecimalToString(
               inquirer,
-              startTetradecimalConversion,
+              startHeptadecimalConversion,
               main,
               typewriterEffect,
               fadeOutEffect
@@ -85,11 +85,11 @@ export function tetradecimalConverter(
             const match = answers.selectedConversionBase.match(/Base (\d+)/)
             if (match) {
               const base = parseInt(match[1], 10)
-              tetradecimalToBase(
+              heptadecimalToBase(
                 inquirer,
                 `Base ${base}`,
                 base,
-                startTetradecimalConversion,
+                startHeptadecimalConversion,
                 main,
                 typewriterEffect,
                 fadeOutEffect
@@ -100,7 +100,7 @@ export function tetradecimalConverter(
               )
               askNextAction(
                 inquirer,
-                startTetradecimalConversion,
+                startHeptadecimalConversion,
                 main,
                 typewriterEffect,
                 fadeOutEffect
@@ -116,46 +116,46 @@ export function tetradecimalConverter(
         )
       })
   }
-  startTetradecimalConversion()
+  startHeptadecimalConversion()
 }
 /**
- * Convert tetradecimal data into text.
+ * Convert heptadecimal data into text.
  *
- * Asks the user to provide tetradecimal data, validates it, and converts it
+ * Asks the user to provide heptadecimal data, validates it, and converts it
  * into readable text (ASCII characters).
  *
- * @param inquirer - Library for interactive menus and prompts.
- * @param callback - Function to restart the tetradecimal conversion process.
+ * @param inquirer - The library for interactive menus and prompts.
+ * @param callback - Function to restart the heptadecimal conversion process.
  * @param main - Function to return to the main menu.
- * @param typewriterEffect - Function for typewriter animation.
- * @param fadeOutEffect - Function for fade-out animation.
+ * @param typewriterEffect - Function to display text with a typewriter effect.
+ * @param fadeOutEffect - Function to fade out text with animation.
  */
-function tetradecimalToString(
+function heptadecimalToString(
   inquirer,
   callback,
   main,
   typewriterEffect,
   fadeOutEffect
 ) {
-  const promptTetradecimalInput = () => {
+  const promptHeptadecimalInput = () => {
     inquirer
       .prompt([
         {
           type: 'input',
-          name: 'tetradecimalInput',
-          message: 'Enter the tetradecimal data (separate groups with spaces):',
+          name: 'heptadecimalInput',
+          message: 'Enter the heptadecimal data (separate groups with spaces):',
         },
       ])
       .then((answers) => {
-        const tetradecimalArray = answers.tetradecimalInput.trim().split(' ')
-        if (!tetradecimalArray.every((num) => /^[0-9A-D]+$/.test(num))) {
-          console.log(
-            'Invalid input. Please enter tetradecimal numbers (0-9 and A-D).'
-          )
-          return promptTetradecimalInput()
+        const heptadecimalArray = answers.heptadecimalInput.trim().split(' ')
+        // Validate if all inputs are valid heptadecimal numbers (0-6).
+        if (!heptadecimalArray.every((num) => /^[0-6]+$/i.test(num))) {
+          console.log('Invalid input. Please enter heptadecimal numbers (0-6).')
+          return promptHeptadecimalInput()
         }
-        const result = tetradecimalArray
-          .map((num) => String.fromCharCode(parseInt(num, 14)))
+        // Convert heptadecimal numbers to text.
+        const result = heptadecimalArray
+          .map((num) => String.fromCharCode(parseInt(num, 7)))
           .join('')
         console.log(`Here is your text: "${result}"`)
         askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect)
@@ -164,20 +164,23 @@ function tetradecimalToString(
         console.error('Error during conversion to text:', error)
       })
   }
-  promptTetradecimalInput()
+  promptHeptadecimalInput()
 }
 /**
- * Convert tetradecimal data into a different numeral system.
+ * Convert heptadecimal data into a different numeral system.
  *
- * @param inquirer - Library for interactive menus and prompts.
- * @param name - The name of the target numeral system (e.g., "Base 15").
- * @param base - The base of the target numeral system.
- * @param callback - Function to restart the tetradecimal conversion process.
+ * Asks the user to provide heptadecimal data, validates it, and converts it into
+ * the specified numeral system (e.g., Base 2, Base 8, Base 10, etc.).
+ *
+ * @param inquirer - The library for interactive menus and prompts.
+ * @param name - A string describing the base format (e.g., "Base 16").
+ * @param base - The numeric base to convert the heptadecimal data into.
+ * @param callback - Function to restart the heptadecimal conversion process.
  * @param main - Function to return to the main menu.
- * @param typewriterEffect - Function for typewriter animation.
- * @param fadeOutEffect - Function for fade-out animation.
+ * @param typewriterEffect - Function to display text with a typewriter effect.
+ * @param fadeOutEffect - Function to fade out text with animation.
  */
-function tetradecimalToBase(
+function heptadecimalToBase(
   inquirer,
   name,
   base,
@@ -186,25 +189,25 @@ function tetradecimalToBase(
   typewriterEffect,
   fadeOutEffect
 ) {
-  const promptTetradecimalInput = () => {
+  const promptHeptadecimalInput = () => {
     inquirer
       .prompt([
         {
           type: 'input',
-          name: 'tetradecimalInput',
-          message: `Enter the tetradecimal data (separate groups with spaces) to convert to ${name}:`,
+          name: 'heptadecimalInput',
+          message: `Enter the heptadecimal data (separate groups with spaces) to convert to ${name}:`,
         },
       ])
       .then((answers) => {
-        const tetradecimalArray = answers.tetradecimalInput.trim().split(' ')
-        if (!tetradecimalArray.every((num) => /^[0-9A-D]+$/.test(num))) {
-          console.log(
-            'Invalid input. Please enter tetradecimal numbers (0-9 and A-D).'
-          )
-          return promptTetradecimalInput()
+        const heptadecimalArray = answers.heptadecimalInput.trim().split(' ')
+        // Validate if all inputs are valid heptadecimal numbers (0-6).
+        if (!heptadecimalArray.every((num) => /^[0-6]+$/i.test(num))) {
+          console.log('Invalid input. Please enter heptadecimal numbers (0-6).')
+          return promptHeptadecimalInput()
         }
-        const result = tetradecimalArray
-          .map((num) => parseInt(num, 14).toString(base))
+        // Convert heptadecimal numbers to the specified base.
+        const result = heptadecimalArray
+          .map((num) => parseInt(num, 7).toString(base))
           .join(' ')
         console.log(`Here is your converted data in ${name}: ${result}`)
         askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect)
@@ -213,16 +216,18 @@ function tetradecimalToBase(
         console.error(`Error during conversion to ${name}:`, error)
       })
   }
-  promptTetradecimalInput()
+  promptHeptadecimalInput()
 }
 /**
  * Ask the user what they want to do next after completing a conversion.
  *
- * @param inquirer - Library for interactive menus and prompts.
- * @param callback - Function to restart the current conversion process.
+ * Provides options to convert again, go back to the main menu, or quit the app.
+ *
+ * @param inquirer - The library for interactive menus and prompts.
+ * @param callback - Function to restart the heptadecimal conversion process.
  * @param main - Function to return to the main menu.
- * @param typewriterEffect - Function for typewriter animation.
- * @param fadeOutEffect - Function for fade-out animation.
+ * @param typewriterEffect - Function to display text with a typewriter effect.
+ * @param fadeOutEffect - Function to fade out text with animation.
  */
 function askNextAction(
   inquirer,
@@ -238,7 +243,7 @@ function askNextAction(
         name: 'nextAction',
         message: 'What would you like to do next?',
         choices: [
-          'Convert tetradecimal data again.',
+          'Convert heptadecimal data again.',
           'Go back to the Main Menu.',
           'Exit the application.',
         ],
@@ -247,7 +252,7 @@ function askNextAction(
     .then((answers) =>
       __awaiter(this, void 0, void 0, function* () {
         switch (answers.nextAction) {
-          case 'Convert tetradecimal data again.':
+          case 'Convert heptadecimal data again.':
             callback()
             break
           case 'Go back to the Main Menu.':
@@ -257,7 +262,7 @@ function askNextAction(
           case 'Exit the application.':
             yield typewriterEffect('Thanks for using the app. Goodbye!', 50)
             yield fadeOutEffect('Closing the application...', 10, 100)
-            process.exit(0)
+            process.exit(0) // Exit the app
         }
       })
     )

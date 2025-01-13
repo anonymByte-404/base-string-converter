@@ -45,8 +45,10 @@ const choices = [
 /**
  * Start the tridecimal conversion process.
  *
- * Displays a menu where users can choose to convert tridecimal data into text
- * or a numeral system. Handles user input and guides them through the steps.
+ * @param inquirer - The library for interactive menus and prompts.
+ * @param main - Function to return to the main menu.
+ * @param typewriterEffect - Function to display text with a typewriter effect.
+ * @param fadeOutEffect - Function to fade out text with animation.
  */
 export function tridecimalConverter(
   inquirer,
@@ -115,12 +117,11 @@ export function tridecimalConverter(
 /**
  * Convert tridecimal data into text.
  *
- * Asks the user to provide tridecimal data, validates it, and converts it
- * into readable text (ASCII characters).
- *
  * @param inquirer - The library for interactive menus and prompts.
  * @param callback - Function to restart the tridecimal conversion process.
  * @param main - Function to return to the main menu.
+ * @param typewriterEffect - Function to display text with a typewriter effect.
+ * @param fadeOutEffect - Function to fade out text with animation.
  */
 function tridecimalToString(
   inquirer,
@@ -163,8 +164,13 @@ function tridecimalToString(
 /**
  * Convert tridecimal data into a different numeral system.
  *
- * Asks the user to provide tridecimal data, validates it, and converts it into
- * the specified numeral system (e.g., Base 14, Base 16, etc.).
+ * @param inquirer - The library for interactive menus and prompts.
+ * @param name - The name of the numeral system for conversion.
+ * @param base - The base of the target numeral system.
+ * @param callback - Function to restart the tridecimal conversion process.
+ * @param main - Function to return to the main menu.
+ * @param typewriterEffect - Function to display text with a typewriter effect.
+ * @param fadeOutEffect - Function to fade out text with animation.
  */
 function tridecimalToBase(
   inquirer,
@@ -209,7 +215,11 @@ function tridecimalToBase(
 /**
  * Ask the user what they want to do next after completing a conversion.
  *
- * Provides options to convert again, go back to the main menu, or quit the app.
+ * @param inquirer - The library for interactive menus and prompts.
+ * @param callback - Function to restart the tridecimal conversion process.
+ * @param main - Function to return to the main menu.
+ * @param typewriterEffect - Function to display text with a typewriter effect.
+ * @param fadeOutEffect - Function to fade out text with animation.
  */
 function askNextAction(
   inquirer,
