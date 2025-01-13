@@ -24,6 +24,9 @@ import { duodecimalConverter } from './handleConversion/duodecimalConverter.js'
 import { tridecimalConverter } from './handleConversion/tridecimalConverter.js'
 import { tetradecimalConverter } from './handleConversion/tetradecimalConverter.js'
 import { pentadecimalConverter } from './handleConversion/pentadecimalConverter.js'
+import { hexadecimalConverter } from './handleConversion/hexadecimalConverter.js'
+import { heptadecimalConverter } from './handleConversion/heptadecimalConverter.js'
+import { octodecimalConverter } from './handleConversion/octodecimalConverter.js'
 
 /*
  * List of available base options for conversions.
@@ -210,6 +213,30 @@ const main = (): void => {
                 break
               case 'Base 15':
                 pentadecimalConverter(
+                  inquirer,
+                  main,
+                  typewriterEffect,
+                  fadeOutEffect
+                )
+                break
+              case 'Base 16':
+                hexadecimalConverter(
+                  inquirer,
+                  main,
+                  typewriterEffect,
+                  fadeOutEffect
+                )
+                break
+              case 'Base 17':
+                heptadecimalConverter(
+                  inquirer,
+                  main,
+                  typewriterEffect,
+                  fadeOutEffect
+                )
+                break
+              case 'Base 18':
+                octodecimalConverter(
                   inquirer,
                   main,
                   typewriterEffect,
