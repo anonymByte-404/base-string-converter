@@ -9,6 +9,7 @@
 
 import inquirer from 'inquirer'
 import { stringConverter } from './handleConversion/stringConverter.js'
+import { unaryConverter } from './handleConversion/unaryConverter.js'
 import { binaryConverter } from './handleConversion/binaryConverter.js'
 import { ternaryConverter } from './handleConversion/ternaryConverter.js'
 import { quaternaryConverter } from './handleConversion/quaternaryConverter.js'
@@ -27,14 +28,16 @@ import { pentadecimalConverter } from './handleConversion/pentadecimalConverter.
 import { hexadecimalConverter } from './handleConversion/hexadecimalConverter.js'
 import { heptadecimalConverter } from './handleConversion/heptadecimalConverter.js'
 import { octodecimalConverter } from './handleConversion/octodecimalConverter.js'
+import { nonadecimalConverter } from './handleConversion/nanodecimalConverter.js'
+import { vigesimalConverter } from './handleConversion/vigesimalConverter.js'
 
 /*
  * List of available base options for conversions.
  * Includes bases from 2 (binary) to 64.
  */
 const baseChoices: string[] = Array.from(
-  { length: 63 },
-  (_, i) => `Base ${i + 2}`
+  { length: 64 },
+  (_, i) => `Base ${i + 1}`
 )
 
 /**
@@ -96,7 +99,6 @@ const main = (): void => {
     ])
     .then((answers: { conversionType: string }) => {
       if (answers.conversionType === 'String') {
-        // Handle string-based conversions
         stringConverter(
           inquirer,
           baseChoices,
@@ -105,7 +107,6 @@ const main = (): void => {
           fadeOutEffect
         )
       } else if (answers.conversionType === 'Base') {
-        // Show base conversion options
         inquirer
           .prompt([
             {
@@ -119,12 +120,13 @@ const main = (): void => {
             const { selectedBase } = answers
 
             switch (selectedBase) {
+              case 'Base 1':
+                unaryConverter(inquirer, main, fadeOutEffect, fadeOutEffect)
+                break
               case 'Base 2':
-                // Handle binary conversions
                 binaryConverter(inquirer, main, typewriterEffect, fadeOutEffect)
                 break
               case 'Base 3':
-                // Handle ternary conversions
                 ternaryConverter(
                   inquirer,
                   main,
@@ -133,7 +135,6 @@ const main = (): void => {
                 )
                 break
               case 'Base 4':
-                // Handle quaternary conversions
                 quaternaryConverter(
                   inquirer,
                   main,
@@ -141,7 +142,6 @@ const main = (): void => {
                   fadeOutEffect
                 )
                 break
-              // Handle quinary conversions
               case 'Base 5':
                 quinaryConverter(
                   inquirer,
@@ -150,11 +150,9 @@ const main = (): void => {
                   fadeOutEffect
                 )
                 break
-              // Handle senary conversions
               case 'Base 6':
                 senaryConverter(inquirer, main, typewriterEffect, fadeOutEffect)
                 break
-              // Handle septenary conversions
               case 'Base 7':
                 septenaryConverter(
                   inquirer,
@@ -163,11 +161,9 @@ const main = (): void => {
                   fadeOutEffect
                 )
                 break
-              // Handle octal conversions
               case 'Base 8':
                 octalConverter(inquirer, main, typewriterEffect, fadeOutEffect)
                 break
-              // Handle nonary conversions
               case 'Base 9':
                 nonaryConverter(inquirer, main, typewriterEffect, fadeOutEffect)
                 break
@@ -237,6 +233,22 @@ const main = (): void => {
                 break
               case 'Base 18':
                 octodecimalConverter(
+                  inquirer,
+                  main,
+                  typewriterEffect,
+                  fadeOutEffect
+                )
+                break
+              case 'Base 19':
+                nonadecimalConverter(
+                  inquirer,
+                  main,
+                  typewriterEffect,
+                  fadeOutEffect
+                )
+                break
+              case 'Base 20':
+                vigesimalConverter(
                   inquirer,
                   main,
                   typewriterEffect,
