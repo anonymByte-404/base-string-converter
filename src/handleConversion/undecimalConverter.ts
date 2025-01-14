@@ -6,9 +6,11 @@
  * It uses a simple menu to guide users through the conversion process.
  */
 
-const choices = [
+const choices: string[] = [
   'String',
-  ...Array.from({ length: 54 }, (_, i) => `Base ${i + 12}`), // Adjusted for Base 12+
+  ...Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`).filter(
+    (base: string) => base !== 'Base 11'
+  ),
 ]
 
 /**

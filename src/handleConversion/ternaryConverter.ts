@@ -7,8 +7,9 @@
 
 const choices: string[] = [
   'String',
-  'Base 2',
-  ...Array.from({ length: 61 }, (_, i) => `Base ${i + 4}`),
+  ...Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`).filter(
+    (base: string) => base !== 'Base 3'
+  ),
 ]
 
 /**
