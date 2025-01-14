@@ -40,7 +40,9 @@ var __awaiter =
   }
 const choices = [
   'String',
-  ...Array.from({ length: 60 }, (_, i) => `Base ${i + 5}`),
+  ...Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`).filter(
+    (base) => base !== 'Base 4'
+  ),
 ]
 /**
  * Start the quaternary conversion process.

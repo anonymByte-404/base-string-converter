@@ -40,7 +40,9 @@ var __awaiter =
   }
 const choices = [
   'String',
-  ...Array.from({ length: 52 }, (_, i) => `Base ${i + 14}`), // Adjusted for Base 14+
+  ...Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`).filter(
+    (base) => base !== 'Base 13'
+  ),
 ]
 /**
  * Start the tridecimal conversion process.

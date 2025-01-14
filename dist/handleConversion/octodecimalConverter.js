@@ -40,7 +40,9 @@ var __awaiter =
   }
 const choices = [
   'String',
-  ...Array.from({ length: 50 }, (_, i) => `Base ${i + 2}`), // Adjusted for Base 2+
+  ...Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`).filter(
+    (base) => base !== 'Base 18'
+  ),
 ]
 /**
  * Start the octodecimal conversion process.

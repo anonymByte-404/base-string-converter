@@ -40,7 +40,9 @@ var __awaiter =
   }
 const choices = [
   'String',
-  ...Array.from({ length: 58 }, (_, i) => `Base ${i + 7}`), // Adjusted for Base 7
+  ...Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`).filter(
+    (base) => base !== 'Base 7'
+  ),
 ]
 /**
  * Start the septenary conversion process.

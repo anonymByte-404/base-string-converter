@@ -40,7 +40,9 @@ var __awaiter =
   }
 const choices = [
   'String',
-  ...Array.from({ length: 54 }, (_, i) => `Base ${i + 12}`), // Adjusted for Base 12+
+  ...Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`).filter(
+    (base) => base !== 'Base 11'
+  ),
 ]
 /**
  * Start the undecimal conversion process.

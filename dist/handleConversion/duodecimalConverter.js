@@ -40,7 +40,9 @@ var __awaiter =
   }
 const choices = [
   'String',
-  ...Array.from({ length: 53 }, (_, i) => `Base ${i + 13}`), // Adjusted for Base 13+
+  ...Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`).filter(
+    (base) => base !== 'Base 12'
+  ),
 ]
 /**
  * Start the duodecimal conversion process.

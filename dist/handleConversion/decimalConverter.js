@@ -40,7 +40,9 @@ var __awaiter =
   }
 const choices = [
   'String',
-  ...Array.from({ length: 55 }, (_, i) => `Base ${i + 11}`), // Adjusted for Base 11+
+  ...Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`).filter(
+    (base) => base !== 'Base 10'
+  ),
 ]
 /**
  * Start the decimal conversion process.

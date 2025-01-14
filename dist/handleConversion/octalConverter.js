@@ -40,7 +40,9 @@ var __awaiter =
   }
 const choices = [
   'String',
-  ...Array.from({ length: 57 }, (_, i) => `Base ${i + 8}`), // Adjusted for Base 8
+  ...Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`).filter(
+    (base) => base !== 'Base 8'
+  ),
 ]
 /**
  * Start the octal conversion process.

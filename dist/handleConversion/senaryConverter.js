@@ -40,7 +40,9 @@ var __awaiter =
   }
 const choices = [
   'String',
-  ...Array.from({ length: 59 }, (_, i) => `Base ${i + 6}`),
+  ...Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`).filter(
+    (base) => base !== 'Base 6'
+  ),
 ]
 /**
  * Start the senary conversion process.

@@ -40,7 +40,9 @@ var __awaiter =
   }
 const choices = [
   'String',
-  ...Array.from({ length: 62 }, (_, i) => `Base ${i + 3}`),
+  ...Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`).filter(
+    (base) => base !== 'Base 2'
+  ),
 ]
 /**
  * Start the binary conversion process.

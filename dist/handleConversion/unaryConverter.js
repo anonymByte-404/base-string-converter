@@ -1,8 +1,8 @@
 /**
- * Quinary Conversion Module
+ * Unary Conversion Module
  *
- * This module helps users convert quinary data into different formats,
- * like text (strings) or numeral systems (Base 6 to Base 64).
+ * This module helps users convert unary data into different formats,
+ * like text (strings) or other numeral systems.
  * It uses a simple menu to guide users through the conversion process.
  */
 var __awaiter =
@@ -40,43 +40,41 @@ var __awaiter =
   }
 const choices = [
   'String',
-  ...Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`).filter(
-    (base) => base !== 'Base 5'
-  ),
+  ...Array.from({ length: 63 }, (_, i) => `Base ${i + 2}`),
 ]
 /**
- * Start the quinary conversion process.
+ * Start the unary conversion process.
  *
- * Displays a menu where users can choose to convert quinary data into text
+ * Displays a menu where users can choose to convert unary data into text
  * or a numeral system. Handles user input and guides them through the steps.
  *
  * @param inquirer - The library for interactive menus and prompts.
  * @param main - Function to return to the main menu.
- * @param typewriterEffect - Function for text typing animation.
- * @param fadeOutEffect - Function for text fade-out animation.
+ * @param typewriterEffect - Function to display text with a typewriter effect.
+ * @param fadeOutEffect - Function to fade out text with animation.
  */
-export function quinaryConverter(
+export function unaryConverter(
   inquirer,
   main,
   typewriterEffect,
   fadeOutEffect
 ) {
-  const startQuinaryConversion = () => {
+  const startUnaryConversion = () => {
     inquirer
       .prompt([
         {
           type: 'list',
           name: 'selectedConversionBase',
-          message: 'What format do you want to convert the quinary data to?',
+          message: 'What format do you want to convert the unary data to?',
           choices: choices,
         },
       ])
       .then((answers) => {
         switch (answers.selectedConversionBase) {
           case 'String':
-            quinaryToString(
+            unaryToString(
               inquirer,
-              startQuinaryConversion,
+              startUnaryConversion,
               main,
               typewriterEffect,
               fadeOutEffect
@@ -86,11 +84,11 @@ export function quinaryConverter(
             const match = answers.selectedConversionBase.match(/Base (\d+)/)
             if (match) {
               const base = parseInt(match[1], 10)
-              quinaryToBase(
+              unaryToBase(
                 inquirer,
                 `Base ${base}`,
                 base,
-                startQuinaryConversion,
+                startUnaryConversion,
                 main,
                 typewriterEffect,
                 fadeOutEffect
@@ -101,7 +99,7 @@ export function quinaryConverter(
               )
               askNextAction(
                 inquirer,
-                startQuinaryConversion,
+                startUnaryConversion,
                 main,
                 typewriterEffect,
                 fadeOutEffect
@@ -117,44 +115,49 @@ export function quinaryConverter(
         )
       })
   }
-  startQuinaryConversion()
+  startUnaryConversion()
 }
 /**
- * Convert quinary data into text.
+ * Convert unary data into text.
  *
- * Asks the user to provide quinary data, validates it, and converts it
+ * Asks the user to provide unary data, validates it, and converts it
  * into readable text (ASCII characters).
  *
  * @param inquirer - The library for interactive menus and prompts.
- * @param callback - Function to restart the quinary conversion process.
+ * @param callback - Function to restart the unary conversion process.
  * @param main - Function to return to the main menu.
+ * @param typewriterEffect - Function to display text with a typewriter effect.
+ * @param fadeOutEffect - Function to fade out text with animation.
  */
-function quinaryToString(
+function unaryToString(
   inquirer,
   callback,
   main,
   typewriterEffect,
   fadeOutEffect
 ) {
-  const promptQuinaryInput = () => {
+  const promptUnaryInput = () => {
     inquirer
       .prompt([
         {
           type: 'input',
-          name: 'quinaryInput',
-          message: 'Enter the quinary data (separate groups with spaces):',
+          name: 'unaryInput',
+          message:
+            'Enter the unary data (separate groups with spaces, use | for 1):',
         },
       ])
       .then((answers) => {
-        const quinaryArray = answers.quinaryInput.trim().split(' ')
-        // Check if all inputs are valid quinary numbers (0-4).
-        if (!quinaryArray.every((quin) => /^[0-4]+$/.test(quin))) {
-          console.log('Invalid input. Please enter quinary numbers (only 0-4).')
-          return promptQuinaryInput()
+        const unaryArray = answers.unaryInput.trim().split(' ')
+        // Validate if all inputs are valid unary numbers (just the symbol |).
+        if (!unaryArray.every((num) => /^[|]+$/i.test(num))) {
+          console.log(
+            'Invalid input. Please enter unary numbers (using only the | symbol).'
+          )
+          return promptUnaryInput()
         }
-        // Convert quinary numbers to text.
-        const result = quinaryArray
-          .map((quin) => String.fromCharCode(parseInt(quin, 5)))
+        // Convert unary numbers to text (count occurrences of | as digits).
+        const result = unaryArray
+          .map((num) => String.fromCharCode(num.length + 64)) // 'A' starts at 1 occurrence
           .join('')
         console.log(`Here is your text: "${result}"`)
         askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect)
@@ -163,21 +166,23 @@ function quinaryToString(
         console.error('Error during conversion to text:', error)
       })
   }
-  promptQuinaryInput()
+  promptUnaryInput()
 }
 /**
- * Convert quinary data into a different numeral system.
+ * Convert unary data into a different numeral system.
  *
- * Asks the user to provide quinary data, validates it, and converts it into
- * the specified numeral system (e.g., Base 6, Base 16, etc.).
+ * Asks the user to provide unary data, validates it, and converts it into
+ * the specified numeral system (e.g., Base 2, Base 8, Base 10, etc.).
  *
  * @param inquirer - The library for interactive menus and prompts.
- * @param name - The name of the numeral system (e.g., "Base 6").
- * @param base - The numeral system's base (e.g., 6 for Base 6).
- * @param callback - Function to restart the quinary conversion process.
+ * @param name - A string describing the base format (e.g., "Base 16").
+ * @param base - The numeric base to convert the unary data into.
+ * @param callback - Function to restart the unary conversion process.
  * @param main - Function to return to the main menu.
+ * @param typewriterEffect - Function to display text with a typewriter effect.
+ * @param fadeOutEffect - Function to fade out text with animation.
  */
-function quinaryToBase(
+function unaryToBase(
   inquirer,
   name,
   base,
@@ -186,25 +191,27 @@ function quinaryToBase(
   typewriterEffect,
   fadeOutEffect
 ) {
-  const promptQuinaryInput = () => {
+  const promptUnaryInput = () => {
     inquirer
       .prompt([
         {
           type: 'input',
-          name: 'quinaryInput',
-          message: `Enter the quinary data (separate groups with spaces) to convert to ${name}:`,
+          name: 'unaryInput',
+          message: `Enter the unary data (separate groups with spaces) to convert to ${name}:`,
         },
       ])
       .then((answers) => {
-        const quinaryArray = answers.quinaryInput.trim().split(' ')
-        // Check if all inputs are valid quinary numbers (0-4).
-        if (!quinaryArray.every((quin) => /^[0-4]+$/.test(quin))) {
-          console.log('Invalid input. Please enter quinary numbers (only 0-4).')
-          return promptQuinaryInput()
+        const unaryArray = answers.unaryInput.trim().split(' ')
+        // Validate if all inputs are valid unary numbers (just the symbol |).
+        if (!unaryArray.every((num) => /^[|]+$/i.test(num))) {
+          console.log(
+            'Invalid input. Please enter unary numbers (using only the | symbol).'
+          )
+          return promptUnaryInput()
         }
-        // Convert quinary numbers to the specified base.
-        const result = quinaryArray
-          .map((quin) => parseInt(quin, 5).toString(base))
+        // Convert unary numbers to the specified base (count occurrences of | as digits).
+        const result = unaryArray
+          .map((num) => num.length.toString(base))
           .join(' ')
         console.log(`Here is your converted data in ${name}: ${result}`)
         askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect)
@@ -213,7 +220,7 @@ function quinaryToBase(
         console.error(`Error during conversion to ${name}:`, error)
       })
   }
-  promptQuinaryInput()
+  promptUnaryInput()
 }
 /**
  * Ask the user what they want to do next after completing a conversion.
@@ -221,8 +228,10 @@ function quinaryToBase(
  * Provides options to convert again, go back to the main menu, or quit the app.
  *
  * @param inquirer - The library for interactive menus and prompts.
- * @param callback - Function to restart the quinary conversion process.
+ * @param callback - Function to restart the unary conversion process.
  * @param main - Function to return to the main menu.
+ * @param typewriterEffect - Function to display text with a typewriter effect.
+ * @param fadeOutEffect - Function to fade out text with animation.
  */
 function askNextAction(
   inquirer,
@@ -238,7 +247,7 @@ function askNextAction(
         name: 'nextAction',
         message: 'What would you like to do next?',
         choices: [
-          'Convert quinary data again.',
+          'Convert unary data again.',
           'Go back to the Main Menu.',
           'Exit the application.',
         ],
@@ -247,7 +256,7 @@ function askNextAction(
     .then((answers) =>
       __awaiter(this, void 0, void 0, function* () {
         switch (answers.nextAction) {
-          case 'Convert quinary data again.':
+          case 'Convert unary data again.':
             callback()
             break
           case 'Go back to the Main Menu.':
@@ -255,9 +264,7 @@ function askNextAction(
             main()
             break
           case 'Exit the application.':
-            // Typing animation. You can adjust the delay (default: 50ms) for faster/slower typing.
             yield typewriterEffect('Thanks for using the app. Goodbye!', 50)
-            // Fade-out animation. You can adjust the fade steps (default: 10) and delay (default: 100ms) for different effects.
             yield fadeOutEffect('Closing the application...', 10, 100)
             process.exit(0) // Exit the app
         }

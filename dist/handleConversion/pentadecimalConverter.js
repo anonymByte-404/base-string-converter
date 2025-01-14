@@ -40,7 +40,9 @@ var __awaiter =
   }
 const choices = [
   'String',
-  ...Array.from({ length: 50 }, (_, i) => `Base ${i + 16}`), // Adjusted for Base 16+
+  ...Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`).filter(
+    (base) => base !== 'Base 15'
+  ),
 ]
 /**
  * Start the pentadecimal conversion process.

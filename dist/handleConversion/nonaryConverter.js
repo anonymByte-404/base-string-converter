@@ -40,7 +40,9 @@ var __awaiter =
   }
 const choices = [
   'String',
-  ...Array.from({ length: 56 }, (_, i) => `Base ${i + 9}`), // Adjusted for Base 9
+  ...Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`).filter(
+    (base) => base !== 'Base 9'
+  ),
 ]
 /**
  * Start the nonary conversion process.

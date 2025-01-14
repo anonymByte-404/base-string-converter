@@ -40,7 +40,9 @@ var __awaiter =
   }
 const choices = [
   'String',
-  ...Array.from({ length: 51 }, (_, i) => `Base ${i + 15}`), // Adjusted for Base 15+
+  ...Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`).filter(
+    (base) => base !== 'Base 14'
+  ),
 ]
 /**
  * Start the tetradecimal conversion process.
