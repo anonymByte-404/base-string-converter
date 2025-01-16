@@ -25,12 +25,14 @@ const initialChoices: string[] = ['String', ...generateBaseChoices()]
  * @param main - Callback to return to the main menu.
  * @param typewriterEffect - Function for displaying text with a typewriter effect.
  * @param fadeOutEffect - Function for fading out text with an animation effect.
+ * @param chalk - Chalk instance for styling console output.
  */
 export function universalBaseConverter(
   inquirer: any,
   main: () => void,
   typewriterEffect: (text: string, delay: number) => Promise<void>,
-  fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>
+  fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
+  chalk: any
 ): void {
   let availableChoices = [...initialChoices] // Clone initial choices to maintain state.
 
@@ -56,7 +58,8 @@ export function universalBaseConverter(
             startConversion, // Restart conversion if selected
             main,
             typewriterEffect,
-            fadeOutEffect
+            fadeOutEffect,
+            chalk
           )
         } else {
           const baseMatch = selectedBase.match(/Base (\d+)/)
@@ -68,16 +71,19 @@ export function universalBaseConverter(
               startConversion, // Restart conversion if selected
               main,
               typewriterEffect,
-              fadeOutEffect
+              fadeOutEffect,
+              chalk
             )
           } else {
-            console.error('Invalid base selection. Please try again.')
+            console.error(
+              chalk.red('Invalid base selection. Please try again.')
+            )
             startConversion() // Restart if invalid base selected
           }
         }
       })
       .catch((error: unknown) => {
-        console.error('Error selecting a conversion base:', error)
+        console.error(chalk.red('Error selecting a conversion base:', error))
       })
   }
 
@@ -93,6 +99,7 @@ export function universalBaseConverter(
  * @param main - Callback to return to the main menu.
  * @param typewriterEffect - Function for displaying text with a typewriter effect.
  * @param fadeOutEffect - Function for fading out text with an animation effect.
+ * @param chalk - Chalk instance for styling console output.
  */
 function convertToBase(
   base: number,
@@ -100,7 +107,8 @@ function convertToBase(
   restartConversion: () => void,
   main: () => void,
   typewriterEffect: (text: string, delay: number) => Promise<void>,
-  fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>
+  fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
+  chalk: any
 ): void {
   inquirer
     .prompt([
@@ -126,12 +134,12 @@ function convertToBase(
           })
           .join(' ')
 
-        console.log(`Converted to Base ${base}: ${converted}`)
+        console.log(chalk.green(`Converted to Base ${base}: ${converted}`))
       } catch (error: unknown) {
         if (error instanceof Error) {
-          console.error(error.message)
+          console.error(chalk.red(error.message))
         } else {
-          console.error('An unexpected error occurred:', error)
+          console.error(chalk.red('An unexpected error occurred:', error))
         }
       }
 
@@ -140,11 +148,14 @@ function convertToBase(
         restartConversion,
         main,
         typewriterEffect,
-        fadeOutEffect
+        fadeOutEffect,
+        chalk
       )
     })
     .catch((error: unknown) => {
-      console.error(`Error during conversion to Base ${base}:`, error)
+      console.error(
+        chalk.red(`Error during conversion to Base ${base}:`, error)
+      )
     })
 }
 
@@ -156,13 +167,15 @@ function convertToBase(
  * @param main - Callback to return to the main menu.
  * @param typewriterEffect - Function for displaying text with a typewriter effect.
  * @param fadeOutEffect - Function for fading out text with an animation effect.
+ * @param chalk - Chalk instance for styling console output.
  */
 function convertToString(
   inquirer: any,
   restartConversion: () => void,
   main: () => void,
   typewriterEffect: (text: string, delay: number) => Promise<void>,
-  fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>
+  fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
+  chalk: any
 ): void {
   inquirer
     .prompt([
@@ -188,12 +201,12 @@ function convertToString(
           })
           .join('')
 
-        console.log(`Converted to text: "${text}"`)
+        console.log(chalk.green(`Converted to text: "${text}"`))
       } catch (error: unknown) {
         if (error instanceof Error) {
-          console.error(error.message)
+          console.error(chalk.red(error.message))
         } else {
-          console.error('An unexpected error occurred:', error)
+          console.error(chalk.red('An unexpected error occurred:', error))
         }
       }
 
@@ -202,11 +215,12 @@ function convertToString(
         restartConversion,
         main,
         typewriterEffect,
-        fadeOutEffect
+        fadeOutEffect,
+        chalk
       )
     })
     .catch((error: unknown) => {
-      console.error('Error during conversion to text:', error)
+      console.error(chalk.red('Error during conversion to text:', error))
     })
 }
 
@@ -218,13 +232,15 @@ function convertToString(
  * @param main - Callback to return to the main menu.
  * @param typewriterEffect - Function for displaying text with a typewriter effect.
  * @param fadeOutEffect - Function for fading out text with an animation effect.
+ * @param chalk - Chalk instance for styling console output.
  */
 function askNextAction(
   inquirer: any,
   restartConversion: () => void,
   main: () => void,
   typewriterEffect: (text: string, delay: number) => Promise<void>,
-  fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>
+  fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
+  chalk: any
 ): void {
   inquirer
     .prompt([
@@ -250,6 +266,6 @@ function askNextAction(
       }
     })
     .catch((error: unknown) => {
-      console.error('Error deciding next action:', error)
+      console.error(chalk.red('Error deciding next action:', error))
     })
 }
