@@ -75,13 +75,15 @@ function toCustomBase(number, base) {
  * @param main - Callback function to return to the main menu.
  * @param typewriterEffect - Function for a typing effect (simulates text display with delays).
  * @param fadeOutEffect - Function for a fade-out animation effect on text.
+ * @param chalk - Chalk instance passed from main.ts.
  */
 export function stringConverter(
   inquirer,
   baseChoices,
   main,
   typewriterEffect,
-  fadeOutEffect
+  fadeOutEffect,
+  chalk
 ) {
   const startStringConversion = () => {
     inquirer
@@ -104,21 +106,23 @@ export function stringConverter(
             startStringConversion,
             main,
             typewriterEffect,
-            fadeOutEffect
+            fadeOutEffect,
+            chalk
           )
         } else {
-          console.log('Unsupported base. Please try another option.')
+          console.log(chalk.red('Unsupported base. Please try another option.'))
           askNextAction(
             inquirer,
             startStringConversion,
             main,
             typewriterEffect,
-            fadeOutEffect
+            fadeOutEffect,
+            chalk
           )
         }
       })
       .catch((error) => {
-        console.error('Error during base selection:', error.message)
+        console.error(chalk.red('Error during base selection:', error.message))
       })
   }
   startStringConversion()
@@ -136,6 +140,7 @@ export function stringConverter(
  * @param main - Callback to return to the main menu.
  * @param typewriterEffect - Function for a typing effect.
  * @param fadeOutEffect - Function for a fade-out animation effect.
+ * @param chalk - Chalk instance passed from main.ts.
  */
 function stringToBase(
   inquirer,
@@ -144,7 +149,8 @@ function stringToBase(
   callback,
   main,
   typewriterEffect,
-  fadeOutEffect
+  fadeOutEffect,
+  chalk
 ) {
   inquirer
     .prompt([
@@ -166,10 +172,19 @@ function stringToBase(
         })
         .join(' ')
       console.log(`Converted to ${name}: ${result}`)
-      askNextAction(inquirer, callback, main, typewriterEffect, fadeOutEffect)
+      askNextAction(
+        inquirer,
+        callback,
+        main,
+        typewriterEffect,
+        fadeOutEffect,
+        chalk
+      )
     })
     .catch((error) => {
-      console.error(`Error during conversion to ${name}:`, error.message)
+      console.error(
+        chalk.red(`Error during conversion to ${name}:`, error.message)
+      )
     })
 }
 /**
@@ -180,13 +195,15 @@ function stringToBase(
  * @param main - Callback to return to the main menu.
  * @param typewriterEffect - Function for a typing effect.
  * @param fadeOutEffect - Function for a fade-out animation effect.
+ * @param chalk - Chalk instance passed from main.ts.
  */
 function askNextAction(
   inquirer,
   callback,
   main,
   typewriterEffect,
-  fadeOutEffect
+  fadeOutEffect,
+  chalk
 ) {
   inquirer
     .prompt([
@@ -208,7 +225,7 @@ function askNextAction(
             callback()
             break
           case 'Return to Main Menu.':
-            console.log('Returning to the main menu...')
+            console.log(chalk.green('Returning to the main menu...'))
             main()
             break
           case 'Exit the application.':
@@ -219,6 +236,8 @@ function askNextAction(
       })
     )
     .catch((error) => {
-      console.error('Error while deciding the next step:', error.message)
+      console.error(
+        chalk.red('Error while deciding the next step:', error.message)
+      )
     })
 }

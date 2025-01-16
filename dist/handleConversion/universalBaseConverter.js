@@ -45,21 +45,26 @@ var __awaiter =
 const generateBaseChoices = () =>
   Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`)
 /**
+ * Initial list of conversion choices, including the "String" option.
+ */
+const initialChoices = ['String', ...generateBaseChoices()]
+/**
  * Entry point for the universal base converter.
  *
  * @param inquirer - Inquirer.js instance for CLI interaction.
- * @param baseChoices - Array of base choices (e.g., ["Base 1", "Base 2", ... "Base 64"]).
  * @param main - Callback to return to the main menu.
  * @param typewriterEffect - Function for displaying text with a typewriter effect.
  * @param fadeOutEffect - Function for fading out text with an animation effect.
+ * @param chalk - Chalk instance for styling console output.
  */
 export function universalBaseConverter(
   inquirer,
-  baseChoices, // Now it accepts baseChoices passed from main
   main,
   typewriterEffect,
-  fadeOutEffect
+  fadeOutEffect,
+  chalk
 ) {
+  let availableChoices = [...initialChoices] // Clone initial choices to maintain state.
   /**
    * Starts the base conversion process by presenting a list of options.
    */
@@ -70,53 +75,47 @@ export function universalBaseConverter(
           type: 'list',
           name: 'selectedBase',
           message: 'Select the base to convert to:',
-          choices: [...baseChoices, 'Exit'],
+          choices: availableChoices,
         },
       ])
-      .then((answers) =>
-        __awaiter(this, void 0, void 0, function* () {
-          const selectedBase = answers.selectedBase
-          if (selectedBase === 'Exit') {
-            yield typewriterEffect('Thanks for using the app. Goodbye!', 50)
-            yield fadeOutEffect('Closing the application...', 10, 100)
-            process.exit(0)
-          }
-          if (selectedBase === 'String') {
-            convertToString(
+      .then((answers) => {
+        const selectedBase = answers.selectedBase
+        if (selectedBase === 'String') {
+          convertToString(
+            inquirer,
+            startConversion, // Restart conversion if selected
+            main,
+            typewriterEffect,
+            fadeOutEffect,
+            chalk
+          )
+        } else {
+          const baseMatch = selectedBase.match(/Base (\d+)/)
+          if (baseMatch) {
+            const base = parseInt(baseMatch[1], 10)
+            convertToBase(
+              base,
               inquirer,
-              startConversion,
+              startConversion, // Restart conversion if selected
               main,
               typewriterEffect,
-              fadeOutEffect
+              fadeOutEffect,
+              chalk
             )
           } else {
-            const baseMatch = selectedBase.match(/Base (\d+)/)
-            if (baseMatch) {
-              const base = parseInt(baseMatch[1], 10)
-              convertToBase(
-                base,
-                inquirer,
-                startConversion, // Restart conversion if selected
-                main,
-                typewriterEffect,
-                fadeOutEffect
-              )
-            } else {
-              console.error('Invalid base selection. Please try again.')
-              startConversion() // Restart if invalid base selected
-            }
+            console.error(
+              chalk.red('Invalid base selection. Please try again.')
+            )
+            startConversion() // Restart if invalid base selected
           }
-        })
-      )
+        }
+      })
       .catch((error) => {
-        console.error('Error selecting a conversion base:', error)
+        console.error(chalk.red('Error selecting a conversion base:', error))
       })
   }
-  startConversion() // Start the conversion process
+  startConversion() // Initially start the conversion process
 }
-/**
- * The rest of the functions like convertToBase, convertToString, etc., remain the same.
- */
 /**
  * Converts numeric data to a specified base.
  *
@@ -126,6 +125,7 @@ export function universalBaseConverter(
  * @param main - Callback to return to the main menu.
  * @param typewriterEffect - Function for displaying text with a typewriter effect.
  * @param fadeOutEffect - Function for fading out text with an animation effect.
+ * @param chalk - Chalk instance for styling console output.
  */
 function convertToBase(
   base,
@@ -133,7 +133,8 @@ function convertToBase(
   restartConversion,
   main,
   typewriterEffect,
-  fadeOutEffect
+  fadeOutEffect,
+  chalk
 ) {
   inquirer
     .prompt([
@@ -157,12 +158,12 @@ function convertToBase(
             return parsed.toString(base)
           })
           .join(' ')
-        console.log(`Converted to Base ${base}: ${converted}`)
+        console.log(chalk.green(`Converted to Base ${base}: ${converted}`))
       } catch (error) {
         if (error instanceof Error) {
-          console.error(error.message)
+          console.error(chalk.red(error.message))
         } else {
-          console.error('An unexpected error occurred:', error)
+          console.error(chalk.red('An unexpected error occurred:', error))
         }
       }
       askNextAction(
@@ -170,11 +171,14 @@ function convertToBase(
         restartConversion,
         main,
         typewriterEffect,
-        fadeOutEffect
+        fadeOutEffect,
+        chalk
       )
     })
     .catch((error) => {
-      console.error(`Error during conversion to Base ${base}:`, error)
+      console.error(
+        chalk.red(`Error during conversion to Base ${base}:`, error)
+      )
     })
 }
 /**
@@ -185,13 +189,15 @@ function convertToBase(
  * @param main - Callback to return to the main menu.
  * @param typewriterEffect - Function for displaying text with a typewriter effect.
  * @param fadeOutEffect - Function for fading out text with an animation effect.
+ * @param chalk - Chalk instance for styling console output.
  */
 function convertToString(
   inquirer,
   restartConversion,
   main,
   typewriterEffect,
-  fadeOutEffect
+  fadeOutEffect,
+  chalk
 ) {
   inquirer
     .prompt([
@@ -215,12 +221,12 @@ function convertToString(
             return String.fromCharCode(parsed)
           })
           .join('')
-        console.log(`Converted to text: "${text}"`)
+        console.log(chalk.green(`Converted to text: "${text}"`))
       } catch (error) {
         if (error instanceof Error) {
-          console.error(error.message)
+          console.error(chalk.red(error.message))
         } else {
-          console.error('An unexpected error occurred:', error)
+          console.error(chalk.red('An unexpected error occurred:', error))
         }
       }
       askNextAction(
@@ -228,11 +234,12 @@ function convertToString(
         restartConversion,
         main,
         typewriterEffect,
-        fadeOutEffect
+        fadeOutEffect,
+        chalk
       )
     })
     .catch((error) => {
-      console.error('Error during conversion to text:', error)
+      console.error(chalk.red('Error during conversion to text:', error))
     })
 }
 /**
@@ -243,13 +250,15 @@ function convertToString(
  * @param main - Callback to return to the main menu.
  * @param typewriterEffect - Function for displaying text with a typewriter effect.
  * @param fadeOutEffect - Function for fading out text with an animation effect.
+ * @param chalk - Chalk instance for styling console output.
  */
 function askNextAction(
   inquirer,
   restartConversion,
   main,
   typewriterEffect,
-  fadeOutEffect
+  fadeOutEffect,
+  chalk
 ) {
   inquirer
     .prompt([
@@ -277,6 +286,6 @@ function askNextAction(
       })
     )
     .catch((error) => {
-      console.error('Error deciding next action:', error)
+      console.error(chalk.red('Error deciding next action:', error))
     })
 }
