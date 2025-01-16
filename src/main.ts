@@ -8,6 +8,7 @@
  */
 
 import inquirer from 'inquirer'
+import chalk from 'chalk'
 import { stringConverter } from './handleConversion/stringConverter.js'
 import { universalBaseConverter } from './handleConversion/universalBaseConverter.js'
 import { typewriterEffect, fadeOutEffect } from './utils/textAnimation.js'
@@ -47,7 +48,8 @@ const main = (): void => {
           baseChoices,
           main,
           typewriterEffect,
-          fadeOutEffect
+          fadeOutEffect,
+          chalk
         )
       } else if (answers.conversionType === 'Base') {
         inquirer
@@ -59,32 +61,35 @@ const main = (): void => {
               choices: [...baseChoices, 'Exit'],
             },
           ])
-          .then((answers: { selectedBase: string }) => {
+          .then(async (answers: { selectedBase: string }) => {
             if (answers.selectedBase !== 'Exit') {
               return universalBaseConverter(
                 inquirer,
                 main,
                 typewriterEffect,
-                fadeOutEffect
+                fadeOutEffect,
+                chalk
               )
             } else {
               // Typing animation. You can adjust the delay (default: 50ms) for faster/slower typing.
-              typewriterEffect('Thanks for using the app. Goodbye!', 50)
+              await typewriterEffect('Thanks for using the app. Goodbye!', 50)
               // Fade-out animation. You can adjust the fade steps (default: 10) and delay (default: 100ms) for different effects.
-              fadeOutEffect('Closing the application...', 10, 100)
+              await fadeOutEffect('Closing the application...', 10, 100)
               process.exit(0) // Exit the app
             }
           })
           .catch((error: unknown) => {
             console.error(
-              'Oops! Something went wrong while selecting a base:',
-              error
+              chalk.red(
+                'Oops! Something went wrong while selecting a base:',
+                error
+              )
             )
           })
       }
     })
     .catch((error: unknown) => {
-      console.error('Oops! Something unexpected happened:', error)
+      console.error(chalk.red('Oops! Something unexpected happened:', error))
     })
 }
 
