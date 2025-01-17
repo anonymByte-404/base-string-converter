@@ -1,9 +1,5 @@
-/**
- * Universal Base Conversion Module
- *
- * Provides functionality to convert numbers to any base from Base 1 to Base 64,
- * including converting ASCII values into readable text.
- */
+const BASE_CHARACTERS =
+  '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/'
 
 /**
  * Generates a list of base options from Base 1 to Base 64.
@@ -34,11 +30,8 @@ export function universalBaseConverter(
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
   chalk: any
 ): void {
-  let availableChoices = [...initialChoices] // Clone initial choices to maintain state.
+  let selectedBase: number | null = null
 
-  /**
-   * Starts the base conversion process by presenting a list of options.
-   */
   const startConversion = (): void => {
     inquirer
       .prompt([
@@ -46,29 +39,31 @@ export function universalBaseConverter(
           type: 'list',
           name: 'selectedBase',
           message: 'Select the base to convert to:',
-          choices: availableChoices,
+          choices: initialChoices,
         },
       ])
       .then((answers: { selectedBase: string }) => {
-        const selectedBase = answers.selectedBase
+        const selectedBaseOption = answers.selectedBase
 
-        if (selectedBase === 'String') {
+        if (selectedBaseOption === 'String') {
+          // Proceed with converting to/from string, no need for base selection again
           convertToString(
             inquirer,
-            startConversion, // Restart conversion if selected
+            startConversion,
             main,
             typewriterEffect,
             fadeOutEffect,
             chalk
           )
         } else {
-          const baseMatch = selectedBase.match(/Base (\d+)/)
+          const baseMatch = selectedBaseOption.match(/Base (\d+)/)
           if (baseMatch) {
-            const base = parseInt(baseMatch[1], 10)
+            selectedBase = parseInt(baseMatch[1], 10)
+            // Start conversion based on the selected base
             convertToBase(
-              base,
+              selectedBase,
               inquirer,
-              startConversion, // Restart conversion if selected
+              startConversion,
               main,
               typewriterEffect,
               fadeOutEffect,
@@ -78,7 +73,7 @@ export function universalBaseConverter(
             console.error(
               chalk.red('Invalid base selection. Please try again.')
             )
-            startConversion() // Restart if invalid base selected
+            startConversion()
           }
         }
       })
@@ -87,7 +82,46 @@ export function universalBaseConverter(
       })
   }
 
-  startConversion() // Initially start the conversion process
+  startConversion()
+}
+
+/**
+ * Converts a number to the specified base.
+ *
+ * @param num - The number to convert.
+ * @param base - The target base (1–64).
+ * @returns The converted number as a string.
+ */
+function numberToBase(num: number, base: number): string {
+  if (base === 1) {
+    // Base 1 (unary): Represent the number as a series of 1's.
+    return '1'.repeat(num)
+  }
+
+  let result = ''
+  while (num > 0) {
+    result = BASE_CHARACTERS[num % base] + result
+    num = Math.floor(num / base)
+  }
+  return result || '0'
+}
+
+/**
+ * Converts a string representation in a given base to a number.
+ *
+ * @param str - The string to convert.
+ * @param base - The base of the input string (1–64).
+ * @returns The converted number.
+ */
+function baseToNumber(str: string, base: number): number {
+  if (base === 1) {
+    // Base 1 (unary): The length of the string represents the number.
+    return str.length
+  }
+
+  return str
+    .split('')
+    .reduce((acc, char) => acc * base + BASE_CHARACTERS.indexOf(char), 0)
 }
 
 /**
@@ -130,17 +164,13 @@ function convertToBase(
                 `Invalid number: "${num}". Please provide valid numbers.`
               )
             }
-            return parsed.toString(base)
+            return numberToBase(parsed, base)
           })
           .join(' ')
 
         console.log(chalk.green(`Converted to Base ${base}: ${converted}`))
       } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error(chalk.red(error.message))
-        } else {
-          console.error(chalk.red('An unexpected error occurred:', error))
-        }
+        console.error(chalk.red((error as Error).message))
       }
 
       askNextAction(
@@ -160,14 +190,7 @@ function convertToBase(
 }
 
 /**
- * Converts ASCII values to a readable string.
- *
- * @param inquirer - Inquirer.js instance for CLI interaction.
- * @param restartConversion - Callback to restart the conversion process.
- * @param main - Callback to return to the main menu.
- * @param typewriterEffect - Function for displaying text with a typewriter effect.
- * @param fadeOutEffect - Function for fading out text with an animation effect.
- * @param chalk - Chalk instance for styling console output.
+ * Converts ASCII or base strings back to readable text.
  */
 function convertToString(
   inquirer: any,
@@ -182,32 +205,24 @@ function convertToString(
       {
         type: 'input',
         name: 'inputData',
-        message: 'Enter ASCII values (space-separated) to convert to text:',
+        message:
+          'Enter base-encoded values (space-separated) to convert back to text:',
       },
     ])
     .then((answers: { inputData: string }) => {
-      const asciiValues = answers.inputData.trim().split(' ')
+      const values = answers.inputData.trim().split(' ')
 
       try {
-        const text = asciiValues
+        const text = values
           .map((val) => {
-            const parsed = parseInt(val, 10)
-            if (isNaN(parsed)) {
-              throw new Error(
-                `Invalid ASCII value: "${val}". Please provide valid values.`
-              )
-            }
-            return String.fromCharCode(parsed)
+            const number = baseToNumber(val, 2) // No need to ask for base again
+            return String.fromCharCode(number)
           })
           .join('')
 
         console.log(chalk.green(`Converted to text: "${text}"`))
       } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error(chalk.red(error.message))
-        } else {
-          console.error(chalk.red('An unexpected error occurred:', error))
-        }
+        console.error(chalk.red((error as Error).message))
       }
 
       askNextAction(
@@ -226,13 +241,6 @@ function convertToString(
 
 /**
  * Prompts the user for their next action.
- *
- * @param inquirer - Inquirer.js instance for CLI interaction.
- * @param restartConversion - Callback to restart the conversion process.
- * @param main - Callback to return to the main menu.
- * @param typewriterEffect - Function for displaying text with a typewriter effect.
- * @param fadeOutEffect - Function for fading out text with an animation effect.
- * @param chalk - Chalk instance for styling console output.
  */
 function askNextAction(
   inquirer: any,
@@ -254,7 +262,7 @@ function askNextAction(
     .then(async (answers: { nextAction: string }) => {
       switch (answers.nextAction) {
         case 'Convert again':
-          restartConversion() // Restart conversion by calling the restartConversion callback
+          restartConversion()
           break
         case 'Go back to Main Menu':
           main()
