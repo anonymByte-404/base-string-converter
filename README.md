@@ -3,7 +3,7 @@
 <p align="center"><i>A powerful command-line tool for converting data between various base encodings, such as Base64, Base32, Base58, and more. Quickly encode, decode, or convert data between different base formats directly from your terminal.</i></p>
 
 > [!Note]
-> This tool is still in active development and may not yet be feature-complete or stable. Please expect ongoing changes and updates.
+> The main functionality of this tool is now stable and fully operational. However, it is still in active development, and additional features and updates may be added in the future. Please expect occasional changes as development continues.
 
 ---
 
@@ -44,7 +44,7 @@
 
 4. Run the application:
    ```bash
-   node dist/index.js
+   npm start
    ```
 
 <h2 align="center">Usage</h2>
@@ -115,7 +115,7 @@ main()
 ```
 
 > [!NOTE]
-> This is a sample snippet designed to illustrate the tool's programmatic usage. It is not the complete implementation but gives an idea of how the CLI tool operates with prompts and modular functions.
+> This is not the actual code, but an illustration designed to demonstrate how the CLI tool operates. It serves as an example to show the general behavior and flow of the tool, rather than the complete or exact implementation.
 
 <h2 align="center">Contribution</h2>
 
