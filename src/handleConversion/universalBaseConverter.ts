@@ -1,11 +1,3 @@
-/**
- * Universal Base Converter Module
- *
- * This module provides functionality to convert numbers between various bases (e.g., binary, hexadecimal, decimal),
- * and supports conversion to different numeral systems and formats, including Base64 and custom bases.
- * It does not support conversion from plain text.
- */
-
 const BASE_CHARACTERS =
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/'
 
@@ -17,19 +9,16 @@ const BASE_CHARACTERS =
 const generateBaseChoices = (): string[] =>
   Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`)
 
-/**
- * Initial list of conversion choices, including the "String" option.
- */
 const initialChoices: string[] = ['String', ...generateBaseChoices()]
 
 /**
  * Entry point for the universal base converter.
  *
- * @param inquirer - The Inquirer.js instance for handling CLI interactions.
- * @param main - The callback function to return to the main menu.
- * @param typewriterEffect - A function to display text using a typewriter effect.
- * @param fadeOutEffect - A function to fade out text with a customizable animation effect.
- * @param chalk - An instance of Chalk.js for styling console output.
+ * @param {any} inquirer - The Inquirer.js instance for handling CLI interactions.
+ * @param {function} main - The callback function to return to the main menu.
+ * @param {function} typewriterEffect - A function to display text using a typewriter effect.
+ * @param {function} fadeOutEffect - A function to fade out text with a customizable animation effect.
+ * @param {any} chalk - An instance of Chalk.js for styling console output.
  */
 export function universalBaseConverter(
   inquirer: any,
@@ -97,8 +86,8 @@ export function universalBaseConverter(
 /**
  * Converts a number to the specified base.
  *
- * @param num - The number to convert.
- * @param base - The target base (1–64).
+ * @param {number} num - The number to convert.
+ * @param {number} base - The target base (1–64).
  * @returns {string} The number converted to the specified base as a string.
  */
 function numberToBase(num: number, base: number): string {
@@ -117,8 +106,8 @@ function numberToBase(num: number, base: number): string {
 /**
  * Converts a string representation in a given base to a number.
  *
- * @param str - The string representation of the number in the specified base.
- * @param base - The base of the input string (1–64).
+ * @param {string} str - The string representation of the number in the specified base.
+ * @param {number} base - The base of the input string (1–64).
  * @returns {number} The number represented by the string in the specified base.
  */
 function baseToNumber(str: string, base: number): number {
@@ -134,13 +123,13 @@ function baseToNumber(str: string, base: number): number {
 /**
  * Handles the conversion of numbers to a specified base.
  *
- * @param base - The target base for the conversion (1–64).
- * @param inquirer - The Inquirer.js instance for handling CLI interactions.
- * @param restartConversion - A callback to restart the conversion process.
- * @param main - The callback function to return to the main menu.
- * @param typewriterEffect - A function to display text using a typewriter effect.
- * @param fadeOutEffect - A function to fade out text with a customizable animation effect.
- * @param chalk - An instance of Chalk.js for styling console output.
+ * @param {number} base - The target base for the conversion (1–64).
+ * @param {any} inquirer - The Inquirer.js instance for handling CLI interactions.
+ * @param {function} restartConversion - A callback to restart the conversion process.
+ * @param {function} main - The callback function to return to the main menu.
+ * @param {function} typewriterEffect - A function to display text using a typewriter effect.
+ * @param {function} fadeOutEffect - A function to fade out text with a customizable animation effect.
+ * @param {any} chalk - An instance of Chalk.js for styling console output.
  */
 function convertToBase(
   base: number,
@@ -199,12 +188,12 @@ function convertToBase(
 /**
  * Handles the conversion of base strings to ASCII or readable text.
  *
- * @param inquirer - The Inquirer.js instance for handling CLI interactions.
- * @param restartConversion - A callback to restart the conversion process.
- * @param main - The callback function to return to the main menu.
- * @param typewriterEffect - A function to display text using a typewriter effect.
- * @param fadeOutEffect - A function to fade out text with a customizable animation effect.
- * @param chalk - An instance of Chalk.js for styling console output.
+ * @param {any} inquirer - The Inquirer.js instance for handling CLI interactions.
+ * @param {function} restartConversion - A callback to restart the conversion process.
+ * @param {function} main - The callback function to return to the main menu.
+ * @param {function} typewriterEffect - A function to display text using a typewriter effect.
+ * @param {function} fadeOutEffect - A function to fade out text with a customizable animation effect.
+ * @param {any} chalk - An instance of Chalk.js for styling console output.
  */
 function convertToString(
   inquirer: any,
@@ -256,12 +245,12 @@ function convertToString(
 /**
  * Prompts the user for their next action.
  *
- * @param inquirer - The Inquirer.js instance for handling CLI interactions.
- * @param restartConversion - A callback to restart the conversion process.
- * @param main - The callback function to return to the main menu.
- * @param typewriterEffect - A function to display text using a typewriter effect.
- * @param fadeOutEffect - A function to fade out text with a customizable animation effect.
- * @param chalk - An instance of Chalk.js for styling console output.
+ * @param {any} inquirer - The Inquirer.js instance for handling CLI interactions.
+ * @param {function} restartConversion - A callback to restart the conversion process.
+ * @param {function} main - The callback function to return to the main menu.
+ * @param {function} typewriterEffect - A function to display text using a typewriter effect.
+ * @param {function} fadeOutEffect - A function to fade out text with a customizable animation effect.
+ * @param {any} chalk - An instance of Chalk.js for styling console output.
  */
 function askNextAction(
   inquirer: any,
@@ -277,24 +266,17 @@ function askNextAction(
         type: 'list',
         name: 'nextAction',
         message: 'What would you like to do next?',
-        choices: ['Convert again', 'Go back to Main Menu', 'Exit'],
+        choices: ['Convert again', 'Return to main menu'],
       },
     ])
-    .then(async (answers: { nextAction: string }) => {
-      switch (answers.nextAction) {
-        case 'Convert again':
-          restartConversion()
-          break
-        case 'Go back to Main Menu':
-          main()
-          break
-        case 'Exit':
-          await typewriterEffect('Thanks for using the app. Goodbye!', 50)
-          await fadeOutEffect('Closing the application...', 10, 100)
-          process.exit(0)
+    .then((answers: { nextAction: string }) => {
+      if (answers.nextAction === 'Convert again') {
+        restartConversion()
+      } else {
+        main()
       }
     })
     .catch((error: unknown) => {
-      console.error(chalk.red('Error deciding next action:', error))
+      console.error(chalk.red('Error choosing next action:', error))
     })
 }

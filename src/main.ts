@@ -1,22 +1,9 @@
-/**
- * Application Entry Point
- *
- * This program helps users convert data between different formats,
- * such as binary, ternary, and plain text. It uses Inquirer.js to
- * create a user-friendly, interactive interface for these conversions.
- * Future updates will add more features and options.
- */
-
 import inquirer from 'inquirer'
 import chalk from 'chalk'
 import { stringConverter } from './handleConversion/stringConverter.js'
 import { universalBaseConverter } from './handleConversion/universalBaseConverter.js'
 import { typewriterEffect, fadeOutEffect } from './utils/textAnimation.js'
 
-/*
- * List of available base options for conversions.
- * Includes bases from 2 (binary) to 64.
- */
 const baseChoices: string[] = Array.from(
   { length: 64 },
   (_, i) => `Base ${i + 1}`
@@ -25,11 +12,11 @@ const baseChoices: string[] = Array.from(
 /**
  * Main menu for the application.
  *
- * Lets users choose between two conversion types:
- * - String conversions
- * - Base-to-base conversions
+ * Allows users to choose between two conversion types:
+ * - String conversion
+ * - Base-to-base conversion
  *
- * Based on the choice, it calls the appropriate function to handle the conversion.
+ * Based on the user's choice, it calls the appropriate function to handle the conversion.
  */
 const main = (): void => {
   inquirer
@@ -71,11 +58,9 @@ const main = (): void => {
                 chalk
               )
             } else {
-              // Typing animation. You can adjust the delay (default: 50ms) for faster/slower typing.
               await typewriterEffect('Thanks for using the app. Goodbye!', 50)
-              // Fade-out animation. You can adjust the fade steps (default: 10) and delay (default: 100ms) for different effects.
               await fadeOutEffect('Closing the application...', 10, 100)
-              process.exit(0) // Exit the app
+              process.exit(0)
             }
           })
           .catch((error: unknown) => {

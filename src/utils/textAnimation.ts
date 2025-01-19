@@ -1,4 +1,3 @@
-// textAnimation.ts
 import chalk from 'chalk'
 
 /**
@@ -6,20 +5,19 @@ import chalk from 'chalk'
  *
  * @param text - The text to animate.
  * @param delay - Delay in milliseconds between each character.
- * @param chalk - The chalk instance for coloring the text.
  * @returns A promise that resolves after the animation is complete.
  */
 export async function typewriterEffect(
   text: string,
   delay: number = 50
 ): Promise<void> {
-  const coloredText = chalk.hex('#FFA500')(text) // Yellow-orange color (hex #FFA500)
+  const coloredText = chalk.hex('#FFA500')(text)
 
   for (const char of coloredText) {
-    process.stdout.write(char) // Writes the character without a newline
-    await new Promise((resolve) => setTimeout(resolve, delay)) // Wait before printing the next character
+    process.stdout.write(char)
+    await new Promise((resolve) => setTimeout(resolve, delay))
   }
-  console.log() // Add a newline after the text
+  console.log()
 }
 
 /**
@@ -28,21 +26,20 @@ export async function typewriterEffect(
  * @param text - The text to animate.
  * @param steps - Number of fade-out steps.
  * @param delay - Delay in milliseconds between steps.
- * @param chalk - The chalk instance for coloring the text.
+ * @returns A promise that resolves after the fade-out effect is complete.
  */
 export async function fadeOutEffect(
   text: string,
   steps: number = 10,
   delay: number = 100
 ): Promise<void> {
-  const coloredText = chalk.hex('#FFA500')(text) // Yellow-orange color (hex #FFA500)
+  const coloredText = chalk.hex('#FFA500')(text)
 
   for (let i = 0; i < steps; i++) {
-    const fadeText = `\r${coloredText}` // Start with colored text
-    process.stdout.write(fadeText + ' '.repeat(i)) // Add more spaces to simulate fading
-    await new Promise((resolve) => setTimeout(resolve, delay)) // Delay between each step
+    process.stdout.write(`\r${coloredText}${' '.repeat(i)}`)
+    await new Promise((resolve) => setTimeout(resolve, delay))
   }
 
-  process.stdout.write('\r') // Clear the line
-  console.log() // Add a new line after the fade-out effect
+  process.stdout.write('\r')
+  console.log()
 }

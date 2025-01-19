@@ -1,20 +1,10 @@
 /**
- * String Conversion Module
- *
- * This module provides functionality to convert strings into various numeral systems,
- * such as binary, hexadecimal, and custom bases up to Base 64.
- */
-
-/**
  * Converts a number to its string representation in the specified base.
- *
- * - Supports bases from 1 to 64.
- * - Handles unary (Base 1) as a special case, where the result is a repeated "1".
  *
  * @param number - The input number to convert (must be non-negative).
  * @param base - The base to convert the number to (1 to 64).
- * @returns The string representation of the number in the specified base.
- * @throws RangeError If the base is not in the range [1, 64].
+ * @returns {string} The string representation of the number in the specified base.
+ * @throws {RangeError} If the base is not in the range [1, 64].
  */
 function toCustomBase(number: number, base: number): string {
   if (base === 1) {
@@ -37,7 +27,7 @@ function toCustomBase(number: number, base: number): string {
     current = Math.floor(current / base)
   }
 
-  return result || '0' // Ensure "0" is returned for input 0
+  return result || '0'
 }
 
 /**
@@ -109,8 +99,6 @@ export function stringConverter(
  * Converts each character of a string to its ASCII value and represents it
  * in the specified numeral system with appropriate padding.
  *
- * - Handles Base 1 (unary) as a special case.
- *
  * @param inquirer - Interactive CLI prompt library.
  * @param name - The name of the numeral system (e.g., "Base 16").
  * @param base - The target numeral system (1 to 64).
@@ -141,7 +129,6 @@ function stringToBase(
     .then((answers: { stringInput: string }) => {
       const inputString = answers.stringInput.trim()
 
-      // Maximum width for zero-padding, calculated based on the target base.
       const maxWidth =
         base > 1 ? Math.ceil(Math.log2(256) / Math.log2(base)) : 0
 
