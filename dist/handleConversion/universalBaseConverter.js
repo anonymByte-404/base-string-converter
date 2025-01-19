@@ -1,36 +1,3 @@
-var __awaiter =
-  (this && this.__awaiter) ||
-  function (thisArg, _arguments, P, generator) {
-    function adopt(value) {
-      return value instanceof P
-        ? value
-        : new P(function (resolve) {
-            resolve(value)
-          })
-    }
-    return new (P || (P = Promise))(function (resolve, reject) {
-      function fulfilled(value) {
-        try {
-          step(generator.next(value))
-        } catch (e) {
-          reject(e)
-        }
-      }
-      function rejected(value) {
-        try {
-          step(generator['throw'](value))
-        } catch (e) {
-          reject(e)
-        }
-      }
-      function step(result) {
-        result.done
-          ? resolve(result.value)
-          : adopt(result.value).then(fulfilled, rejected)
-      }
-      step((generator = generator.apply(thisArg, _arguments || [])).next())
-    })
-  }
 const BASE_CHARACTERS =
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/'
 /**
@@ -40,18 +7,15 @@ const BASE_CHARACTERS =
  */
 const generateBaseChoices = () =>
   Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`)
-/**
- * Initial list of conversion choices, including the "String" option.
- */
 const initialChoices = ['String', ...generateBaseChoices()]
 /**
  * Entry point for the universal base converter.
  *
- * @param inquirer - Inquirer.js instance for CLI interaction.
- * @param main - Callback to return to the main menu.
- * @param typewriterEffect - Function for displaying text with a typewriter effect.
- * @param fadeOutEffect - Function for fading out text with an animation effect.
- * @param chalk - Chalk instance for styling console output.
+ * @param {any} inquirer - The Inquirer.js instance for handling CLI interactions.
+ * @param {function} main - The callback function to return to the main menu.
+ * @param {function} typewriterEffect - A function to display text using a typewriter effect.
+ * @param {function} fadeOutEffect - A function to fade out text with a customizable animation effect.
+ * @param {any} chalk - An instance of Chalk.js for styling console output.
  */
 export function universalBaseConverter(
   inquirer,
@@ -61,6 +25,9 @@ export function universalBaseConverter(
   chalk
 ) {
   let selectedBase = null
+  /**
+   * Begins the conversion process by prompting the user to select a base.
+   */
   const startConversion = () => {
     inquirer
       .prompt([
@@ -74,7 +41,6 @@ export function universalBaseConverter(
       .then((answers) => {
         const selectedBaseOption = answers.selectedBase
         if (selectedBaseOption === 'String') {
-          // Proceed with converting to/from string, no need for base selection again
           convertToString(
             inquirer,
             startConversion,
@@ -87,7 +53,6 @@ export function universalBaseConverter(
           const baseMatch = selectedBaseOption.match(/Base (\d+)/)
           if (baseMatch) {
             selectedBase = parseInt(baseMatch[1], 10)
-            // Start conversion based on the selected base
             convertToBase(
               selectedBase,
               inquirer,
@@ -114,13 +79,12 @@ export function universalBaseConverter(
 /**
  * Converts a number to the specified base.
  *
- * @param num - The number to convert.
- * @param base - The target base (1–64).
- * @returns The converted number as a string.
+ * @param {number} num - The number to convert.
+ * @param {number} base - The target base (1–64).
+ * @returns {string} The number converted to the specified base as a string.
  */
 function numberToBase(num, base) {
   if (base === 1) {
-    // Base 1 (unary): Represent the number as a series of 1's.
     return '1'.repeat(num)
   }
   let result = ''
@@ -133,13 +97,12 @@ function numberToBase(num, base) {
 /**
  * Converts a string representation in a given base to a number.
  *
- * @param str - The string to convert.
- * @param base - The base of the input string (1–64).
- * @returns The converted number.
+ * @param {string} str - The string representation of the number in the specified base.
+ * @param {number} base - The base of the input string (1–64).
+ * @returns {number} The number represented by the string in the specified base.
  */
 function baseToNumber(str, base) {
   if (base === 1) {
-    // Base 1 (unary): The length of the string represents the number.
     return str.length
   }
   return str
@@ -147,15 +110,15 @@ function baseToNumber(str, base) {
     .reduce((acc, char) => acc * base + BASE_CHARACTERS.indexOf(char), 0)
 }
 /**
- * Converts numeric data to a specified base.
+ * Handles the conversion of numbers to a specified base.
  *
- * @param base - The base to convert to (1–64).
- * @param inquirer - Inquirer.js instance for CLI interaction.
- * @param restartConversion - Callback to restart the conversion process.
- * @param main - Callback to return to the main menu.
- * @param typewriterEffect - Function for displaying text with a typewriter effect.
- * @param fadeOutEffect - Function for fading out text with an animation effect.
- * @param chalk - Chalk instance for styling console output.
+ * @param {number} base - The target base for the conversion (1–64).
+ * @param {any} inquirer - The Inquirer.js instance for handling CLI interactions.
+ * @param {function} restartConversion - A callback to restart the conversion process.
+ * @param {function} main - The callback function to return to the main menu.
+ * @param {function} typewriterEffect - A function to display text using a typewriter effect.
+ * @param {function} fadeOutEffect - A function to fade out text with a customizable animation effect.
+ * @param {any} chalk - An instance of Chalk.js for styling console output.
  */
 function convertToBase(
   base,
@@ -208,7 +171,14 @@ function convertToBase(
     })
 }
 /**
- * Converts ASCII or base strings back to readable text.
+ * Handles the conversion of base strings to ASCII or readable text.
+ *
+ * @param {any} inquirer - The Inquirer.js instance for handling CLI interactions.
+ * @param {function} restartConversion - A callback to restart the conversion process.
+ * @param {function} main - The callback function to return to the main menu.
+ * @param {function} typewriterEffect - A function to display text using a typewriter effect.
+ * @param {function} fadeOutEffect - A function to fade out text with a customizable animation effect.
+ * @param {any} chalk - An instance of Chalk.js for styling console output.
  */
 function convertToString(
   inquirer,
@@ -232,7 +202,7 @@ function convertToString(
       try {
         const text = values
           .map((val) => {
-            const number = baseToNumber(val, 2) // No need to ask for base again
+            const number = baseToNumber(val, 2)
             return String.fromCharCode(number)
           })
           .join('')
@@ -255,6 +225,13 @@ function convertToString(
 }
 /**
  * Prompts the user for their next action.
+ *
+ * @param {any} inquirer - The Inquirer.js instance for handling CLI interactions.
+ * @param {function} restartConversion - A callback to restart the conversion process.
+ * @param {function} main - The callback function to return to the main menu.
+ * @param {function} typewriterEffect - A function to display text using a typewriter effect.
+ * @param {function} fadeOutEffect - A function to fade out text with a customizable animation effect.
+ * @param {any} chalk - An instance of Chalk.js for styling console output.
  */
 function askNextAction(
   inquirer,
@@ -270,26 +247,17 @@ function askNextAction(
         type: 'list',
         name: 'nextAction',
         message: 'What would you like to do next?',
-        choices: ['Convert again', 'Go back to Main Menu', 'Exit'],
+        choices: ['Convert again', 'Return to main menu'],
       },
     ])
-    .then((answers) =>
-      __awaiter(this, void 0, void 0, function* () {
-        switch (answers.nextAction) {
-          case 'Convert again':
-            restartConversion()
-            break
-          case 'Go back to Main Menu':
-            main()
-            break
-          case 'Exit':
-            yield typewriterEffect('Thanks for using the app. Goodbye!', 50)
-            yield fadeOutEffect('Closing the application...', 10, 100)
-            process.exit(0)
-        }
-      })
-    )
+    .then((answers) => {
+      if (answers.nextAction === 'Convert again') {
+        restartConversion()
+      } else {
+        main()
+      }
+    })
     .catch((error) => {
-      console.error(chalk.red('Error deciding next action:', error))
+      console.error(chalk.red('Error choosing next action:', error))
     })
 }
