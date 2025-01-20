@@ -55,10 +55,10 @@ export function stringConverter(
           type: 'list',
           name: 'selectedBase',
           message: 'Select the base to convert your string to:',
-          choices: baseChoices,
+          choices: [...baseChoices, 'Exit the application'],
         },
       ])
-      .then((answers: { selectedBase: string }) => {
+      .then(async (answers: { selectedBase: string }) => {
         const match = answers.selectedBase.match(/Base (\d+)/)
 
         if (match) {
@@ -73,6 +73,9 @@ export function stringConverter(
             fadeOutEffect,
             chalk
           )
+        } else if (answers.selectedBase === 'Exit the application') {
+          await typewriterEffect('Thanks for using the app. Goodbye!', 50)
+          await fadeOutEffect('Closing the application...', 10, 100)
         } else {
           console.log(chalk.red('Unsupported base. Please try another option.'))
           askNextAction(

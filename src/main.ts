@@ -25,10 +25,10 @@ const main = (): void => {
         type: 'list',
         name: 'conversionType',
         message: 'Welcome! What kind of conversion would you like to do?',
-        choices: ['String', 'Base'],
+        choices: ['String', 'Base', 'Exit the application'],
       },
     ])
-    .then((answers: { conversionType: string }) => {
+    .then(async (answers: { conversionType: string }) => {
       if (answers.conversionType === 'String') {
         stringConverter(
           inquirer,
@@ -45,11 +45,11 @@ const main = (): void => {
               type: 'list',
               name: 'selectedBase',
               message: 'Choose the base you want to convert to:',
-              choices: [...baseChoices, 'Exit'],
+              choices: [...baseChoices, 'Exit the application'],
             },
           ])
           .then(async (answers: { selectedBase: string }) => {
-            if (answers.selectedBase !== 'Exit') {
+            if (answers.selectedBase !== 'Exit the application') {
               return universalBaseConverter(
                 inquirer,
                 main,
@@ -71,6 +71,10 @@ const main = (): void => {
               )
             )
           })
+      } else if (answers.conversionType === 'Exit the application') {
+        await typewriterEffect('Thanks for using the app. Goodbye!', 50)
+        await fadeOutEffect('Closing the application...', 10, 100)
+        process.exit(0)
       }
     })
     .catch((error: unknown) => {
