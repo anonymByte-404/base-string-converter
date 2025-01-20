@@ -39,10 +39,10 @@ export function universalBaseConverter(
           type: 'list',
           name: 'selectedBase',
           message: 'Select the base to convert to:',
-          choices: initialChoices,
+          choices: [...initialChoices, 'Exit the application'],
         },
       ])
-      .then((answers: { selectedBase: string }) => {
+      .then(async (answers: { selectedBase: string }) => {
         const selectedBaseOption = answers.selectedBase
 
         if (selectedBaseOption === 'String') {
@@ -54,6 +54,9 @@ export function universalBaseConverter(
             fadeOutEffect,
             chalk
           )
+        } else if (answers.selectedBase === 'Exit the application') {
+          await typewriterEffect('Thanks for using the app. Goodbye!', 50)
+          await fadeOutEffect('Closing the application...', 10, 100)
         } else {
           const baseMatch = selectedBaseOption.match(/Base (\d+)/)
           if (baseMatch) {
@@ -266,17 +269,34 @@ function askNextAction(
         type: 'list',
         name: 'nextAction',
         message: 'What would you like to do next?',
-        choices: ['Convert again', 'Return to main menu'],
+        choices: [
+          'Convert again',
+          'Return to Main Menu',
+          'Exit the application',
+        ],
       },
     ])
-    .then((answers: { nextAction: string }) => {
-      if (answers.nextAction === 'Convert again') {
-        restartConversion()
-      } else {
-        main()
+    .then(async (answers: { nextAction: string }) => {
+      switch (answers.nextAction) {
+        case 'Convert again':
+          restartConversion()
+          break
+        case 'Return to Main Menu':
+          console.log(chalk.green('Returning to the main menu...'))
+          main()
+          break
+        case 'Exit the application':
+          await typewriterEffect('Thanks for using the app. Goodbye!', 50)
+          await fadeOutEffect('Closing the application...', 10, 100)
+          process.exit(0)
       }
     })
     .catch((error: unknown) => {
-      console.error(chalk.red('Error choosing next action:', error))
+      console.error(
+        chalk.red(
+          'Error while deciding the next step:',
+          (error as Error).message
+        )
+      )
     })
 }
