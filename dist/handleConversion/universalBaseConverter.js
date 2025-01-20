@@ -1,3 +1,36 @@
+var __awaiter =
+  (this && this.__awaiter) ||
+  function (thisArg, _arguments, P, generator) {
+    function adopt(value) {
+      return value instanceof P
+        ? value
+        : new P(function (resolve) {
+            resolve(value)
+          })
+    }
+    return new (P || (P = Promise))(function (resolve, reject) {
+      function fulfilled(value) {
+        try {
+          step(generator.next(value))
+        } catch (e) {
+          reject(e)
+        }
+      }
+      function rejected(value) {
+        try {
+          step(generator['throw'](value))
+        } catch (e) {
+          reject(e)
+        }
+      }
+      function step(result) {
+        result.done
+          ? resolve(result.value)
+          : adopt(result.value).then(fulfilled, rejected)
+      }
+      step((generator = generator.apply(thisArg, _arguments || [])).next())
+    })
+  }
 const BASE_CHARACTERS =
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/'
 /**
@@ -35,26 +68,14 @@ export function universalBaseConverter(
           type: 'list',
           name: 'selectedBase',
           message: 'Select the base to convert to:',
-          choices: initialChoices,
+          choices: [...initialChoices, 'Exit the application'],
         },
       ])
-      .then((answers) => {
-        const selectedBaseOption = answers.selectedBase
-        if (selectedBaseOption === 'String') {
-          convertToString(
-            inquirer,
-            startConversion,
-            main,
-            typewriterEffect,
-            fadeOutEffect,
-            chalk
-          )
-        } else {
-          const baseMatch = selectedBaseOption.match(/Base (\d+)/)
-          if (baseMatch) {
-            selectedBase = parseInt(baseMatch[1], 10)
-            convertToBase(
-              selectedBase,
+      .then((answers) =>
+        __awaiter(this, void 0, void 0, function* () {
+          const selectedBaseOption = answers.selectedBase
+          if (selectedBaseOption === 'String') {
+            convertToString(
               inquirer,
               startConversion,
               main,
@@ -62,14 +83,31 @@ export function universalBaseConverter(
               fadeOutEffect,
               chalk
             )
+          } else if (answers.selectedBase === 'Exit the application') {
+            yield typewriterEffect('Thanks for using the app. Goodbye!', 50)
+            yield fadeOutEffect('Closing the application...', 10, 100)
           } else {
-            console.error(
-              chalk.red('Invalid base selection. Please try again.')
-            )
-            startConversion()
+            const baseMatch = selectedBaseOption.match(/Base (\d+)/)
+            if (baseMatch) {
+              selectedBase = parseInt(baseMatch[1], 10)
+              convertToBase(
+                selectedBase,
+                inquirer,
+                startConversion,
+                main,
+                typewriterEffect,
+                fadeOutEffect,
+                chalk
+              )
+            } else {
+              console.error(
+                chalk.red('Invalid base selection. Please try again.')
+              )
+              startConversion()
+            }
           }
-        }
-      })
+        })
+      )
       .catch((error) => {
         console.error(chalk.red('Error selecting a conversion base:', error))
       })
@@ -247,17 +285,33 @@ function askNextAction(
         type: 'list',
         name: 'nextAction',
         message: 'What would you like to do next?',
-        choices: ['Convert again', 'Return to main menu'],
+        choices: [
+          'Convert again',
+          'Return to Main Menu',
+          'Exit the application',
+        ],
       },
     ])
-    .then((answers) => {
-      if (answers.nextAction === 'Convert again') {
-        restartConversion()
-      } else {
-        main()
-      }
-    })
+    .then((answers) =>
+      __awaiter(this, void 0, void 0, function* () {
+        switch (answers.nextAction) {
+          case 'Convert again':
+            restartConversion()
+            break
+          case 'Return to Main Menu':
+            console.log(chalk.green('Returning to the main menu...'))
+            main()
+            break
+          case 'Exit the application':
+            yield typewriterEffect('Thanks for using the app. Goodbye!', 50)
+            yield fadeOutEffect('Closing the application...', 10, 100)
+            process.exit(0)
+        }
+      })
+    )
     .catch((error) => {
-      console.error(chalk.red('Error choosing next action:', error))
+      console.error(
+        chalk.red('Error while deciding the next step:', error.message)
+      )
     })
 }

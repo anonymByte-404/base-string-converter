@@ -53,56 +53,65 @@ const main = () => {
         type: 'list',
         name: 'conversionType',
         message: 'Welcome! What kind of conversion would you like to do?',
-        choices: ['String', 'Base'],
+        choices: ['String', 'Base', 'Exit the application'],
       },
     ])
-    .then((answers) => {
-      if (answers.conversionType === 'String') {
-        stringConverter(
-          inquirer,
-          baseChoices,
-          main,
-          typewriterEffect,
-          fadeOutEffect,
-          chalk
-        )
-      } else if (answers.conversionType === 'Base') {
-        inquirer
-          .prompt([
-            {
-              type: 'list',
-              name: 'selectedBase',
-              message: 'Choose the base you want to convert to:',
-              choices: [...baseChoices, 'Exit'],
-            },
-          ])
-          .then((answers) =>
-            __awaiter(void 0, void 0, void 0, function* () {
-              if (answers.selectedBase !== 'Exit') {
-                return universalBaseConverter(
-                  inquirer,
-                  main,
-                  typewriterEffect,
-                  fadeOutEffect,
-                  chalk
-                )
-              } else {
-                yield typewriterEffect('Thanks for using the app. Goodbye!', 50)
-                yield fadeOutEffect('Closing the application...', 10, 100)
-                process.exit(0)
-              }
-            })
+    .then((answers) =>
+      __awaiter(void 0, void 0, void 0, function* () {
+        if (answers.conversionType === 'String') {
+          stringConverter(
+            inquirer,
+            baseChoices,
+            main,
+            typewriterEffect,
+            fadeOutEffect,
+            chalk
           )
-          .catch((error) => {
-            console.error(
-              chalk.red(
-                'Oops! Something went wrong while selecting a base:',
-                error
-              )
+        } else if (answers.conversionType === 'Base') {
+          inquirer
+            .prompt([
+              {
+                type: 'list',
+                name: 'selectedBase',
+                message: 'Choose the base you want to convert to:',
+                choices: [...baseChoices, 'Exit the application'],
+              },
+            ])
+            .then((answers) =>
+              __awaiter(void 0, void 0, void 0, function* () {
+                if (answers.selectedBase !== 'Exit the application') {
+                  return universalBaseConverter(
+                    inquirer,
+                    main,
+                    typewriterEffect,
+                    fadeOutEffect,
+                    chalk
+                  )
+                } else {
+                  yield typewriterEffect(
+                    'Thanks for using the app. Goodbye!',
+                    50
+                  )
+                  yield fadeOutEffect('Closing the application...', 10, 100)
+                  process.exit(0)
+                }
+              })
             )
-          })
-      }
-    })
+            .catch((error) => {
+              console.error(
+                chalk.red(
+                  'Oops! Something went wrong while selecting a base:',
+                  error
+                )
+              )
+            })
+        } else if (answers.conversionType === 'Exit the application') {
+          yield typewriterEffect('Thanks for using the app. Goodbye!', 50)
+          yield fadeOutEffect('Closing the application...', 10, 100)
+          process.exit(0)
+        }
+      })
+    )
     .catch((error) => {
       console.error(chalk.red('Oops! Something unexpected happened:', error))
     })

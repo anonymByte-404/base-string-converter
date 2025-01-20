@@ -83,35 +83,42 @@ export function stringConverter(
           type: 'list',
           name: 'selectedBase',
           message: 'Select the base to convert your string to:',
-          choices: baseChoices,
+          choices: [...baseChoices, 'Exit the application'],
         },
       ])
-      .then((answers) => {
-        const match = answers.selectedBase.match(/Base (\d+)/)
-        if (match) {
-          const base = parseInt(match[1], 10)
-          stringToBase(
-            inquirer,
-            `Base ${base}`,
-            base,
-            startStringConversion,
-            main,
-            typewriterEffect,
-            fadeOutEffect,
-            chalk
-          )
-        } else {
-          console.log(chalk.red('Unsupported base. Please try another option.'))
-          askNextAction(
-            inquirer,
-            startStringConversion,
-            main,
-            typewriterEffect,
-            fadeOutEffect,
-            chalk
-          )
-        }
-      })
+      .then((answers) =>
+        __awaiter(this, void 0, void 0, function* () {
+          const match = answers.selectedBase.match(/Base (\d+)/)
+          if (match) {
+            const base = parseInt(match[1], 10)
+            stringToBase(
+              inquirer,
+              `Base ${base}`,
+              base,
+              startStringConversion,
+              main,
+              typewriterEffect,
+              fadeOutEffect,
+              chalk
+            )
+          } else if (answers.selectedBase === 'Exit the application') {
+            yield typewriterEffect('Thanks for using the app. Goodbye!', 50)
+            yield fadeOutEffect('Closing the application...', 10, 100)
+          } else {
+            console.log(
+              chalk.red('Unsupported base. Please try another option.')
+            )
+            askNextAction(
+              inquirer,
+              startStringConversion,
+              main,
+              typewriterEffect,
+              fadeOutEffect,
+              chalk
+            )
+          }
+        })
+      )
       .catch((error) => {
         console.error(chalk.red('Error during base selection:', error.message))
       })
