@@ -16,6 +16,7 @@
     <li>⚡ <strong>Intuitive Interface:</strong> Simple and user-friendly command-line prompts for quick and hassle-free usage.</li>
     <li>🚀 <strong>High Performance:</strong> Lightweight, fast, and optimized for efficiency.</li>
     <li>🔒 <strong>Versatile Utility:</strong> Perfect for data transformations, encoding workflows, and cryptographic tasks.</li>
+    <li>💾 <strong>Persistent History:</strong> The conversion history is saved in a JSON file, allowing you to revisit past conversions at any time </li> 
 </ul>
 
 ---
@@ -49,16 +50,20 @@
 
 <h2 align="center">Usage</h2>
 
-1. Select a string for conversion
+1. <strong>Select the type of conversion:</strong>
+  <br>Choose the type of conversion you want to perform (e.g., String, Base)
    <br><img src="assets/images/image1.png" alt="image1">
 
-2. Choose the target base
+2. <strong>Choose the target base:</strong>
+  <br>Select the target numeral system for your conversion (e.g., Base64, Base32, etc.).
    <br><img src="assets/images/image2.png" alt="image2">
 
-3. Input the string to be converted
+3. <strong>Input the string to convert:</strong>
+  <br>Provide the string or data you wish to convert into the selected base or encoding.
    <br><img src="assets/images/image3.png" alt="image3">
 
-4. View the conversion output and proceed with further actions
+4. <strong>View the conversion output:</strong>
+  <br>Check the conversion result and decide whether to proceed with further actions, such as repeating the conversion or returning to the main menu.
    <br><img src="assets/images/image4.png" alt="image4">
 
 <h2 align="center">Code Example</h2>
