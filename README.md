@@ -5,9 +5,19 @@
 > [!Note]
 > The main functionality of this tool is now stable and fully operational. However, it is still in active development, and additional features and updates may be added in the future. Please expect occasional changes as development continues.
 
+<h2>Table of Contents</h2>
+<ul>
+  <li><a href="#features">Features</a></li>
+  <li><a href="#installation">Installation</a></li>
+  <li><a href="#usage">Usage</a></li>
+  <li><a href="#code-example">Code Example</a></li>
+  <li><a href="#contribution">Contribution</a></li>
+  <li><a href="#license">License</a></li>
+</ul>
+
 ---
 
-<h2 align="center">Features</h2>
+<h2 align="center" id="features">Features</h2>
 
 <ul>
     <li>🔄 <strong>Seamless Conversion:</strong> Convert between numeral systems and base encodings (e.g., Base64 to Base32, Base58 to Base64).</li>
@@ -16,12 +26,12 @@
     <li>⚡ <strong>Intuitive Interface:</strong> Simple and user-friendly command-line prompts for quick and hassle-free usage.</li>
     <li>🚀 <strong>High Performance:</strong> Lightweight, fast, and optimized for efficiency.</li>
     <li>🔒 <strong>Versatile Utility:</strong> Perfect for data transformations, encoding workflows, and cryptographic tasks.</li>
-    <li>💾 <strong>Persistent History:</strong> The conversion history is saved in a JSON file, allowing you to revisit past conversions at any time </li> 
+    <li>💾 <strong>Persistent History:</strong> The conversion history is saved in a JSON file, allowing you to revisit past conversions at any time.</li>
 </ul>
 
 ---
 
-<h2 align="center">Installation</h2>
+<h2 align="center" id="installation">Installation</h2>
 
 <p align="left">To install this package, follow these steps:</p>
 
@@ -48,10 +58,10 @@
    npm start
    ```
 
-<h2 align="center">Usage</h2>
+<h2 align="center" id="usage">Usage</h2>
 
 1. <strong>Select the type of conversion:</strong>
-  <br>Choose the type of conversion you want to perform (e.g., String, Base)
+  <br>Choose the type of conversion you want to perform (e.g., String, Base).
    <br><img src="assets/images/image1.png" alt="image1">
 
 2. <strong>Choose the target base:</strong>
@@ -66,11 +76,18 @@
   <br>Check the conversion result and decide whether to proceed with further actions, such as repeating the conversion or returning to the main menu.
    <br><img src="assets/images/image4.png" alt="image4">
 
-<h2 align="center">Code Example</h2>
+<h2 align="center" id="code-example">Code Example</h2>
 
-<p align="center">Below is a simplified example of how you can use this tool programmatically in a Node.js application:</p>
+<p align="center">Below is an illustrative example of how you could use this tool programmatically in a Node.js application:</p>
 
 ```typescript
+import inquirer from 'inquirer'
+
+const baseChoices: string[] = Array.from(
+  { length: 64 },
+  (_, i) => `Base ${i + 1}`
+)
+
 const main = (): void => {
   inquirer
     .prompt([
@@ -81,9 +98,13 @@ const main = (): void => {
         choices: ['String Conversion', 'Base Conversion'],
       },
     ])
-    .then(({ conversionType }) => {
-      if (conversionType === 'String Conversion') {
-        stringConverter(inquirer, baseChoices, main)
+    .then((answers: { conversionType: string }) => {
+      if (answers.conversionType === 'String Conversion') {
+        return stringConverter(
+          inquirer,
+          main,
+          baseChoices
+        )
       } else {
         inquirer
           .prompt([
@@ -94,26 +115,27 @@ const main = (): void => {
               choices: baseChoices,
             },
           ])
-          .then(({ selectedBase }) => {
-            switch (selectedBase) {
+          .then((answers: { selectedBase: string }) => {
+            switch (answers.selectedBase) {
               case 'Base 2':
-                binaryConverter(inquirer, main)
-                break
-              // More base can be added here...
+                return binaryConverter(
+                  inquirer,
+                  main
+                )
               default:
                 console.log(
-                  `Conversions for ${selectedBase} are currently not supported.`
+                  `Conversions for ${answers.selectedBase} are currently not supported.`
                 )
             }
           })
-          .catch((error) =>
+          .catch((error: unknown) => {
             console.error('An error occurred during base selection:', error)
-          )
+          })
       }
     })
-    .catch((error) =>
+    .catch((error: unknown) => {
       console.error('An error occurred during the initial prompt:', error)
-    )
+    })
 }
 
 main()
@@ -122,7 +144,7 @@ main()
 > [!NOTE]
 > This is not the actual code, but an illustration designed to demonstrate how the CLI tool operates. It serves as an example to show the general behavior and flow of the tool, rather than the complete or exact implementation.
 
-<h2 align="center">Contribution</h2>
+<h2 align="center" id="contribution">Contribution</h2>
 
 <p align="left">Contributions are welcome! Here's how you can help:</p>
 
@@ -148,5 +170,5 @@ main()
 
 5. Open a pull request on the main repository.
 
-<h2 align="center">LICENSE</h3>
+<h2 align="center" id="license">LICENSE</h3>
 <p align="center">This project is licensed under the MIT License. See the <a href="LICENSE">LICENSE</a> file for more details.</p>
