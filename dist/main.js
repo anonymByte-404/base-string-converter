@@ -36,15 +36,58 @@ import chalk from 'chalk'
 import { stringConverter } from './handleConversion/stringConverter.js'
 import { universalBaseConverter } from './handleConversion/universalBaseConverter.js'
 import { typewriterEffect, fadeOutEffect } from './utils/textAnimation.js'
+import { loadHistory, clearHistory } from './storage/historyManager.js'
 const baseChoices = Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`)
+/**
+ * Handles viewing and clearing the conversion history.
+ *
+ * @returns {Promise<void>} A promise that resolves when the history has been viewed or cleared.
+ */
+const handleHistory = () =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    const history = loadHistory()
+    if (history.length === 0) {
+      console.log(chalk.yellow('No conversion history available.'))
+      yield typewriterEffect('Returning to main menu...', 50)
+      main()
+      return
+    }
+    console.log(chalk.green('Conversion History:'))
+    history.forEach((entry, index) => {
+      console.log(
+        chalk.blueBright(
+          `${index + 1}. [${entry.date}] (${entry.type})\n   - Input: "${entry.input}"\n   - Output: "${entry.output}"\n`
+        )
+      )
+    })
+    const { action } = yield inquirer.prompt([
+      {
+        type: 'list',
+        name: 'action',
+        message: 'What would you like to do?',
+        choices: ['Return to Main Menu', 'Clear History'],
+      },
+    ])
+    if (action === 'Clear History') {
+      clearHistory()
+      console.log(chalk.red('History cleared successfully!'))
+      yield typewriterEffect('Returning to main menu...', 50)
+      main()
+    } else if (action === 'Return to Main Menu') {
+      yield typewriterEffect('Returning to main menu...', 50)
+      main()
+    }
+  })
 /**
  * Main menu for the application.
  *
- * Allows users to choose between two conversion types:
- * - String conversion
- * - Base-to-base conversion
+ * Prompts the user to select an action:
+ * - Perform a string conversion
+ * - Perform a base-to-base conversion
+ * - View the history of conversions
+ * - Exit the application
  *
- * Based on the user's choice, it calls the appropriate function to handle the conversion.
+ * @returns {void}
  */
 const main = () => {
   inquirer
@@ -53,7 +96,7 @@ const main = () => {
         type: 'list',
         name: 'conversionType',
         message: 'Welcome! What kind of conversion would you like to do?',
-        choices: ['String', 'Base', 'Exit the application'],
+        choices: ['String', 'Base', 'View History', 'Exit the application'],
       },
     ])
     .then((answers) =>
@@ -80,13 +123,22 @@ const main = () => {
             .then((answers) =>
               __awaiter(void 0, void 0, void 0, function* () {
                 if (answers.selectedBase !== 'Exit the application') {
-                  return universalBaseConverter(
-                    inquirer,
-                    main,
-                    typewriterEffect,
-                    fadeOutEffect,
-                    chalk
-                  )
+                  const baseMatch = answers.selectedBase.match(/Base (\d+)/)
+                  if (baseMatch) {
+                    const selectedBase = parseInt(baseMatch[1], 10)
+                    return universalBaseConverter(
+                      inquirer,
+                      main,
+                      typewriterEffect,
+                      fadeOutEffect,
+                      chalk,
+                      selectedBase
+                    )
+                  } else {
+                    console.error(
+                      chalk.red('Invalid base selection. Please try again.')
+                    )
+                  }
                 } else {
                   yield typewriterEffect(
                     'Thanks for using the app. Goodbye!',
@@ -105,6 +157,8 @@ const main = () => {
                 )
               )
             })
+        } else if (answers.conversionType === 'View History') {
+          yield handleHistory()
         } else if (answers.conversionType === 'Exit the application') {
           yield typewriterEffect('Thanks for using the app. Goodbye!', 50)
           yield fadeOutEffect('Closing the application...', 10, 100)

@@ -31,13 +31,9 @@ var __awaiter =
       step((generator = generator.apply(thisArg, _arguments || [])).next())
     })
   }
+import { addToHistory } from '../storage/historyManager.js'
 const BASE_CHARACTERS =
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/'
-/**
- * Generates a list of base options from Base 1 to Base 64.
- *
- * @returns {string[]} An array of base options as strings (e.g., ["Base 1", ..., "Base 64"]).
- */
 const generateBaseChoices = () =>
   Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`)
 const initialChoices = ['String', ...generateBaseChoices()]
@@ -49,18 +45,16 @@ const initialChoices = ['String', ...generateBaseChoices()]
  * @param {function} typewriterEffect - A function to display text using a typewriter effect.
  * @param {function} fadeOutEffect - A function to fade out text with a customizable animation effect.
  * @param {any} chalk - An instance of Chalk.js for styling console output.
+ * @param {number} selectedBase - The base that the user selects to convert from.
  */
 export function universalBaseConverter(
   inquirer,
   main,
   typewriterEffect,
   fadeOutEffect,
-  chalk
+  chalk,
+  selectedBase
 ) {
-  let selectedBase = null
-  /**
-   * Begins the conversion process by prompting the user to select a base.
-   */
   const startConversion = () => {
     inquirer
       .prompt([
@@ -81,7 +75,8 @@ export function universalBaseConverter(
               main,
               typewriterEffect,
               fadeOutEffect,
-              chalk
+              chalk,
+              selectedBase
             )
           } else if (answers.selectedBase === 'Exit the application') {
             yield typewriterEffect('Thanks for using the app. Goodbye!', 50)
@@ -89,15 +84,16 @@ export function universalBaseConverter(
           } else {
             const baseMatch = selectedBaseOption.match(/Base (\d+)/)
             if (baseMatch) {
-              selectedBase = parseInt(baseMatch[1], 10)
+              const newBase = parseInt(baseMatch[1], 10)
               convertToBase(
-                selectedBase,
+                newBase,
                 inquirer,
                 startConversion,
                 main,
                 typewriterEffect,
                 fadeOutEffect,
-                chalk
+                chalk,
+                selectedBase
               )
             } else {
               console.error(
@@ -157,6 +153,7 @@ function baseToNumber(str, base) {
  * @param {function} typewriterEffect - A function to display text using a typewriter effect.
  * @param {function} fadeOutEffect - A function to fade out text with a customizable animation effect.
  * @param {any} chalk - An instance of Chalk.js for styling console output.
+ * @param {number} selectedBase - The base that the user is converting from.
  */
 function convertToBase(
   base,
@@ -165,7 +162,8 @@ function convertToBase(
   main,
   typewriterEffect,
   fadeOutEffect,
-  chalk
+  chalk,
+  selectedBase
 ) {
   inquirer
     .prompt([
@@ -190,6 +188,11 @@ function convertToBase(
           })
           .join(' ')
         console.log(chalk.green(`Converted to Base ${base}: ${converted}`))
+        addToHistory({
+          input: numbers.join(' '),
+          output: converted,
+          type: `Base ${selectedBase} to Base ${base}`,
+        })
       } catch (error) {
         console.error(chalk.red(error.message))
       }
@@ -217,6 +220,7 @@ function convertToBase(
  * @param {function} typewriterEffect - A function to display text using a typewriter effect.
  * @param {function} fadeOutEffect - A function to fade out text with a customizable animation effect.
  * @param {any} chalk - An instance of Chalk.js for styling console output.
+ * @param {number} selectedBase - The base that the user is converting from.
  */
 function convertToString(
   inquirer,
@@ -224,7 +228,8 @@ function convertToString(
   main,
   typewriterEffect,
   fadeOutEffect,
-  chalk
+  chalk,
+  selectedBase
 ) {
   inquirer
     .prompt([
@@ -245,8 +250,13 @@ function convertToString(
           })
           .join('')
         console.log(chalk.green(`Converted to text: "${text}"`))
+        addToHistory({
+          input: values.join(' '),
+          output: text,
+          type: `Base ${selectedBase} to String`,
+        })
       } catch (error) {
-        console.error(chalk.red(error.message))
+        console.error(chalk.red('Error during conversion to text:', error))
       }
       askNextAction(
         inquirer,
