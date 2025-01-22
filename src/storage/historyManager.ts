@@ -65,3 +65,21 @@ export const addToHistory = (entry: {
 export const clearHistory = (): void => {
   saveHistory([])
 }
+
+/**
+ * Deletes a specific entry from the conversion history by its index.
+ *
+ * @param {number} index - The index of the entry to delete.
+ * @returns {void}
+ */
+export const deleteHistoryEntry = (index: number): void => {
+  const history = loadHistory()
+
+  if (index >= 0 && index < history.length) {
+    history.splice(index, 1)
+    saveHistory(history)
+    console.log(`History entry at index ${index} has been deleted.`)
+  } else {
+    console.log('Invalid index. No entry deleted.')
+  }
+}
