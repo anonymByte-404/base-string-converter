@@ -1,5 +1,7 @@
 import fs from 'fs'
 import path from 'path'
+import inquirer from 'inquirer'
+import chalk from 'chalk'
 
 const historyFilePath = path.join(
   process.cwd(),
@@ -9,7 +11,7 @@ const historyFilePath = path.join(
 /**
  * Ensures the history file exists. If not, it creates an empty file.
  *
- * @returns {void}
+ * @returns {void} This function does not return any value.
  */
 const ensureHistoryFileExists = (): void => {
   if (!fs.existsSync(historyFilePath)) {
@@ -32,7 +34,7 @@ export const loadHistory = (): any[] => {
  * Saves the provided conversion history to the history file.
  *
  * @param {any[]} history - The conversion history to save.
- * @returns {void}
+ * @returns {void} This function does not return any value.
  */
 export const saveHistory = (history: any[]): void => {
   fs.writeFileSync(historyFilePath, JSON.stringify(history, null, 2))
@@ -44,8 +46,8 @@ export const saveHistory = (history: any[]): void => {
  * @param {Object} entry - The entry to add to the history.
  * @param {string} entry.input - The input string for the conversion.
  * @param {string} entry.output - The converted string.
- * @param {string} entry.type - The type of conversion (e.g., "String to Base 2").
- * @returns {void}
+ * @param {string} entry.type - The type of conversion (e.g., "Base 2 to Base 3").
+ * @returns {void} This function does not return any value.
  */
 export const addToHistory = (entry: {
   input: string
@@ -60,26 +62,66 @@ export const addToHistory = (entry: {
 /**
  * Clears the conversion history by resetting the history file to an empty array.
  *
- * @returns {void}
+ * @returns {void} This function does not return any value.
  */
 export const clearHistory = (): void => {
   saveHistory([])
 }
 
 /**
- * Deletes a specific entry from the conversion history by its index.
+ * Searches the conversion history based on the conversion type.
  *
- * @param {number} index - The index of the entry to delete.
- * @returns {void}
+ * @returns {void} This function does not return any value.
  */
-export const deleteHistoryEntry = (index: number): void => {
-  const history = loadHistory()
+export const searchHistory = async (): Promise<void> => {
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'query',
+        message:
+          'Enter the conversion type to search for (e.g., "Base 2", "Base 4 to Base 10"):',
+        validate: (input) =>
+          input.trim() !== '' ? true : 'Please enter a valid search query.',
+      },
+    ])
+    .then((answers) => {
+      /**
+       * The search query entered by the user.
+       * @type {string}
+       */
+      const { query } = answers
 
-  if (index >= 0 && index < history.length) {
-    history.splice(index, 1)
-    saveHistory(history)
-    console.log(`History entry at index ${index} has been deleted.`)
-  } else {
-    console.log('Invalid index. No entry deleted.')
-  }
+      /**
+       * The conversion history loaded from the history file.
+       * @type {any[]}
+       */
+      const history = loadHistory()
+
+      /**
+       * The results of the search, filtered by the query provided.
+       * @type {any[]}
+       */
+      const results = history.filter((entry) =>
+        entry.type.toLowerCase().includes(query.toLowerCase())
+      )
+
+      if (results.length === 0) {
+        console.log(
+          chalk.yellow('No matching results found for the conversion type.')
+        )
+      } else {
+        console.log(chalk.green('Search Results:'))
+        results.forEach((entry, index) => {
+          console.log(
+            chalk.blueBright(
+              `${index + 1}. [${entry.date}] (${entry.type})\n   - Input: "${entry.input}"\n   - Output: "${entry.output}"\n`
+            )
+          )
+        })
+      }
+    })
+    .catch((error) => {
+      console.error(chalk.red('Oops! Something went wrong:', error))
+    })
 }
