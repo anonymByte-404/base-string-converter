@@ -6,7 +6,7 @@ import { typewriterEffect, fadeOutEffect } from './utils/textAnimation.js'
 import {
   loadHistory,
   clearHistory,
-  deleteHistoryEntry,
+  searchHistory,
 } from './storage/historyManager.js'
 
 const baseChoices: string[] = Array.from(
@@ -15,9 +15,9 @@ const baseChoices: string[] = Array.from(
 )
 
 /**
- * Handles viewing, clearing, and deleting specific entries in the conversion history.
+ * Handles viewing, clearing, and searching the conversion history.
  *
- * @returns {Promise<void>} A promise that resolves when the history has been viewed, cleared, or modified.
+ * @returns {Promise<void>} A promise that resolves when the history has been viewed, cleared, or searched.
  */
 const handleHistory = async (): Promise<void> => {
   const history = loadHistory()
@@ -43,11 +43,7 @@ const handleHistory = async (): Promise<void> => {
       type: 'list',
       name: 'action',
       message: 'What would you like to do?',
-      choices: [
-        'Return to Main Menu',
-        'Clear History',
-        'Delete Specific Entry',
-      ],
+      choices: ['Return to Main Menu', 'Clear History', 'Search History'],
     },
   ])
 
@@ -56,31 +52,12 @@ const handleHistory = async (): Promise<void> => {
     console.log(chalk.red('History cleared successfully!'))
     await typewriterEffect('Returning to main menu...', 50)
     main()
+  } else if (action === 'Search History') {
+    await searchHistory()
+    await handleHistory() // Return to history menu after searching
   } else if (action === 'Return to Main Menu') {
     await typewriterEffect('Returning to main menu...', 50)
     main()
-  } else if (action === 'Delete Specific Entry') {
-    const { indexToDelete } = await inquirer.prompt([
-      {
-        type: 'input',
-        name: 'indexToDelete',
-        message: 'Enter the number of the entry you want to delete:',
-        validate: (input) => {
-          const index = parseInt(input, 10)
-          if (isNaN(index) || index < 1 || index > history.length) {
-            return 'Please enter a valid number corresponding to a history entry.'
-          }
-          return true
-        },
-      },
-    ])
-
-    deleteHistoryEntry(parseInt(indexToDelete, 10) - 1)
-    await typewriterEffect(
-      'Entry deleted. Would you like to delete another?',
-      50
-    )
-    handleHistory()
   }
 }
 
