@@ -12,9 +12,9 @@ const initialChoices: string[] = ['String', ...generateBaseChoices()]
  * Entry point for the universal base converter.
  *
  * @param {any} inquirer - The Inquirer.js instance for handling CLI interactions.
- * @param {function} main - The callback function to return to the main menu.
- * @param {function} typewriterEffect - A function to display text using a typewriter effect.
- * @param {function} fadeOutEffect - A function to fade out text with a customizable animation effect.
+ * @param {() => void} main - The callback function to return to the main menu.
+ * @param {(text: string, delay: number) => Promise<void>} typewriterEffect - A function to display text using a typewriter effect.
+ * @param {(text: string, steps: number, delay: number) => Promise<void>} fadeOutEffect - A function to fade out text with a customizable animation effect.
  * @param {any} chalk - An instance of Chalk.js for styling console output.
  * @param {number} selectedBase - The base that the user selects to convert from.
  */
@@ -124,10 +124,10 @@ function baseToNumber(str: string, base: number): number {
  *
  * @param {number} base - The target base for the conversion (1–64).
  * @param {any} inquirer - The Inquirer.js instance for handling CLI interactions.
- * @param {function} restartConversion - A callback to restart the conversion process.
- * @param {function} main - The callback function to return to the main menu.
- * @param {function} typewriterEffect - A function to display text using a typewriter effect.
- * @param {function} fadeOutEffect - A function to fade out text with a customizable animation effect.
+ * @param {() => void} restartConversion - A callback to restart the conversion process.
+ * @param {() => void} main - The callback function to return to the main menu.
+ * @param {(text: string, delay: number) => Promise<void>} typewriterEffect - A function to display text using a typewriter effect.
+ * @param {(text: string, steps: number, delay: number) => Promise<void>} fadeOutEffect - A function to fade out text with a customizable animation effect.
  * @param {any} chalk - An instance of Chalk.js for styling console output.
  * @param {number} selectedBase - The base that the user is converting from.
  */
@@ -196,10 +196,10 @@ function convertToBase(
  * Handles the conversion of base strings to ASCII or readable text.
  *
  * @param {any} inquirer - The Inquirer.js instance for handling CLI interactions.
- * @param {function} restartConversion - A callback to restart the conversion process.
- * @param {function} main - The callback function to return to the main menu.
- * @param {function} typewriterEffect - A function to display text using a typewriter effect.
- * @param {function} fadeOutEffect - A function to fade out text with a customizable animation effect.
+ * @param {() => void} restartConversion - A callback to restart the conversion process.
+ * @param {() => void} main - The callback function to return to the main menu.
+ * @param {(text: string, delay: number) => Promise<void>} typewriterEffect - A function to display text using a typewriter effect.
+ * @param {(text: string, steps: number, delay: number) => Promise<void>} fadeOutEffect - A function to fade out text with a customizable animation effect.
  * @param {any} chalk - An instance of Chalk.js for styling console output.
  * @param {number} selectedBase - The base that the user is converting from.
  */
@@ -261,10 +261,10 @@ function convertToString(
  * Prompts the user for their next action.
  *
  * @param {any} inquirer - The Inquirer.js instance for handling CLI interactions.
- * @param {function} restartConversion - A callback to restart the conversion process.
- * @param {function} main - The callback function to return to the main menu.
- * @param {function} typewriterEffect - A function to display text using a typewriter effect.
- * @param {function} fadeOutEffect - A function to fade out text with a customizable animation effect.
+ * @param {() => void} restartConversion - A callback to restart the conversion process.
+ * @param {() => void} main - The callback function to return to the main menu.
+ * @param {(text: string, delay: number) => Promise<void>} typewriterEffect - A function to display text using a typewriter effect.
+ * @param {(text: string, steps: number, delay: number) => Promise<void>} fadeOutEffect - A function to fade out text with a customizable animation effect.
  * @param {any} chalk - An instance of Chalk.js for styling console output.
  */
 function askNextAction(
