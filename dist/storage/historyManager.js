@@ -95,12 +95,12 @@ export const clearHistory = () => {
 /**
  * Searches the conversion history based on the conversion type.
  *
- * @returns {void} This function does not return any value.
+ * @returns {Promise<void>} This function does not return any value.
  */
 export const searchHistory = () =>
   __awaiter(void 0, void 0, void 0, function* () {
-    inquirer
-      .prompt([
+    try {
+      const { query } = yield inquirer.prompt([
         {
           type: 'input',
           name: 'query',
@@ -110,40 +110,37 @@ export const searchHistory = () =>
             input.trim() !== '' ? true : 'Please enter a valid search query.',
         },
       ])
-      .then((answers) => {
-        /**
-         * The search query entered by the user.
-         * @type {string}
-         */
-        const { query } = answers
-        /**
-         * The conversion history loaded from the history file.
-         * @type {any[]}
-         */
-        const history = loadHistory()
-        /**
-         * The results of the search, filtered by the query provided.
-         * @type {any[]}
-         */
-        const results = history.filter((entry) =>
-          entry.type.toLowerCase().includes(query.toLowerCase())
+      /**
+       * The conversion history loaded from the history file.
+       * @type {any[]}
+       */
+      const history = loadHistory()
+      /**
+       * The results of the search, filtered by the query provided.
+       * @type {any[]}
+       */
+      const results = history.filter((entry) =>
+        entry.type.toLowerCase().includes(query.toLowerCase())
+      )
+      if (results.length === 0) {
+        console.log(
+          chalk.yellow('No matching results found for the conversion type.')
         )
-        if (results.length === 0) {
+      } else {
+        console.log(chalk.green('Search Results:'))
+        results.forEach((entry, index) => {
           console.log(
-            chalk.yellow('No matching results found for the conversion type.')
-          )
-        } else {
-          console.log(chalk.green('Search Results:'))
-          results.forEach((entry, index) => {
-            console.log(
-              chalk.blueBright(
-                `${index + 1}. [${entry.date}] (${entry.type})\n   - Input: "${entry.input}"\n   - Output: "${entry.output}"\n`
-              )
+            chalk.blueBright(
+              `${index + 1}. [${entry.date}] (${entry.type})\n   - Input: "${entry.input}"\n   - Output: "${entry.output}"\n`
             )
-          })
-        }
-      })
-      .catch((error) => {
+          )
+        })
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(chalk.red('Oops! Something went wrong:', error.message))
+      } else {
         console.error(chalk.red('Oops! Something went wrong:', error))
-      })
+      }
+    }
   })

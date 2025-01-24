@@ -67,7 +67,7 @@ function toCustomBase(number, base) {
  * @param {function} main - Callback function to return to the main menu.
  * @param {function} typewriterEffect - Function for a typing effect (simulates text display with delays).
  * @param {function} fadeOutEffect - Function for a fade-out animation effect on text.
- * @param {any} chalk - Chalk instance passed from main.ts.
+ * @param {any} chalkInstance - Chalk instance passed from main.ts.
  */
 export function stringConverter(
   inquirer,
@@ -75,7 +75,7 @@ export function stringConverter(
   main,
   typewriterEffect,
   fadeOutEffect,
-  chalk
+  chalkInstance
 ) {
   const startStringConversion = () => {
     inquirer
@@ -100,14 +100,14 @@ export function stringConverter(
               main,
               typewriterEffect,
               fadeOutEffect,
-              chalk
+              chalkInstance
             )
           } else if (answers.selectedBase === 'Exit the application') {
             yield typewriterEffect('Thanks for using the app. Goodbye!', 50)
             yield fadeOutEffect('Closing the application...', 10, 100)
           } else {
             console.log(
-              chalk.red('Unsupported base. Please try another option.')
+              chalkInstance.red('Unsupported base. Please try another option.')
             )
             askNextAction(
               inquirer,
@@ -115,14 +115,14 @@ export function stringConverter(
               main,
               typewriterEffect,
               fadeOutEffect,
-              chalk
+              chalkInstance
             )
           }
         })
       )
-      .catch((error) => {
-        console.error(chalk.red('Error during base selection:', error.message))
-      })
+      .catch((error) =>
+        handleError(error, 'Error during base selection', chalkInstance)
+      )
   }
   startStringConversion()
 }
@@ -137,7 +137,7 @@ export function stringConverter(
  * @param {function} main - Callback to return to the main menu.
  * @param {function} typewriterEffect - Function for a typing effect.
  * @param {function} fadeOutEffect - Function for a fade-out animation effect.
- * @param {any} chalk - Chalk instance passed from main.ts.
+ * @param {any} chalkInstance - Chalk instance passed from main.ts.
  */
 function stringToBase(
   inquirer,
@@ -147,7 +147,7 @@ function stringToBase(
   main,
   typewriterEffect,
   fadeOutEffect,
-  chalk
+  chalkInstance
 ) {
   inquirer
     .prompt([
@@ -180,14 +180,12 @@ function stringToBase(
         main,
         typewriterEffect,
         fadeOutEffect,
-        chalk
+        chalkInstance
       )
     })
-    .catch((error) => {
-      console.error(
-        chalk.red(`Error during conversion to ${name}:`, error.message)
-      )
-    })
+    .catch((error) =>
+      handleError(error, `Error during conversion to ${name}`, chalkInstance)
+    )
 }
 /**
  * Prompts the user for the next action after a successful conversion.
@@ -197,7 +195,7 @@ function stringToBase(
  * @param {function} main - Callback to return to the main menu.
  * @param {function} typewriterEffect - Function for a typing effect.
  * @param {function} fadeOutEffect - Function for a fade-out animation effect.
- * @param {any} chalk - Chalk instance passed from main.ts.
+ * @param {any} chalkInstance - Chalk instance passed from main.ts.
  */
 function askNextAction(
   inquirer,
@@ -205,7 +203,7 @@ function askNextAction(
   main,
   typewriterEffect,
   fadeOutEffect,
-  chalk
+  chalkInstance
 ) {
   inquirer
     .prompt([
@@ -227,7 +225,7 @@ function askNextAction(
             callback()
             break
           case 'Return to Main Menu.':
-            console.log(chalk.green('Returning to the main menu...'))
+            console.log(chalkInstance.green('Returning to the main menu...'))
             main()
             break
           case 'Exit the application.':
@@ -237,9 +235,17 @@ function askNextAction(
         }
       })
     )
-    .catch((error) => {
-      console.error(
-        chalk.red('Error while deciding the next step:', error.message)
-      )
-    })
+    .catch((error) =>
+      handleError(error, 'Error while deciding the next step', chalkInstance)
+    )
+}
+/**
+ * Handles errors and logs them with an appropriate message.
+ *
+ * @param {unknown} error - The error that occurred.
+ * @param {string} message - A custom message to display along with the error.
+ * @param {any} chalkInstance - Chalk instance passed from main.ts.
+ */
+function handleError(error, message, chalkInstance) {
+  console.error(chalkInstance.red(`${message}:`, error.message))
 }
