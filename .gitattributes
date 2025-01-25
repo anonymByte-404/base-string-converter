@@ -6,3 +6,12 @@
 
 # Specific handling for TypeScript files
 *.ts text eol=lf
+
+# Enforce LF line endings for HTML files
+*.html text eol=lf
+
+# Enforce LF line endings for CSS files
+*.css text eol=lf
+
+# Enforce LF line endings for SCSS files
+*.scss text eol=lf
