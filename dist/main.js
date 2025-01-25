@@ -39,6 +39,32 @@ import { typewriterEffect, fadeOutEffect } from './utils/textAnimation.js'
 import { loadHistory, clearHistory, searchHistory } from './storage/historyManager.js'
 const baseChoices = Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`)
 /**
+ * Displays a link to the web interface.
+ *
+ * @returns {Promise<void>} A promise that resolves after displaying the web interface link.
+ */
+const openWebInterface = () =>
+  __awaiter(void 0, void 0, void 0, function* () {
+    try {
+      console.log(chalk.blueBright('Opening the web interface...'))
+      // This is a sample link to the web application. The actual web interface is still under development.
+      const webLink = 'http://localhost:3000'
+      console.log(
+        chalk.green(
+          `Visit the following link to access the web interface: ${webLink}`
+        )
+      )
+      console.log(
+        chalk.yellow('Tip: Copy and paste the link into your browser.')
+      )
+      console.log()
+      yield typewriterEffect('Returning to main menu...', 50)
+      yield main()
+    } catch (error) {
+      console.error(chalk.red('Error opening the web interface:', error))
+    }
+  })
+/**
  * Handles the history menu, allowing the user to view, clear, or search the conversion history.
  *
  * @returns {Promise<void>} A promise that resolves when the history has been viewed, cleared, or searched.
@@ -147,6 +173,7 @@ const exitApp = () =>
  * - Perform a string conversion
  * - Perform a base-to-base conversion
  * - View the history of conversions
+ * - Open the web interface
  * - Exit the application
  *
  * @returns {Promise<void>} A promise that resolves when the user action is completed.
@@ -159,7 +186,13 @@ const main = () =>
           type: 'list',
           name: 'conversionType',
           message: 'Welcome! What kind of conversion would you like to do?',
-          choices: ['String', 'Base', 'View History', 'Exit the application'],
+          choices: [
+            'String',
+            'Base',
+            'View History',
+            'Open on Web',
+            'Exit the application',
+          ],
         },
       ])
       if (answers.conversionType === 'String') {
@@ -175,6 +208,8 @@ const main = () =>
         yield handleBaseConversion()
       } else if (answers.conversionType === 'View History') {
         yield handleHistory()
+      } else if (answers.conversionType === 'Open on Web') {
+        yield openWebInterface()
       } else {
         yield exitApp()
       }
