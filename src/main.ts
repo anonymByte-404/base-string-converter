@@ -14,7 +14,36 @@ const baseChoices: string[] = Array.from(
  * Interface for conversion type selection answer.
  */
 interface ConversionTypeAnswer {
-  conversionType: 'String' | 'Base' | 'View History' | 'Exit the application'
+  conversionType:
+  | 'String'
+  | 'Base'
+  | 'View History'
+  | 'Open on Web'
+  | 'Exit the application'
+}
+
+/**
+ * Displays a link to the web interface.
+ *
+ * @returns {Promise<void>} A promise that resolves after displaying the web interface link.
+ */
+const openWebInterface = async (): Promise<void> => {
+  try {
+    console.log(chalk.blueBright('Opening the web interface...'))
+    // This is a sample link to the web application. The actual web interface is still under development.
+    const webLink = 'http://localhost:3000'
+    console.log(
+      chalk.green(
+        `Visit the following link to access the web interface: ${webLink}`
+      )
+    )
+    console.log(chalk.yellow('Tip: Copy and paste the link into your browser.'))
+    console.log()
+    await typewriterEffect('Returning to main menu...', 50)
+    await main()
+  } catch (error) {
+    console.error(chalk.red('Error opening the web interface:', error))
+  }
 }
 
 /**
@@ -131,6 +160,7 @@ const exitApp = async (): Promise<void> => {
  * - Perform a string conversion
  * - Perform a base-to-base conversion
  * - View the history of conversions
+ * - Open the web interface
  * - Exit the application
  *
  * @returns {Promise<void>} A promise that resolves when the user action is completed.
@@ -142,7 +172,13 @@ const main = async (): Promise<void> => {
         type: 'list',
         name: 'conversionType',
         message: 'Welcome! What kind of conversion would you like to do?',
-        choices: ['String', 'Base', 'View History', 'Exit the application'],
+        choices: [
+          'String',
+          'Base',
+          'View History',
+          'Open on Web',
+          'Exit the application',
+        ],
       },
     ])
 
@@ -159,6 +195,8 @@ const main = async (): Promise<void> => {
       await handleBaseConversion()
     } else if (answers.conversionType === 'View History') {
       await handleHistory()
+    } else if (answers.conversionType === 'Open on Web') {
+      await openWebInterface()
     } else {
       await exitApp()
     }
