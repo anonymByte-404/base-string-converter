@@ -1,0 +1,36 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.5;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  font-size: 1rem;
+
+  @if not global-variable-exists('$background-color') {
+    background-color: #f4f4f4;
+  } @else {
+    background-color: $background-color;
+  }
+
+  @if not global-variable-exists('$text-color') {
+    color: #333333;
+  } @else {
+    color: $text-color;
+  }
+
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 100vw;
+  height: 100vh;
+}
