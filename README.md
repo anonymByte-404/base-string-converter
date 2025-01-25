@@ -1,6 +1,6 @@
-<h1 align="center">cli-base-string-converter</h1>
+<h1 align="center">base-string-converter</h1>
 
-<p align="center"><i>A powerful command-line tool for converting data between various base encodings, such as Base64, Base32, Base58, and more. Quickly encode, decode, or convert data between different base formats directly from your terminal.</i></p>
+<p align="center"><i>A versatile tool for converting data between various base encodings, including Base64, Base32, Base58, and more. Available as a command-line tool and a web application, it empowers users to quickly encode, decode, or convert data seamlessly.</i></p>
 
 > [!Note]
 > The main functionality of this tool is now stable and fully operational. However, it is still in active development, and additional features and updates may be added in the future. Please expect occasional changes as development continues.
@@ -38,7 +38,7 @@
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/cli-base-string-converter.git
+   git clone https://github.com/your-username/base-string-converter.git
    ```
 
 2. Navigate to the project directory:
