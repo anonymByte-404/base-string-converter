@@ -1,0 +1,52 @@
+<!-- converter.html -->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>String & Base Converter</title>
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+
+  <body>
+    <header>
+      <h1>String & Base Converter</h1>
+      <nav>
+        <a href="index.html">Back to Home</a>
+        <!-- Link back to home or main page -->
+      </nav>
+    </header>
+
+    <main>
+      <section id="converter">
+        <h2>Select Conversion Type</h2>
+
+        <form id="conversion-form">
+          <label for="conversion-type">Conversion Type:</label>
+          <select id="conversion-type" name="conversion-type">
+            <option value="string">String Conversion</option>
+            <option value="base">Base Conversion</option>
+          </select>
+
+          <label for="input-value">Enter Value:</label>
+          <input type="text" id="input-value" name="input-value" required />
+
+          <button type="submit">Convert</button>
+        </form>
+
+        <div id="result">
+          <h3>Conversion Result:</h3>
+          <p id="conversion-output">Your result will appear here.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Conversion App</p>
+    </footer>
+
+    <script src="scripts/converter.js"></script>
+    <!-- JavaScript to handle conversion logic -->
+  </body>
+</html>
