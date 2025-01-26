@@ -13,18 +13,119 @@ html {
 }
 
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   font-size: 1rem;
-  background-color: #f4f4f4;
-  color: #333333;
+  background-color: #1a1818;
+  color: #b4aeae;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   width: 100vw;
   height: 100vh;
 }
+body::-webkit-scrollbar {
+  width: 0;
+}
+
+.ws-btn {
+  position: relative;
+  width: 20rem;
+  height: 3.5rem;
+  cursor: pointer;
+  position: relative;
+  padding: 10px 24px;
+  font-size: 18px;
+  color: rgb(193, 163, 98);
+  border: 2px solid rgb(193, 163, 98);
+  border-radius: 34px;
+  background-color: transparent;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  overflow: hidden;
+}
+.ws-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 10rem;
+  height: 100%;
+  border-radius: inherit;
+  scale: 0;
+  z-index: -1;
+  background-color: rgb(193, 163, 98);
+  transition: all 0.5s cubic-bezier(0.21, 0.31, 0.12, 0.15);
+}
+.ws-btn:hover::before {
+  scale: 3;
+}
+.ws-btn:hover {
+  color: #212121;
+  scale: 1.1;
+  box-shadow: 0 0px 20px rgba(193, 163, 98, 0.4);
+}
+.ws-btn:active {
+  scale: 1;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 3rem;
+}
 
 header {
   position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
-} /*# sourceMappingURL=main.css.map */
+  height: 6rem;
+  padding: 0 2.5rem;
+}
+header ul {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4rem;
+  width: 30%;
+}
+header ul li {
+  list-style: none;
+}
+header ul li a {
+  text-decoration: none;
+  font: normal 600 1.5rem/1 "Arial", sans-serif;
+  color: #b4aeae;
+}
+
+section {
+  width: 100vw;
+  height: 100vh;
+}
+section#home {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+section#home h2 {
+  font-size: 3rem;
+}
+section#home p {
+  font-size: 1.5rem;
+  margin-bottom: 1.6rem;
+}
+section#features {
+  background-color: #cab284;
+  color: #1a1818;
+  padding: 1.5rem;
+  text-align: center;
+}
+section#features h2 {
+  font-size: 2rem;
+}/*# sourceMappingURL=main.css.map */

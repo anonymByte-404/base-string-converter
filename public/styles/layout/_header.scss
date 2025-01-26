@@ -1,4 +1,33 @@
 header {
   position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
+  height: 6rem;
+  padding: 0 2.5rem; 
+
+  ul {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
+    width: 30%;
+
+    li {
+      list-style: none;
+
+      a {
+        text-decoration: none;
+        font: normal 600 1.5rem/1 "Arial", sans-serif;
+
+        @if not global-variable-exists('$text-color') {
+          color: #b4aeae;
+        } @else {
+          color: $text-color;
+        }
+      }
+    }
+  }
 }

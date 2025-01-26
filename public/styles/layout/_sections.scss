@@ -1,0 +1,32 @@
+section {
+  width: 100vw;
+  height: 100vh;
+
+  &#home {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    h2 {
+      font-size: 3rem;
+    }
+
+    p {
+      font-size: 1.5rem;
+      margin-bottom: 1.6rem;
+    }
+  }
+
+  &#features {
+    background-color: #cab284;
+    color: #1a1818;
+    padding: 1.5rem;
+    text-align: center;
+
+    h2 {
+      font-size: 2rem
+    }
+  }
+}
