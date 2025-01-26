@@ -171,4 +171,4 @@ main()
 5. Open a pull request on the main repository.
 
 <h2 align="center" id="license">LICENSE</h3>
-<p align="center">This project is licensed under the MIT License. See the <a href="LICENSE">LICENSE</a> file for more details.</p>
+<p align="center">This project is licensed under the AGPL-3.0 License. See the <a href="LICENSE">LICENSE</a> file for more details.</p>
