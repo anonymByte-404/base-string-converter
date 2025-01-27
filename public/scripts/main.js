@@ -1,4 +1,9 @@
-// main.js
+const featureContents = document.querySelectorAll('.feature-contents')
 
-// This file contains the main logic for the application.
-// It handles initialization, event listeners, and user interactions.
+featureContents.forEach(feature => {
+  feature.addEventListener('mouseover', (event) => {
+    event.preventDefault()
+    featureContents.forEach(fc => fc.classList.remove('active-feature'))
+    feature.classList.add('active-feature')
+  })
+})
