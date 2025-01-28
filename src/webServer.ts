@@ -1,19 +1,15 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import path from 'path'
 
-const app = express()
-const port = 3000
+const app: express.Application = express()
+const port: number = 3000
 
 app.use(express.static(path.join(__dirname, '../public')))
-app.get('/', (req, res) => {
+
+app.get('/', (req: Request, res: Response): void => {
   res.sendFile(path.join(__dirname, '../public/index.html'))
 })
-app.get('/history', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/history.html'))
-})
-app.get('/convert', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/convert.html'))
-})
-app.listen(port, () => {
+
+app.listen(port, (): void => {
   console.log(`Server is running at http://localhost:${port}`)
 })
