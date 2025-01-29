@@ -44,7 +44,7 @@
 2. Navigate to the project directory:
 
    ```bash
-   cd cli-base-string-converter
+   cd base-string-converter
    ```
 
 3. Install dependencies using npm:
