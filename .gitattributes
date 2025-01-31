@@ -3,6 +3,7 @@
 
 # Specific handling for JavaScript files
 *.js text eol=lf
+*.jsx text eol=lf
 
 # Specific handling for TypeScript files
 *.ts text eol=lf
