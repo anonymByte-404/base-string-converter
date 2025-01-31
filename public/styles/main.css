@@ -10,13 +10,13 @@ html {
   font-size: 16px;
   line-height: 1.5;
   -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+  -moz-user-select: none;
+  user-select: none;
   scroll-behavior: smooth;
 }
 
 body {
-  font-family: "Arial", sans-serif;
+  font-family: 'Arial', sans-serif;
   font-size: 1rem;
   background-color: #1a1818;
   color: #b4aeae;
@@ -47,7 +47,7 @@ body::-webkit-scrollbar {
   overflow: hidden;
 }
 .ws-btn::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   margin: auto;
@@ -176,7 +176,9 @@ header ul li {
 }
 header ul li a {
   text-decoration: none;
-  font: normal 600 1.5rem/1 "Arial", sans-serif;
+  font:
+    normal 600 1.5rem/1 'Arial',
+    sans-serif;
   color: #b4aeae;
 }
 
@@ -215,7 +217,7 @@ section#key-features h2 {
   margin-bottom: 3rem;
 }
 section#key-features h2::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 25%;
   bottom: -20%;
@@ -242,4 +244,4 @@ section#how-to-use h2 {
   top: 0;
   margin-top: 5rem;
   font-size: 3rem;
-}/*# sourceMappingURL=main.css.map */
+} /*# sourceMappingURL=main.css.map */

@@ -11,9 +11,9 @@
   border-radius: 34px;
   background-color: transparent;
   font-weight: 600;
-  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
   overflow: hidden;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -29,13 +29,13 @@
   }
 
   &:hover::before {
-    scale: 3;;
+    scale: 3;
   }
 
   &:hover {
     color: #212121;
     scale: 1.1;
-    box-shadow: 0 0px 20px rgba(193, 163, 98,0.4);
+    box-shadow: 0 0px 20px rgba(193, 163, 98, 0.4);
   }
 
   &:active {
