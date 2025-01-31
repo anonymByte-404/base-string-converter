@@ -36,26 +36,30 @@
 <p align="left">To install this package, follow these steps:</p>
 
 1. <b>Clone the repository:</b>
-  <br />First, clone the repository to your local machine to create a copy of it:
+   <br />First, clone the repository to your local machine to create a copy of it:
+
    ```bash
    git clone https://github.com/anonymByte-404/base-string-converter.git
    ```
 
 2. <b>Navigate to the project directory:</b>
-  <br />After cloning, move into the project directory where all the files are located:
+   <br />After cloning, move into the project directory where all the files are located:
+
    ```bash
    cd base-string-converter
    ```
 
 3. <b>Install dependencies using `npm`:</b>
-  <br />Install the required dependencies for the project by running:
+   <br />Install the required dependencies for the project by running:
+
    ```bash
    npm install
    ```
+
    This will install all the necessary libraries and packages specified in the `package.json` file.
 
 4. <b>Run the application:</b>
-  <br />Once the dependencies are installed, start the application using the following command:
+   <br />Once the dependencies are installed, start the application using the following command:
    ```bash
    npm start
    ```
@@ -64,19 +68,19 @@
 <h2 align="center" id="usage">Usage</h2>
 
 1. <strong>Select the type of conversion:</strong>
-  <br>Choose the type of conversion you want to perform (e.g., String, Base).
+   <br>Choose the type of conversion you want to perform (e.g., String, Base).
    <br><img src="assets/images/image1.png" alt="image1">
 
 2. <strong>Choose the target base:</strong>
-  <br>Select the target numeral system for your conversion (e.g., Base64, Base32, etc.).
+   <br>Select the target numeral system for your conversion (e.g., Base64, Base32, etc.).
    <br><img src="assets/images/image2.png" alt="image2">
 
 3. <strong>Input the string to convert:</strong>
-  <br>Provide the string or data you wish to convert into the selected base or encoding.
+   <br>Provide the string or data you wish to convert into the selected base or encoding.
    <br><img src="assets/images/image3.png" alt="image3">
 
 4. <strong>View the conversion output:</strong>
-  <br>Check the conversion result and decide whether to proceed with further actions, such as repeating the conversion or returning to the main menu.
+   <br>Check the conversion result and decide whether to proceed with further actions, such as repeating the conversion or returning to the main menu.
    <br><img src="assets/images/image4.png" alt="image4">
 
 <h2 align="center" id="code-example">Code Example</h2>
@@ -103,11 +107,7 @@ const main = (): void => {
     ])
     .then((answers: { conversionType: string }) => {
       if (answers.conversionType === 'String Conversion') {
-        return stringConverter(
-          inquirer,
-          main,
-          baseChoices
-        )
+        return stringConverter(inquirer, main, baseChoices)
       } else {
         inquirer
           .prompt([
@@ -121,10 +121,7 @@ const main = (): void => {
           .then((answers: { selectedBase: string }) => {
             switch (answers.selectedBase) {
               case 'Base 2':
-                return binaryConverter(
-                  inquirer,
-                  main
-                )
+                return binaryConverter(inquirer, main)
               default:
                 console.log(
                   `Conversions for ${answers.selectedBase} are currently not supported.`
@@ -152,34 +149,38 @@ main()
 <p align="left">Contributions are welcome! Here's how you can help:</p>
 
 1. <b>Fork the repository.</b>
-  <br />Go to the repository page on GitHub and click the `"Fork"` button to create your own copy.
+   <br />Go to the repository page on GitHub and click the `"Fork"` button to create your own copy.
 
 2. <b>Clone your Fork</b>
-  <br />After forking the repository, `clone` it to your local machine:
-    ```bash
-    git clone https://github.com/anonymByte-404/base-string-converter.git
-    ```
+   <br />After forking the repository, `clone` it to your local machine:
+
+   ```bash
+   git clone https://github.com/anonymByte-404/base-string-converter.git
+   ```
 
 3. <b>Create a new branch for your feature or bug fix:</b>
-  <br />Create a new `branch` so you can work on your changes without affecting the main branch:
+   <br />Create a new `branch` so you can work on your changes without affecting the main branch:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
 
 4. <b>Make your changes and commit:</b>
-  <br />After making your changes, `commit` them with a meaningful message:
+   <br />After making your changes, `commit` them with a meaningful message:
+
    ```bash
    git commit -m "Add your commit message here"
    ```
 
 5. <b>Push to your fork:</b>
-  <br />Push to your `fork`:
+   <br />Push to your `fork`:
+
    ```bash
    git push origin feature/your-feature-name
    ```
 
 6. <b>Open a pull request on the main repository.</b>
-  <br />Go to the original repository on GitHub (<a href='https://github.com/anonymByte-404/base-string-converter'>https://github.com/anonymByte-404/base-string-converter</a>) and open a `pull request` with your changes.
+   <br />Go to the original repository on GitHub (<a href='https://github.com/anonymByte-404/base-string-converter'>https://github.com/anonymByte-404/base-string-converter</a>) and open a `pull request` with your changes.
 
 <h2 align="center" id="license">LICENSE</h3>
 <p align="center">This project is licensed under the AGPL-3.0 License. See the <a href="LICENSE">LICENSE</a> file for more details.</p>
