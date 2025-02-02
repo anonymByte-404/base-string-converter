@@ -1,5 +1,26 @@
 <h1 align="center">base-string-converter</h1>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/License-AGPL--3.0-green.svg" alt="AGPL-3.0 License">
+  <img src="https://img.shields.io/badge/CLI--Tool-2.13.4-yellow.svg" alt="CLI Tool Version">
+  <img src="https://img.shields.io/badge/Web--Tool-1.1.0-yellow.svg" alt="Web Tool Version">
+  <img src="https://img.shields.io/badge/express--types-5.0.0-yellowgreen.svg" alt="Express TypeScript Definitions">
+  <img src="https://img.shields.io/badge/typescript--eslint--plugin-8.19.1-yellowgreen.svg" alt="TypeScript ESLint Plugin">
+  <img src="https://img.shields.io/badge/typescript--eslint--parser-8.19.1-yellowgreen.svg" alt="TypeScript ESLint Parser">
+  <img src="https://img.shields.io/badge/ESLint-9.17.0-yellowgreen.svg" alt="ESLint Version">
+  <img src="https://img.shields.io/badge/eslint--config--prettier-9.1.0-yellowgreen.svg" alt="ESLint Config Prettier">
+  <img src="https://img.shields.io/badge/eslint--plugin--prettier-5.2.1-yellowgreen.svg" alt="ESLint Plugin Prettier">
+  <img src="https://img.shields.io/badge/Prettier-3.4.2-yellowgreen.svg" alt="Prettier Version">
+  <img src="https://img.shields.io/badge/ts--node-10.9.2-yellowgreen.svg" alt="TS-Node Version">
+  <img src="https://img.shields.io/badge/TypeScript-5.7.2-yellowgreen.svg" alt="TypeScript Version">
+  <img src="https://img.shields.io/badge/cra--template-1.2.0-blue.svg" alt="CRA Template Version">
+  <img src="https://img.shields.io/badge/React-19.0.0-blue.svg" alt="React Version">
+  <img src="https://img.shields.io/badge/React--DOM-19.0.0-blue.svg" alt="React DOM Version">
+  <img src="https://img.shields.io/badge/React--Router--DOM-7.1.4-blue.svg" alt="React Router DOM Version">
+  <img src="https://img.shields.io/badge/React--Scripts-5.0.1-blue.svg" alt="React Scripts Version">
+  <img src="https://img.shields.io/badge/Web--Vitals-4.2.4-blue.svg" alt="Web Vitals Version">
+</p>
+
 <p align="center"><i>A versatile tool for converting data between various base encodings, including Base64, Base32, Base58, and more. Available as a command-line tool and a web application, it empowers users to quickly encode, decode, or convert data seamlessly.</i></p>
 
 > [!Note]
