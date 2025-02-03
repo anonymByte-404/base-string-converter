@@ -3,7 +3,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/License-AGPL--3.0-green.svg" alt="AGPL-3.0 License">
   <img src="https://img.shields.io/badge/CLI--Tool-2.13.4-yellow.svg" alt="CLI Tool Version">
-  <img src="https://img.shields.io/badge/Web--Tool-1.1.0-yellow.svg" alt="Web Tool Version">
+  <img src="https://img.shields.io/badge/Web--Tool-1.1.1-yellow.svg" alt="Web Tool Version">
   <img src="https://img.shields.io/badge/express--types-5.0.0-yellowgreen.svg" alt="Express TypeScript Definitions">
   <img src="https://img.shields.io/badge/typescript--eslint--plugin-8.19.1-yellowgreen.svg" alt="TypeScript ESLint Plugin">
   <img src="https://img.shields.io/badge/typescript--eslint--parser-8.19.1-yellowgreen.svg" alt="TypeScript ESLint Parser">
