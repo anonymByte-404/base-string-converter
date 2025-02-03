@@ -10,16 +10,16 @@ html {
   font-size: 16px;
   line-height: 1.5;
   -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
+     -moz-user-select: none;
+          user-select: none;
   scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   font-size: 1rem;
   background-color: #1a1818;
-  color: #b4aeae;
+  color: #dddcdc;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -38,8 +38,8 @@ body::-webkit-scrollbar {
   position: relative;
   padding: 10px 24px;
   font-size: 18px;
-  color: rgb(193, 163, 98);
-  border: 2px solid rgb(193, 163, 98);
+  color: #E6E6FA;
+  border: 2px solid #E6E6FA;
   border-radius: 34px;
   background-color: transparent;
   font-weight: 600;
@@ -47,7 +47,7 @@ body::-webkit-scrollbar {
   overflow: hidden;
 }
 .ws-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   margin: auto;
@@ -56,7 +56,7 @@ body::-webkit-scrollbar {
   border-radius: inherit;
   scale: 0;
   z-index: -1;
-  background-color: rgb(193, 163, 98);
+  background-color: #E6E6FA;
   transition: all 0.5s cubic-bezier(0.21, 0.31, 0.12, 0.15);
 }
 .ws-btn:hover::before {
@@ -65,7 +65,7 @@ body::-webkit-scrollbar {
 .ws-btn:hover {
   color: #212121;
   scale: 1.1;
-  box-shadow: 0 0px 20px rgba(193, 163, 98, 0.4);
+  box-shadow: 0 0px 20px rgba(154, 177, 255, 0.4);
 }
 .ws-btn:active {
   scale: 1;
@@ -155,13 +155,20 @@ footer {
 }
 
 header {
-  position: relative;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  width: 90%;
   height: 6rem;
+  margin-top: 15px;
   padding: 0 2.5rem;
+  background: rgba(151, 151, 151, 0.137);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  border-radius: 40px;
 }
 header ul {
   position: relative;
@@ -176,10 +183,12 @@ header ul li {
 }
 header ul li a {
   text-decoration: none;
-  font:
-    normal 600 1.5rem/1 'Arial',
-    sans-serif;
+  font: normal 600 1.5rem/1 "Arial", sans-serif;
+  transition: 0.3s ease;
   color: #b4aeae;
+}
+header ul li a:hover {
+  color: #f0f0f0;
 }
 
 section {
@@ -192,6 +201,7 @@ section#home {
   justify-content: center;
   align-items: center;
   text-align: center;
+  background: radial-gradient(circle, rgba(150, 36, 185, 0.377) 0%, black 70%);
 }
 section#home h2 {
   font-size: 3rem;
@@ -217,7 +227,7 @@ section#key-features h2 {
   margin-bottom: 3rem;
 }
 section#key-features h2::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 25%;
   bottom: -20%;
@@ -244,4 +254,4 @@ section#how-to-use h2 {
   top: 0;
   margin-top: 5rem;
   font-size: 3rem;
-} /*# sourceMappingURL=main.css.map */
+}/*# sourceMappingURL=main.css.map */

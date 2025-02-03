@@ -24,7 +24,7 @@ body {
   }
 
   @if not global-variable-exists('$text-color') {
-    color: #b4aeae;
+    color: #dddcdc;
   } @else {
     color: $text-color;
   }

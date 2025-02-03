@@ -1,11 +1,17 @@
 header {
-  position: relative;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  width: 90%;
   height: 6rem;
+  margin-top: 15px;
   padding: 0 2.5rem;
+  background: rgba(151, 151, 151, 0.137);
+  backdrop-filter: blur(10px);
+  border-radius: 40px;
 
   ul {
     position: relative;
@@ -20,14 +26,17 @@ header {
 
       a {
         text-decoration: none;
-        font:
-          normal 600 1.5rem/1 'Arial',
-          sans-serif;
+        font: normal 600 1.5rem/1 'Arial', sans-serif;
+        transition: 0.3s ease;
 
         @if not global-variable-exists('$text-color') {
           color: #b4aeae;
         } @else {
           color: $text-color;
+        }
+
+        &:hover {
+          color: #f0f0f0;
         }
       }
     }
