@@ -71,6 +71,43 @@ body::-webkit-scrollbar {
   scale: 1;
 }
 
+.scroll-down {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+  cursor: pointer;
+}
+.scroll-down svg {
+  width: 60px;
+  height: 60px;
+  stroke: #f3f3f3;
+  stroke-width: 2px;
+  fill: transparent;
+  border: 2px solid #f3f3f3;
+  border-radius: 50%;
+  padding: 5px;
+  transition: transform 0.3s ease, stroke 0.3s ease, border-color 0.3s ease;
+  animation: bounce 1.5s infinite ease-in-out;
+}
+.scroll-down:hover svg {
+  stroke: white;
+  border-color: white;
+  transform: translateY(5px);
+  box-shadow: 0 0 8px 0 #fff;
+}
+.scroll-down:active svg {
+  transform: scale(0.9);
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+}
 .feature-container {
   position: relative;
   display: flex;
@@ -163,12 +200,14 @@ header {
   align-items: center;
   width: 90%;
   height: 6rem;
-  margin-top: 15px;
+  margin-top: 18px;
   padding: 0 2.5rem;
-  background: rgba(151, 151, 151, 0.137);
+  background: rgba(119, 119, 119, 0.137);
   -webkit-backdrop-filter: blur(10px);
           backdrop-filter: blur(10px);
   border-radius: 40px;
+  border: 1px solid rgb(230, 230, 230);
+  box-shadow: 0 0 10px 0 rgb(233, 233, 233);
 }
 header ul {
   position: relative;
