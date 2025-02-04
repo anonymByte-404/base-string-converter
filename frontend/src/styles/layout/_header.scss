@@ -7,11 +7,13 @@ header {
   align-items: center;
   width: 90%;
   height: 6rem;
-  margin-top: 15px;
+  margin-top: 18px;
   padding: 0 2.5rem;
-  background: rgba(151, 151, 151, 0.137);
+  background: rgba(119, 119, 119, 0.137);
   backdrop-filter: blur(10px);
   border-radius: 40px;
+  border: 1px solid rgb(230, 230, 230);
+  box-shadow: 0 0 10px 0 rgb(233, 233, 233);
 
   ul {
     position: relative;
