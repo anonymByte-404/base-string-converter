@@ -16,3 +16,9 @@
 
 # Enforce LF line endings for SCSS files
 *.scss text eol=lf
+
+# Ensure batch files use CRLF on Windows
+*.bat text eol=crlf
+
+# Ensure shell scripts use LF on all platforms
+*.sh text eol=lf
