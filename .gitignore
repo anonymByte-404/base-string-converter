@@ -4,6 +4,9 @@ node_modules/
 # Production
 build/
 
+# Build output
+dist/
+
 # Misc
 .DS_Store
 .env.local
