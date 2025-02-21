@@ -8,7 +8,7 @@ import { addToHistory } from '../storage/historyManager.js'
  * @returns {string} The string representation of the number in the specified base.
  * @throws {RangeError} If the base is not in the range [1, 64].
  */
-function toCustomBase(number: number, base: number): string {
+const toCustomBase = (number: number, base: number): string => {
   if (base === 1) {
     return '1'.repeat(number) // Unary representation
   }
@@ -42,14 +42,14 @@ function toCustomBase(number: number, base: number): string {
  * @param {function} fadeOutEffect - Function for a fade-out animation effect on text.
  * @param {any} chalkInstance - Chalk instance passed from main.ts.
  */
-export function stringConverter(
+export const stringConverter = (
   inquirer: any,
   baseChoices: string[],
   main: () => void,
   typewriterEffect: (text: string, delay: number) => Promise<void>,
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
   chalkInstance: any
-): void {
+): void => {
   const startStringConversion = (): void => {
     inquirer
       .prompt([
@@ -113,7 +113,7 @@ export function stringConverter(
  * @param {function} fadeOutEffect - Function for a fade-out animation effect.
  * @param {any} chalkInstance - Chalk instance passed from main.ts.
  */
-function stringToBase(
+const stringToBase = (
   inquirer: any,
   name: string,
   base: number,
@@ -122,7 +122,7 @@ function stringToBase(
   typewriterEffect: (text: string, delay: number) => Promise<void>,
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
   chalkInstance: any
-): void {
+): void => {
   inquirer
     .prompt([
       {
@@ -144,7 +144,7 @@ function stringToBase(
         })
         .join(' ')
 
-      console.log(`Converted to ${name}: ${result}`)
+      console.log(`${chalkInstance.green(`Converted to ${name}:`)} ${result}`)
 
       // Save the conversion to history
       addToHistory({
@@ -177,14 +177,14 @@ function stringToBase(
  * @param {function} fadeOutEffect - Function for a fade-out animation effect.
  * @param {any} chalkInstance - Chalk instance passed from main.ts.
  */
-function askNextAction(
+const askNextAction = (
   inquirer: any,
   callback: () => void,
   main: () => void,
   typewriterEffect: (text: string, delay: number) => Promise<void>,
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
   chalkInstance: any
-): void {
+): void => {
   inquirer
     .prompt([
       {
@@ -225,10 +225,14 @@ function askNextAction(
  * @param {string} message - A custom message to display along with the error.
  * @param {any} chalkInstance - Chalk instance passed from main.ts.
  */
-function handleError(
+const handleError = (
   error: unknown,
   message: string,
   chalkInstance: any
-): void {
-  console.error(chalkInstance.red(`${message}:`, (error as Error).message))
+): void => {
+  if (error instanceof Error) {
+    console.error(chalkInstance.red(`${message}: ${error.message}`))
+  } else {
+    console.error(chalkInstance.red(`${message}: An unknown error occurred`))
+  }
 }
