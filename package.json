@@ -1,6 +1,6 @@
 {
   "name": "base-string-converter",
-  "version": "2.13.4",
+  "version": "2.14.4",
   "description": "A powerful command-line and web tool for converting data between various base encodings, such as Base64, Base32, Base58, and more.",
   "main": "src/main.ts",
   "type": "module",
