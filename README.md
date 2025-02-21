@@ -2,7 +2,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-AGPL--3.0-green.svg" alt="AGPL-3.0 License">
-  <img src="https://img.shields.io/badge/CLI--Tool-2.13.4-yellow.svg" alt="CLI Tool Version">
+  <img src="https://img.shields.io/badge/CLI--Tool-2.14.4-yellow.svg" alt="CLI Tool Version">
   <img src="https://img.shields.io/badge/Web--Tool-1.1.1-yellow.svg" alt="Web Tool Version">
   <img src="https://img.shields.io/badge/express--types-5.0.0-yellowgreen.svg" alt="Express TypeScript Definitions">
   <img src="https://img.shields.io/badge/typescript--eslint--plugin-8.19.1-yellowgreen.svg" alt="TypeScript ESLint Plugin">
@@ -110,15 +110,45 @@
 
 ```typescript
 import inquirer from 'inquirer'
+import chalk from 'chalk'
 
-const baseChoices: string[] = Array.from(
-  { length: 64 },
-  (_, i) => `Base ${i + 1}`
-)
+// Type for the answers in prompts
+interface Answers {
+  conversionType: string
+  selectedBase?: string
+}
 
-const main = (): void => {
-  inquirer
-    .prompt([
+// Base choices for conversion
+const baseChoices: string[] = Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`)
+
+/**
+ * Handles errors by logging the error message to the console.
+ * 
+ * @param {unknown} error - The error to handle.
+ * @param {string} context - The context in which the error occurred.
+ */
+const handleError = (error: unknown, context: string): void => {
+  const errorMessage = error instanceof Error ? error.message : String(error)
+  console.error(chalk.red(`${context}: ${errorMessage}`))
+}
+
+/**
+ * Logs and displays a success message when a conversion type is selected.
+ * 
+ * @param {string} conversionType - The conversion type selected by the user.
+ */
+const logConversionSelection = (conversionType: string): void => {
+  console.log(chalk.green(`Selected Conversion: ${conversionType}`))
+}
+
+/**
+ * Main prompt logic to allow the user to choose the type of conversion.
+ * 
+ * @returns {Promise<void>} - A promise that resolves when the conversion type is selected and handled.
+ */
+const mainPrompt = async (): Promise<void> => {
+  try {
+    const answers = await inquirer.prompt<Answers>([
       {
         type: 'list',
         name: 'conversionType',
@@ -126,40 +156,75 @@ const main = (): void => {
         choices: ['String Conversion', 'Base Conversion'],
       },
     ])
-    .then((answers: { conversionType: string }) => {
-      if (answers.conversionType === 'String Conversion') {
-        return stringConverter(inquirer, main, baseChoices)
-      } else {
-        inquirer
-          .prompt([
-            {
-              type: 'list',
-              name: 'selectedBase',
-              message: 'Choose the target base for conversion:',
-              choices: baseChoices,
-            },
-          ])
-          .then((answers: { selectedBase: string }) => {
-            switch (answers.selectedBase) {
-              case 'Base 2':
-                return binaryConverter(inquirer, main)
-              default:
-                console.log(
-                  `Conversions for ${answers.selectedBase} are currently not supported.`
-                )
-            }
-          })
-          .catch((error: unknown) => {
-            console.error('An error occurred during base selection:', error)
-          })
-      }
-    })
-    .catch((error: unknown) => {
-      console.error('An error occurred during the initial prompt:', error)
-    })
+
+    logConversionSelection(answers.conversionType)
+
+    if (answers.conversionType === 'String Conversion') {
+      // Placeholder function for string conversion logic
+      return stringConverter()
+    }
+
+    return await baseConversionPrompt()
+  } catch (error: unknown) {
+    handleError(error, 'An error occurred during the initial prompt')
+  }
 }
 
-main()
+/**
+ * Prompts the user to choose the target base for conversion.
+ * 
+ * @returns {Promise<void>} - A promise that resolves when the base conversion is selected.
+ */
+const baseConversionPrompt = async (): Promise<void> => {
+  try {
+    const { selectedBase } = await inquirer.prompt<Answers>([
+      {
+        type: 'list',
+        name: 'selectedBase',
+        message: 'Choose the target base for conversion:',
+        choices: baseChoices,
+      },
+    ])
+
+    console.log(chalk.yellow(`Selected Base: ${selectedBase}`))
+
+    if (selectedBase === 'Base 2') {
+      // Placeholder function for binary conversion logic
+      return binaryConverter()
+    }
+
+    console.log(chalk.red(`Conversions for ${selectedBase} are currently not supported.`))
+  } catch (error: unknown) {
+    handleError(error, 'An error occurred during base selection')
+  }
+}
+
+/**
+ * Handles the logic for string conversion (this is a placeholder for your conversion logic).
+ * 
+ * @returns {Promise<void>} - A promise that resolves when the string conversion is done.
+ */
+const stringConverter = async (): Promise<void> => {
+  console.log(chalk.brightBlue('String Conversion Selected'))
+  // Placeholder: Your string conversion logic goes here
+  console.log(chalk.brightCyan('Implement string conversion logic here'))
+}
+
+/**
+ * Handles the logic for binary conversion (this is a placeholder for your conversion logic).
+ * 
+ * @returns {Promise<void>} - A promise that resolves when the binary conversion is done.
+ */
+const binaryConverter = async (): Promise<void> => {
+  console.log(chalk.brightBlue('Binary Conversion Selected'))
+  // Placeholder: Your binary conversion logic goes here
+  console.log(chalk.brightCyan('Implement binary conversion logic here'))
+}
+
+/**
+ * Starts the application by prompting the user for the type of conversion.
+ */
+mainPrompt()
 ```
 
 > [!NOTE]
