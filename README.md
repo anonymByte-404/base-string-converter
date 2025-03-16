@@ -81,21 +81,28 @@
 
 <h2 align="center" id="usage" style="color: #4A90E2;">Usage</h2>
 
-1. <strong>Select the type of conversion:</strong>
-   <br>Choose the type of conversion you want to perform (e.g., String, Base).
-   <br><img src="assets/images/image1.png" alt="Select Conversion Type">
-
-2. <strong>Choose the target base:</strong>
-   <br>Select the target numeral system for your conversion (e.g., Base64, Base32, etc.).
-   <br><img src="assets/images/image2.png" alt="Choose Target Base">
-
-3. <strong>Input the string to convert:</strong>
-   <br>Provide the string or data you wish to convert into the selected base or encoding.
-   <br><img src="assets/images/image3.png" alt="Input String to Convert">
-
-4. <strong>View the conversion output:</strong>
-   <br>Check the conversion result and decide whether to proceed with further actions, such as repeating the conversion or returning to the main menu.
-   <br><img src="assets/images/image4.png" alt="View Conversion Output">
+<ol>
+  <li>
+    <strong>Select the type of conversion:</strong>
+    <br><p>Choose the type of conversion you want to perform (e.g., String, Base).</p>
+    <img src="assets/images/image1.png" alt="Select Conversion Type">
+  </li>
+  <li>
+    <strong>Choose the target base:</strong>
+    <br><p>Select the target numeral system for your conversion (e.g., Base64, Base32, etc.).</ps>
+    <br><img src="assets/images/image2.png" alt="Choose Target Base">
+  </li>
+  <li>
+    <strong>Input the string to convert:</strong>
+    <br><p>Provide the string or data you wish to convert into the selected base or encoding.</p>
+    <img src="assets/images/image3.png" alt="Input String to Convert">
+  </li>
+  <li>
+    <strong>View the conversion output:</strong>
+    <br><p>Check the conversion result and decide whether to proceed with further actions, such as repeating the conversion or returning to the main menu.</p>
+    <img src="assets/images/image4.png" alt="View Conversion Output">
+  </li>
+</ol>
 
 <h2 align="center" id="code-example" style="color: #4A90E2;">Code Example</h2>
 
