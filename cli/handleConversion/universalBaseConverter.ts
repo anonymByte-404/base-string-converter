@@ -1,4 +1,4 @@
-import { addToHistory } from '../storage/historyManager'
+import { addToHistory } from '../storage/historyManager.js'
 
 const BASE_CHARACTERS: string = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/'
 

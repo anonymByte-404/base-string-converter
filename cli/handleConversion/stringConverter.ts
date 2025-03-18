@@ -1,4 +1,4 @@
-import { addToHistory } from '../storage/historyManager'
+import { addToHistory } from '../storage/historyManager.js'
 
 /**
  * Converts a number to its string representation in the specified base.
