@@ -52,7 +52,7 @@ export const main = async (): Promise<void> => {
         ConversionType.BASE,
         ConversionType.VIEW_HISTORY,
         ConversionType.OPEN_ON_WEB,
-        ConversionType.EXIT_APPLICATION,
+        chalk.red(ConversionType.EXIT_APPLICATION),
       ],
     }])
 
@@ -117,7 +117,7 @@ const handleBaseConversion = async (): Promise<void> => {
  */
 const handleHistory = async (): Promise<void> => {
   try {
-    const history = loadHistory()
+    const history: any[] = loadHistory()
 
     if (history.length === 0) {
       console.log(chalk.yellow('No conversion history available.'))
