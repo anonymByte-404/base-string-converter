@@ -5,7 +5,7 @@ import chalk from 'chalk'
 
 const historyFilePath = path.join(
   process.cwd(),
-  'src/storage/conversionHistory.json'
+  './storage/conversionHistory.json'
 )
 
 /**
@@ -26,7 +26,7 @@ const ensureHistoryFileExists = (): void => {
  */
 const readHistoryFile = (): any[] => {
   ensureHistoryFileExists()
-  const data = fs.readFileSync(historyFilePath, 'utf-8')
+  const data: string = fs.readFileSync(historyFilePath, 'utf-8')
   return JSON.parse(data)
 }
 
@@ -65,7 +65,7 @@ export const saveHistory = (history: any[]): void => writeHistoryFile(history)
  * @returns {void} This function does not return any value.
  */
 export const addToHistory = (entry: { input: string; output: string; type: string }): void => {
-  const history = loadHistory()
+  const history: any[] = loadHistory()
   const newEntry = { ...entry, date: new Date().toISOString() }
   history.push(newEntry)
   saveHistory(history)
@@ -87,12 +87,12 @@ export const searchHistory = async (): Promise<void> => {
   try {
     const { query } = await promptSearchQuery()
 
-    const history = loadHistory()
-    const results = searchInHistory(query, history)
+    const history: any[] = loadHistory()
+    const results: any[] = searchInHistory(query, history)
 
     displaySearchResults(results)
   } catch (error: unknown) {
-    handleError(error, 'Error occurred while searching the history', chalk)
+    handleError(error, 'Error occurred while searching the history')
   }
 }
 
@@ -141,18 +141,12 @@ const displaySearchResults = (results: any[]): void => {
 }
 
 /**
- * Handles error logging.
- *
- * @param {unknown} error - The error to handle.
- * @param {string} description - A description of the error context.
- * @param {Chalk} chalk - Chalk.js instance for styling console output.
- * @returns {void} This function does not return any value.
+ * Error handler to log errors with context.
+ * 
+ * @param {unknown} error - The error that occurred.
+ * @param {string} context - The context in which the error occurred.
  */
-const handleError = (error: unknown, description: string, chalk: any): void => {
-  console.error(chalk.red(`${description}:`))
-  if (error instanceof Error) {
-    console.error(chalk.red(`Error: ${error.message}`))
-  } else {
-    console.error(chalk.red(`An unknown error occurred: ${String(error)}`))
-  }
+const handleError = (error: unknown, context: string): void => {
+  const errorMessage = error instanceof Error ? error.message : String(error)
+  console.error(chalk.red(`${context}: ${errorMessage}`))
 }
