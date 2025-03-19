@@ -2,7 +2,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-AGPL--3.0-green.svg" alt="AGPL-3.0 License">
-  <img src="https://img.shields.io/badge/CLI--Tool-2.14.4-yellow.svg" alt="CLI Tool Version">
+  <img src="https://img.shields.io/badge/CLI--Tool-2.14.7-yellow.svg" alt="CLI Tool Version">
   <img src="https://img.shields.io/badge/Frontend-0.1.0-yellow.svg" alt="Frontend Version">
   <img src="https://img.shields.io/badge/express--types-5.0.0-yellowgreen.svg" alt="Express TypeScript Definitions">
   <img src="https://img.shields.io/badge/typescript--eslint--plugin-8.19.1-yellowgreen.svg" alt="TypeScript ESLint Plugin">
@@ -22,7 +22,8 @@
   A versatile tool for converting data between various base encodings, including Base64, Base32, Base58, and more. Available as a command-line tool and a web application, it empowers users to quickly encode, decode, or convert data seamlessly.
 </p>
 
-> **Note:** The main functionality of this tool is now stable and fully operational. However, it is still in active development, and additional features and updates may be added in the future. Please expect occasional changes as development continues.
+> [!Note]
+> The main functionality of this tool is now stable and fully operational. However, it is still in active development, and additional features and updates may be added in the future. Please expect occasional changes as development continues.
 
 <h2 style="color: #4A90E2;">Table of Contents</h2>
 <ul>
@@ -151,22 +152,4 @@
 
 <h2 align="center" id="learn-more" style="color: #4A90E2;">Learn More</h2>
 
-<p align="left">
-  Explore the following resources to deepen your understanding of numeral systems, base encodings, and their applications:
-</p>
-<ul>
-  <li><a href="https://en.wikipedia.org/wiki/Numeral_system" target="_blank">Overview of Numeral Systems on Wikipedia</a></li>
-  <li><a href="https://en.wikipedia.org/wiki/Base_(numeration)" target="_blank">Understanding Base (Numeration) on Wikipedia</a></li>
-  <li><a href="https://en.wikipedia.org/wiki/Base64" target="_blank">Base64 Encoding on Wikipedia</a></li>
-  <li><a href="https://en.wikipedia.org/wiki/Base32" target="_blank">Base32 Encoding on Wikipedia</a></li>
-  <li><a href="https://en.wikipedia.org/wiki/Base58" target="_blank">Base58 Encoding on Wikipedia</a></li>
-  <li><a href="https://en.wikipedia.org/wiki/Base85" target="_blank">Base85 Encoding on Wikipedia</a></li>
-  <li><a href="https://en.wikipedia.org/wiki/Hexadecimal" target="_blank">Hexadecimal (Base16) on Wikipedia</a></li>
-  <li><a href="https://en.wikipedia.org/wiki/Octal" target="_blank">Octal (Base8) on Wikipedia</a></li>
-  <li><a href="https://en.wikipedia.org/wiki/Encoding" target="_blank">Encoding and Decoding: An Overview on Wikipedia</a></li>
-  <li><a href="https://www.ietf.org/rfc/rfc4648.txt" target="_blank">RFC 4648: Base Encoding Schemes</a></li>
-  <li><a href="https://www.baeldung.com/java-base64-encoding" target="_blank">Base64 Encoding and Decoding in Java</a></li>
-  <li><a href="https://www.npmjs.com/package/base64-js" target="_blank">base64-js: A JavaScript Library for Base64 Encoding</a></li>
-</ul>
-
-
+<p align="left">Explore the documentation to learn more about the <strong>base-string-converter</strong>. For detailed information, visit the <a href="docs/">documentation</a>.</p>
