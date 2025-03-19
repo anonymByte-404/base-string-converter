@@ -91,7 +91,7 @@ const handleBaseConversion = async (): Promise<void> => {
       type: 'list',
       name: 'selectedBase',
       message: 'Choose the base you want to convert to:',
-      choices: [...baseChoices, 'Exit the application'],
+      choices: [...baseChoices, chalk.red('Exit the application')],
     }])
 
     if (selectedBase === 'Exit the application') {
@@ -100,7 +100,7 @@ const handleBaseConversion = async (): Promise<void> => {
       const baseMatch = selectedBase.match(/Base (\d+)/)
       if (baseMatch) {
         const base = parseInt(baseMatch[1], 10)
-        universalBaseConverter(inquirer, main, typewriterEffect, fadeOutEffect, chalk, base)
+        universalBaseConverter(inquirer, main, typewriterEffect, fadeOutEffect, base)
       } else {
         console.error(chalk.red('Invalid base selection. Please try again.'))
       }
@@ -198,7 +198,7 @@ const handleError = (error: unknown, context: string): void => {
  */
 const handleStringConversion = async (): Promise<void> => {
   try {
-    stringConverter(inquirer, baseChoices, main, typewriterEffect, fadeOutEffect, chalk)
+    stringConverter(inquirer, baseChoices, main, typewriterEffect, fadeOutEffect)
   } catch (error: unknown) {
     handleError(error, 'Error during string conversion')
   }
