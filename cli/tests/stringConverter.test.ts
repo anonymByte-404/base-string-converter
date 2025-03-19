@@ -1,6 +1,5 @@
-import { stringConverter, toCustomBase, stringToBase, askNextAction, handleError } from '../handleConversion/stringConverter'
+import { stringConverter, toCustomBase, stringToBase, askNextAction } from '../handleConversion/stringConverter'
 import inquirer from 'inquirer'
-import chalk from 'chalk'
 import { addToHistory } from '../storage/historyManager'
 
 jest.mock('inquirer', () => ({
@@ -52,7 +51,6 @@ describe('stringConverter', () => {
       mockMain,
       jest.fn(),
       jest.fn(),
-      chalk
     )
 
     await new Promise(process.nextTick)
@@ -83,7 +81,6 @@ describe('stringToBase', () => {
       mockMain,
       jest.fn(),
       jest.fn(),
-      chalk
     )
 
     expect(mockedPrompt).toHaveBeenCalledWith([
@@ -114,7 +111,6 @@ describe('askNextAction', () => {
       mockMain,
       jest.fn(),
       jest.fn(),
-      chalk
     )
 
     expect(mockedPrompt).toHaveBeenCalledWith([
@@ -130,25 +126,5 @@ describe('askNextAction', () => {
       }
     ])
     expect(mockCallback).toHaveBeenCalled()
-  })
-})
-
-describe('handleError', () => {
-  it('should log an error message', () => {
-    const consoleErrorSpy: jest.SpyInstance<void, [message?: any, ...optionalParams: any[]], any> = jest.spyOn(console, 'error').mockImplementation(() => { })
-
-    handleError(new Error('Test error'), 'Test message', chalk)
-
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Test message: Test error')
-    consoleErrorSpy.mockRestore()
-  })
-
-  it('should log an unknown error', () => {
-    const consoleErrorSpy: jest.SpyInstance<void, [message?: any, ...optionalParams: any[]], any> = jest.spyOn(console, 'error').mockImplementation(() => { })
-
-    handleError('Unknown error', 'Test message', chalk)
-
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Test message: An unknown error occurred')
-    consoleErrorSpy.mockRestore()
   })
 })
