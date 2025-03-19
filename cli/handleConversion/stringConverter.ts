@@ -1,4 +1,5 @@
 import { addToHistory } from '../storage/historyManager.js'
+import chalk from 'chalk'
 
 /**
  * Converts a number to its string representation in the specified base.
@@ -13,7 +14,7 @@ export const toCustomBase = (number: number, base: number): string => {
     return '1'.repeat(number) // Unary representation
   }
 
-  const digits =
+  const digits: string =
     '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/'
   if (base > digits.length) {
     throw new RangeError(
@@ -21,8 +22,8 @@ export const toCustomBase = (number: number, base: number): string => {
     )
   }
 
-  let result = ''
-  let current = number
+  let result: string = ''
+  let current: number = number
 
   while (current > 0) {
     result = digits[current % base] + result
@@ -40,64 +41,51 @@ export const toCustomBase = (number: number, base: number): string => {
  * @param {function} main - Callback function to return to the main menu.
  * @param {function} typewriterEffect - Function for a typing effect (simulates text display with delays).
  * @param {function} fadeOutEffect - Function for a fade-out animation effect on text.
- * @param {any} chalkInstance - Chalk instance passed from main.ts.
  */
-export const stringConverter = (
+export const stringConverter = async (
   inquirer: any,
   baseChoices: string[],
   main: () => void,
   typewriterEffect: (text: string, delay: number) => Promise<void>,
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
-  chalkInstance: any
-): void => {
-  const startStringConversion = (): void => {
-    inquirer
-      .prompt([
-        {
-          type: 'list',
-          name: 'selectedBase',
-          message: 'Select the base to convert your string to:',
-          choices: [...baseChoices, 'Exit the application'],
-        },
-      ])
-      .then(async (answers: { selectedBase: string }) => {
-        const match = answers.selectedBase.match(/Base (\d+)/)
+): Promise<void> => {
+  try {
+    const startConversion = await inquirer.prompt([{
+      type: 'list',
+      name: 'selectedBase',
+      message: 'Select the base to convert your string to:',
+      choices: [...baseChoices, chalk.red('Exit the application')],
+    }])
 
-        if (match) {
-          const base = parseInt(match[1], 10)
-          stringToBase(
-            inquirer,
-            `Base ${base}`,
-            base,
-            startStringConversion,
-            main,
-            typewriterEffect,
-            fadeOutEffect,
-            chalkInstance
-          )
-        } else if (answers.selectedBase === 'Exit the application') {
-          await typewriterEffect('Thanks for using the app. Goodbye!', 50)
-          await fadeOutEffect('Closing the application...', 10, 100)
-        } else {
-          console.log(
-            chalkInstance.red('Unsupported base. Please try another option.')
-          )
-          askNextAction(
-            inquirer,
-            startStringConversion,
-            main,
-            typewriterEffect,
-            fadeOutEffect,
-            chalkInstance
-          )
-        }
-      })
-      .catch((error: unknown) =>
-        handleError(error, 'Error during base selection', chalkInstance)
+    const match: any = startConversion.selectedBase.match(/Base (\d+)/)
+    const base: number = parseInt(match[1], 10)
+
+    if (match) {
+      stringToBase(
+        inquirer,
+        `Base ${base}`,
+        base,
+        startConversion,
+        main,
+        typewriterEffect,
+        fadeOutEffect,
       )
+    } else if (startConversion.selectedBase === 'Exit the application') {
+      await typewriterEffect('Thanks for using the app. Goodbye!', 50)
+      await fadeOutEffect('Closing the application...', 10, 100)
+    } else {
+      console.log(chalk.red('Unsupported base. Please try another option.'))
+      askNextAction(
+        inquirer,
+        startConversion,
+        main,
+        typewriterEffect,
+        fadeOutEffect,
+      )
+    }
+  } catch (error: unknown) {
+    handleError(error, 'Oops!, something went wrong.')
   }
-
-  startStringConversion()
 }
 
 /**
@@ -111,7 +99,6 @@ export const stringConverter = (
  * @param {function} main - Callback to return to the main menu.
  * @param {function} typewriterEffect - Function for a typing effect.
  * @param {function} fadeOutEffect - Function for a fade-out animation effect.
- * @param {any} chalkInstance - Chalk instance passed from main.ts.
  */
 export const stringToBase = (
   inquirer: any,
@@ -121,7 +108,6 @@ export const stringToBase = (
   main: () => void,
   typewriterEffect: (text: string, delay: number) => Promise<void>,
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
-  chalkInstance: any
 ): void => {
   inquirer
     .prompt([
@@ -132,7 +118,7 @@ export const stringToBase = (
       },
     ])
     .then((answers: { stringInput: string }) => {
-      const inputString = answers.stringInput.trim()
+      const inputString: string = answers.stringInput.trim()
 
       const maxWidth =
         base > 1 ? Math.ceil(Math.log2(256) / Math.log2(base)) : 0
@@ -144,7 +130,7 @@ export const stringToBase = (
         })
         .join(' ')
 
-      console.log(`${chalkInstance.green(`Converted to ${name}:`)} ${result}`)
+      console.log(`${chalk.green(`Converted to ${name}:`)} ${result}`)
 
       // Save the conversion to history
       addToHistory({
@@ -159,12 +145,9 @@ export const stringToBase = (
         main,
         typewriterEffect,
         fadeOutEffect,
-        chalkInstance
       )
     })
-    .catch((error: unknown) =>
-      handleError(error, `Error during conversion to ${name}`, chalkInstance)
-    )
+    .catch((error: unknown) => handleError(error, `Error during conversion to ${name}`))
 }
 
 /**
@@ -175,15 +158,13 @@ export const stringToBase = (
  * @param {function} main - Callback to return to the main menu.
  * @param {function} typewriterEffect - Function for a typing effect.
  * @param {function} fadeOutEffect - Function for a fade-out animation effect.
- * @param {any} chalkInstance - Chalk instance passed from main.ts.
- */
+] */
 export const askNextAction = (
   inquirer: any,
   callback: () => void,
   main: () => void,
   typewriterEffect: (text: string, delay: number) => Promise<void>,
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
-  chalkInstance: any
 ): void => {
   inquirer
     .prompt([
@@ -204,7 +185,7 @@ export const askNextAction = (
           callback()
           break
         case 'Return to Main Menu.':
-          console.log(chalkInstance.green('Returning to the main menu...'))
+          console.log(chalk.green('Returning to the main menu...'))
           main()
           break
         case 'Exit the application.':
@@ -213,26 +194,16 @@ export const askNextAction = (
           process.exit(0)
       }
     })
-    .catch((error: unknown) =>
-      handleError(error, 'Error while deciding the next step', chalkInstance)
-    )
+    .catch((error: unknown) => handleError(error, 'Error while deciding the next step'))
 }
 
 /**
- * Handles errors and logs them with an appropriate message.
- *
+ * Error handler to log errors with context.
+ * 
  * @param {unknown} error - The error that occurred.
- * @param {string} message - A custom message to display along with the error.
- * @param {any} chalkInstance - Chalk instance passed from main.ts.
+ * @param {string} context - The context in which the error occurred.
  */
-export const handleError = (
-  error: unknown,
-  message: string,
-  chalkInstance: any
-): void => {
-  if (error instanceof Error) {
-    console.error(chalkInstance.red(`${message}: ${error.message}`))
-  } else {
-    console.error(chalkInstance.red(`${message}: An unknown error occurred`))
-  }
+const handleError = (error: unknown, context: string): void => {
+  const errorMessage = error instanceof Error ? error.message : String(error)
+  console.error(chalk.red(`${context}: ${errorMessage}`))
 }
