@@ -63,7 +63,6 @@ describe('convertToBase', () => {
       mockMain,
       typewriterEffect,
       fadeOutEffect,
-      chalk,
       10
     )
 
@@ -95,7 +94,6 @@ describe('convertToString', () => {
       mockMain,
       typewriterEffect,
       fadeOutEffect,
-      chalk,
       2
     )
 
@@ -130,7 +128,6 @@ describe('universalBaseConverter', () => {
       mockMain,
       typewriterEffect,
       fadeOutEffect,
-      chalk,
       10
     )
 
