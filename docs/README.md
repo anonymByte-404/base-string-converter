@@ -14,7 +14,7 @@
 <h2>How It Works</h2>
 
 <p align="center">
-    <img src="images/preview.png" alt="Flowchart of Base String Converter" width="100%"/>
+    <img src="images/flow-chart.png" alt="Flowchart of Base String Converter" width="100%"/>
 </p>
 
 <h3>Explanation of the Flow:</h3>
