@@ -1,4 +1,4 @@
-import { addToHistory } from '../storage/historyManager.js'
+import { addToHistory } from '../storage/historyManager.ts'
 import chalk from 'chalk'
 
 /**
@@ -10,12 +10,11 @@ import chalk from 'chalk'
  * @throws {RangeError} If the base is not in the range [1, 64].
  */
 export const toCustomBase = (number: number, base: number): string => {
-  if (base === 1) {
-    return '1'.repeat(number) // Unary representation
-  }
+  if (base === 1) return '1'.repeat(number) // Unary representation
 
   const digits: string =
     '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/'
+
   if (base > digits.length) {
     throw new RangeError(
       `Base ${base} exceeds maximum supported base (${digits.length}).`
@@ -41,6 +40,7 @@ export const toCustomBase = (number: number, base: number): string => {
  * @param {function} main - Callback function to return to the main menu.
  * @param {function} typewriterEffect - Function for a typing effect (simulates text display with delays).
  * @param {function} fadeOutEffect - Function for a fade-out animation effect on text.
+ * @returns {Promise<void>} A promise that resolves after the conversion process is initiated.
  */
 export const stringConverter = async (
   inquirer: any,
@@ -49,33 +49,34 @@ export const stringConverter = async (
   typewriterEffect: (text: string, delay: number) => Promise<void>,
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
 ): Promise<void> => {
-  try {
-    const startConversion = await inquirer.prompt([{
-      type: 'list',
-      name: 'selectedBase',
-      message: 'Select the base to convert your string to:',
-      choices: [...baseChoices, chalk.red('Exit the application')],
-    }])
+  const startConversion = await inquirer.prompt([{
+    type: 'list',
+    name: 'selectedBase',
+    message: 'Select the base to convert your string to:',
+    choices: [...baseChoices, chalk.red('Exit the application')],
+  }])
 
-    const match: any = startConversion.selectedBase.match(/Base (\d+)/)
+  const match: RegExpMatchArray = startConversion.selectedBase.match(/Base (\d+)/)
+
+  try {
     const base: number = parseInt(match[1], 10)
 
     if (match) {
-      stringToBase(
+      await stringToBase(
         inquirer,
         `Base ${base}`,
         base,
         startConversion,
         main,
         typewriterEffect,
-        fadeOutEffect,
+        fadeOutEffect
       )
     } else if (startConversion.selectedBase === 'Exit the application') {
-      await typewriterEffect('Thanks for using the app. Goodbye!', 50)
+      await typewriterEffect('Thanks for using the base-string-converter. Goodbye!', 50)
       await fadeOutEffect('Closing the application...', 10, 100)
     } else {
       console.log(chalk.red('Unsupported base. Please try another option.'))
-      askNextAction(
+      await askNextAction(
         inquirer,
         startConversion,
         main,
@@ -99,55 +100,50 @@ export const stringConverter = async (
  * @param {function} main - Callback to return to the main menu.
  * @param {function} typewriterEffect - Function for a typing effect.
  * @param {function} fadeOutEffect - Function for a fade-out animation effect.
+ * @returns {Promise<void>} A promise that resolves after the string conversion process is completed.
  */
-export const stringToBase = (
+export const stringToBase = async (
   inquirer: any,
   name: string,
   base: number,
-  callback: () => void,
+  callback: () => Promise<void>,
   main: () => void,
   typewriterEffect: (text: string, delay: number) => Promise<void>,
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
-): void => {
-  inquirer
-    .prompt([
-      {
-        type: 'input',
-        name: 'stringInput',
-        message: `Enter the string to convert to ${name}:`,
-      },
-    ])
-    .then((answers: { stringInput: string }) => {
-      const inputString: string = answers.stringInput.trim()
+): Promise<void> => {
+  const answer: { stringInput: string } = await inquirer.prompt([{
+    type: 'input',
+    name: 'stringInput',
+    message: `Enter the string to convert to ${name}:`
+  }])
 
-      const maxWidth =
-        base > 1 ? Math.ceil(Math.log2(256) / Math.log2(base)) : 0
+  const userChoice: string = answer.stringInput.trim()
 
-      const result = Array.from(inputString)
-        .map((char) => {
-          const charCode = char.charCodeAt(0)
-          return toCustomBase(charCode, base).padStart(maxWidth, '0')
-        })
-        .join(' ')
+  try {
+    const maxWidth: number =
+      base > 1 ? Math.ceil(Math.log2(256) / Math.log2(base)) : 0
 
-      console.log(`${chalk.green(`Converted to ${name}:`)} ${result}`)
-
-      // Save the conversion to history
-      addToHistory({
-        input: inputString,
-        output: result,
-        type: `String to Base ${base}`, // Conversion type
+    const result: string = Array.from(userChoice)
+      .map((char) => {
+        const charCode: number = char.charCodeAt(0)
+        return toCustomBase(charCode, base).padStart(maxWidth, '0')
       })
+      .join(' ')
 
-      askNextAction(
-        inquirer,
-        callback,
-        main,
-        typewriterEffect,
-        fadeOutEffect,
-      )
-    })
-    .catch((error: unknown) => handleError(error, `Error during conversion to ${name}`))
+    console.log(`${chalk.green(`Convert to ${name}`)}: ${result}`)
+
+    addToHistory({ input: userChoice, output: result, type: `String to Base ${base}` })
+
+    await askNextAction(
+      inquirer,
+      callback,
+      main,
+      typewriterEffect,
+      fadeOutEffect
+    )
+  } catch (error: unknown) {
+    handleError(error, `Error during conversion to ${name}`)
+  }
 }
 
 /**
@@ -158,43 +154,45 @@ export const stringToBase = (
  * @param {function} main - Callback to return to the main menu.
  * @param {function} typewriterEffect - Function for a typing effect.
  * @param {function} fadeOutEffect - Function for a fade-out animation effect.
-] */
-export const askNextAction = (
+ * @returns {Promise<void>} A promise that resolves when the user makes a selection.
+ */
+export const askNextAction = async (
   inquirer: any,
-  callback: () => void,
+  callback: () => Promise<void>,
   main: () => void,
   typewriterEffect: (text: string, delay: number) => Promise<void>,
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
-): void => {
-  inquirer
-    .prompt([
-      {
-        type: 'list',
-        name: 'nextAction',
-        message: 'What would you like to do next?',
-        choices: [
-          'Convert another string.',
-          'Return to Main Menu.',
-          'Exit the application.',
-        ],
-      },
-    ])
-    .then(async (answers: { nextAction: string }) => {
-      switch (answers.nextAction) {
-        case 'Convert another string.':
-          callback()
-          break
-        case 'Return to Main Menu.':
-          console.log(chalk.green('Returning to the main menu...'))
-          main()
-          break
-        case 'Exit the application.':
-          await typewriterEffect('Thanks for using the app. Goodbye!', 50)
-          await fadeOutEffect('Closing the application...', 10, 100)
-          process.exit(0)
-      }
-    })
-    .catch((error: unknown) => handleError(error, 'Error while deciding the next step'))
+): Promise<void> => {
+  const answer: { nextAction: string } = await inquirer.prompt([{
+    type: 'list',
+    name: 'nextAction',
+    message: 'What would you like to do next?',
+    choices: [
+      'Convert Another String.',
+      'Return to Main Menu.',
+      'Exit the Application.'
+    ]
+  }])
+
+  const userChoice: string = answer.nextAction
+
+  try {
+    switch (userChoice) {
+      case 'Convert Another String.':
+        await callback()
+        break
+      case 'Return to Main Menu.':
+        console.log(chalk.yellow('Returning to the main menu...'))
+        main()
+        break
+      case 'Exit the Application.':
+        await typewriterEffect('Thanks for using the base-string-converter. Goodbye!', 50)
+        await fadeOutEffect('Closing the application...', 10, 100)
+        process.exit(0)
+    }
+  } catch (error: unknown) {
+    handleError(error, 'Error while deciding the next step')
+  }
 }
 
 /**
@@ -204,6 +202,6 @@ export const askNextAction = (
  * @param {string} context - The context in which the error occurred.
  */
 const handleError = (error: unknown, context: string): void => {
-  const errorMessage = error instanceof Error ? error.message : String(error)
+  const errorMessage: string = error instanceof Error ? error.message : String(error)
   console.error(chalk.red(`${context}: ${errorMessage}`))
 }
