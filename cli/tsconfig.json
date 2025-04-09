@@ -8,7 +8,15 @@
     "strict": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "*": [
+        "./node_modules/*",
+        "./*"
+      ]
+    },
+    "noEmit": true,
+    "allowImportingTsExtensions": true
   },
   "include": [
     "./**/*"
