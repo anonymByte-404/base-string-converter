@@ -2,8 +2,8 @@ import chalk from 'chalk'
 import { ChildProcess, spawn } from 'child_process'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { main } from './index.js'
-import { typewriterEffect } from './utils/textAnimation.js'
+import { main } from './index.ts'
+import { typewriterEffect } from './utils/textAnimation.ts'
 
 const __filename: string = fileURLToPath(import.meta.url)
 const __dirname: string = path.dirname(__filename)
