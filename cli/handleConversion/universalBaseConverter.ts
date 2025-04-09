@@ -1,4 +1,4 @@
-import { addToHistory } from '../storage/historyManager.js'
+import { addToHistory } from '../storage/historyManager.ts'
 import chalk from 'chalk'
 
 const BASE_CHARACTERS: string =
@@ -14,11 +14,11 @@ const initialChoices: string[] = ['String', ...generateBaseChoices]
 /**
  * Entry point for the universal base converter.
  *
- * @param {Inquirer} inquirer - The Inquirer.js instance for handling CLI interactions.
- * @param {() => void} main - The callback function to return to the main menu.
- * @param {(text: string, delay: number) => Promise<void>} typewriterEffect - Function for typewriter effect.
- * @param {(text: string, steps: number, delay: number) => Promise<void>} fadeOutEffect - Function for fade-out effect.
- * @param {number} selectedBase - The base the user selects to convert from.
+ * @param inquirer - The inquirer instance for prompting user input.
+ * @param main - Function to return to the main menu.
+ * @param typewriterEffect - Function to display typewriter-style output.
+ * @param fadeOutEffect - Function to show a fade-out effect.
+ * @param selectedBase - The base the user is converting from.
  */
 export const universalBaseConverter = async (
   inquirer: any,
@@ -27,48 +27,47 @@ export const universalBaseConverter = async (
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
   selectedBase: number
 ): Promise<void> => {
-  try {
-    const startConversion: any = await inquirer.prompt([
-      {
-        type: 'list',
-        name: 'selectedBase',
-        message: 'Select the base to convert to:',
-        choices: [...initialChoices, chalk.red('Exit the application')],
-      },
-    ]);
+  const startConversion: { selectedBase: string } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'selectedBase',
+      message: 'Select the base to convert to:',
+      choices: [...initialChoices, chalk.red('Exit the application')],
+    },
+  ])
 
-    switch (startConversion.selectedBase) {
+  const userChoice: string = startConversion.selectedBase
+
+  try {
+    const baseMatch: RegExpMatchArray | null = userChoice.match(/Base (\d+)/)
+    switch (userChoice) {
       case 'String':
-        convertToString(
+        await convertToString(
           inquirer,
-          startConversion,
           main,
           typewriterEffect,
           fadeOutEffect,
           selectedBase
         )
-        break
+        return
       case 'Exit the application':
-        await typewriterEffect('Thanks for using the app. Goodbye!', 50)
+        await typewriterEffect('Thanks for using the base-string-converter. Goodbye!', 50)
         await fadeOutEffect('Closing the application...', 10, 100)
-        break
+        return
       default:
-        const baseMatch: RegExpMatchArray | null = startConversion.selectedBase.match(/Base (\d+)/)
-
         if (baseMatch) {
           const newBase: number = parseInt(baseMatch[1], 10)
-          convertToBase(
+
+          await convertToBase(
             newBase,
             inquirer,
-            startConversion,
             main,
             typewriterEffect,
             fadeOutEffect,
             selectedBase
           )
-        } else {
-          console.error(chalk.red('Invalid base selection. Please try again.'))
-          main()
+
+          return
         }
     }
   } catch (error: unknown) {
@@ -79,183 +78,150 @@ export const universalBaseConverter = async (
 /**
  * Converts a number to the specified base.
  *
- * @param {number} num - The number to convert.
- * @param {number} base - The target base (1–64).
- * @returns {string} The number converted to the specified base as a string.
+ * @param num - The number to convert.
+ * @param base - The base to convert to (1–64).
+ * @returns The string representation of the number in the given base.
  */
-export const numberToBase = (
-  num: number,
-  base: number
-): string => {
+export const numberToBase = (num: number, base: number): string => {
   if (base < 1 || base > 64) {
     throw new Error('Base must be between 1 and 64.')
   }
 
+  if (num === 0) return '0'
   if (base === 1) return '1'.repeat(num)
 
-  let result: string = ''
-
+  let result = ''
   while (num > 0) {
     result = BASE_CHARACTERS[num % base] + result
     num = Math.floor(num / base)
   }
 
-  return result || '0'
+  return result
 }
 
 /**
  * Converts a string representation in a given base to a number.
  *
- * @param {string} str - The string representation of the number in the specified base.
- * @param {number} base - The base of the input string (1–64).
- * @returns {number} The number represented by the string in the specified base.
+ * @param str - The base string to convert.
+ * @param base - The base to interpret the string in.
+ * @returns The numerical value.
  */
-export const baseToNumber = (
-  str: string,
-  base: number
-): number => {
+export const baseToNumber = (str: string, base: number): number => {
   if (base === 1) return str.length
 
-  return str
-    .split('')
-    .reduce((acc, char) => acc * base + BASE_CHARACTERS.indexOf(char), 0)
+  return str.split('').reduce((acc: number, char: string) => {
+    const index: number = BASE_CHARACTERS.indexOf(char)
+    if (index === -1 || index >= base) {
+      throw new Error(`Invalid character "${char}" for base ${base}`)
+    }
+    return acc * base + index
+  }, 0)
 }
 
 /**
- * Handles the conversion of numbers to a specified base.
+ * Converts a number from a specified base to another base.
  *
- * @param {number} base - The target base for the conversion (1–64).
- * @param {any} inquirer - The Inquirer.js instance for handling CLI interactions.
- * @param {() => void} restartConversion - A callback to restart the conversion process.
- * @param {() => void} main - The callback function to return to the main menu.
- * @param {(text: string, delay: number) => Promise<void>} typewriterEffect - Function for typewriter effect.
- * @param {(text: string, steps: number, delay: number) => Promise<void>} fadeOutEffect - Function for fade-out effect.
- * @param {number} selectedBase - The base that the user is converting from.
+ * @param base - The target base for the conversion (1–64).
+ * @param inquirer - The Inquirer.js instance for handling CLI interactions.
+ * @param main - The callback function to return to the main menu.
+ * @param typewriterEffect - Function for typewriter effect.
+ * @param fadeOutEffect - Function for fade-out effect.
+ * @param selectedBase - The base that the user is converting from.
  */
-export const convertToBase = (
+export const convertToBase = async (
   base: number,
   inquirer: any,
-  restartConversion: () => void,
   main: () => void,
   typewriterEffect: (text: string, delay: number) => Promise<void>,
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
   selectedBase: number
-): void => {
-  inquirer
-    .prompt([
-      {
-        type: 'input',
-        name: 'inputData',
-        message: `Enter numbers (space-separated) to convert to Base ${base}:`,
-      },
-    ])
-    .then((answers: { inputData: string }) => {
-      const inputData: string = answers.inputData || ''
-      const numbers: string[] = inputData.trim().split(' ')
+): Promise<void> => {
+  const answer: { inputData: string } = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'inputData',
+      message: `Enter numbers (space-separated) to convert to Base ${base}:`
+    }
+  ])
 
-      try {
-        const converted: string = numbers
-          .map((num) => {
-            if (num.trim() === '') {
-              console.warn(chalk.yellow('Warning: Empty input detected. Skipping...'))
-              return ''
-            }
-            const parsed: number = parseInt(num, 10)
-            if (isNaN(parsed)) {
-              throw new Error(`Invalid number: "${num}". Please provide valid numbers.`)
-            }
-            return numberToBase(parsed, base)
-          })
-          .join(' ')
+  const userChoice: string[] = answer.inputData.trim().split(' ')
 
-        console.log(`${chalk.green(`Converted to Base ${base}:`)} ${converted}`)
+  try {
+    const output: string = userChoice
+      .map((val: string) => {
+        if (val.trim() === '') {
+          console.warn(chalk.yellow('Warning: Empty input detected. Skipping...'))
+          return ''
+        }
 
-        addToHistory({
-          input: numbers.join(' '),
-          output: converted,
-          type: `Base ${selectedBase} to Base ${base}`,
-        })
-      } catch (error: unknown) {
-        handleError(error, 'Conversion failed!')
-      }
+        const parsed: number = baseToNumber(val, selectedBase)
+        return numberToBase(parsed, base)
+      })
+      .filter(Boolean) // Filter out empty strings from the result
+      .join(' ')
 
-      askNextAction(
-        inquirer,
-        restartConversion,
-        main,
-        typewriterEffect,
-        fadeOutEffect,
-      )
-    })
-    .catch((error: unknown) => handleError(error, 'Conversion failed!'))
+    console.log(`${chalk.green(`Converted to Base ${base}`)}: ${output}`)
+
+    addToHistory({ input: userChoice.join(' '), output: output, type: `Base ${selectedBase} to Base ${base}` })
+
+    await askNextAction(inquirer, main, typewriterEffect, fadeOutEffect)
+  } catch (error: unknown) {
+    handleError(error, 'Conversion failed.')
+  }
 }
 
 /**
- * Handles the conversion of base strings to ASCII or readable text.
+ * Handles the conversion of base strings to ASCII text.
  *
- * @param {any} inquirer - The Inquirer.js instance for handling CLI interactions.
- * @param {() => void} restartConversion - A callback to restart the conversion process.
- * @param {() => void} main - The callback function to return to the main menu.
- * @param {(text: string, delay: number) => Promise<void>} typewriterEffect - Function for typewriter effect.
- * @param {(text: string, steps: number, delay: number) => Promise<void>} fadeOutEffect - Function for fade-out effect.
- * @param {number} selectedBase - The base that the user is converting from.
+ * @param inquirer - The Inquirer.js instance.
+ * @param main - Function to return to the main menu.
+ * @param typewriterEffect - Function for typewriter effect.
+ * @param fadeOutEffect - Function for fade-out effect.
+ * @param selectedBase - The base the string values are in.
  */
-export const convertToString = (
+export const convertToString = async (
   inquirer: any,
-  restartConversion: () => void,
   main: () => void,
   typewriterEffect: (text: string, delay: number) => Promise<void>,
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
   selectedBase: number
-): void => {
-  inquirer
-    .prompt([
-      {
-        type: 'input',
-        name: 'inputData',
-        message:
-          'Enter base-encoded values (space-separated) to convert back to text:',
-      },
-    ])
-    .then((answers: { inputData: string }) => {
-      const inputData: string = answers.inputData || ''
-      const values: string[] = inputData.trim().split(' ')
+): Promise<void> => {
+  const answer: { inputData: string } = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'inputData',
+      message: 'Enter the base-encoded values (space-separated) to convert back to text:'
+    }
+  ])
 
-      try {
-        const text: string = values
-          .map((val) => {
-            const number = baseToNumber(val, 2)
-            return String.fromCharCode(number)
-          })
-          .join('')
+  const userChoice: string = answer.inputData.trim()
 
-        console.log(`${chalk.green(`Converted to text:`)} "${text}"`)
+  if (!userChoice) {
+    console.error(chalk.red('Error: No input provided.'))
+    return main()
+  }
 
-        addToHistory({
-          input: values.join(' '),
-          output: text,
-          type: `Base ${selectedBase} to String`,
-        })
-      } catch (error: unknown) {
-        handleError(error, 'Conversion failed!')
-      }
+  try {
+    const output: string = userChoice.split(' ').map((val: any) => {
+      const number: number = baseToNumber(val, selectedBase)
+      return String.fromCharCode(number)
+    }).join('')
 
-      askNextAction(
-        inquirer,
-        restartConversion,
-        main,
-        typewriterEffect,
-        fadeOutEffect,
-      )
-    })
-    .catch((error: unknown) => handleError(error, 'Conversion failed!'))
+    console.log(`${chalk.green('Converted to text')}: "${output}"`)
+
+    addToHistory({ input: userChoice, output, type: `Base ${selectedBase} to String` })
+
+    await askNextAction(inquirer, main, typewriterEffect, fadeOutEffect)
+  } catch (error: unknown) {
+    handleError(error, 'Conversion failed.')
+  }
 }
 
 /**
  * Error handler to log errors with context.
- * 
- * @param {unknown} error - The error that occurred.
- * @param {string} context - The context in which the error occurred.
+ *
+ * @param error - The error object.
+ * @param context - The context in which the error occurred.
  */
 const handleError = (error: unknown, context: string): void => {
   const errorMessage: string = error instanceof Error ? error.message : String(error)
@@ -265,46 +231,45 @@ const handleError = (error: unknown, context: string): void => {
 /**
  * Prompts the user for their next action.
  *
- * @param {any} inquirer - The Inquirer.js instance for handling CLI interactions.
- * @param {() => void} restartConversion - A callback to restart the conversion process.
- * @param {() => void} main - The callback function to return to the main menu.
- * @param {(text: string, delay: number) => Promise<void>} typewriterEffect - Function for typewriter effect.
- * @param {(text: string, steps: number, delay: number) => Promise<void>} fadeOutEffect - Function for fade-out effect.
+ * @param inquirer - The Inquirer.js instance.
+ * @param main - Function to return to the main menu.
+ * @param typewriterEffect - Function for typewriter effect.
+ * @param fadeOutEffect - Function for fade-out effect.
  */
-const askNextAction = (
+const askNextAction = async (
   inquirer: any,
-  restartConversion: () => void,
   main: () => void,
   typewriterEffect: (text: string, delay: number) => Promise<void>,
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
-): void => {
-  inquirer
-    .prompt([
-      {
-        type: 'list',
-        name: 'nextAction',
-        message: 'What would you like to do next?',
-        choices: [
-          'Convert again',
-          'Return to Main Menu',
-          'Exit the application',
-        ],
-      },
-    ])
-    .then(async (answers: { nextAction: string }) => {
-      switch (answers.nextAction) {
-        case 'Convert again':
-          restartConversion()
-          break
-        case 'Return to Main Menu':
-          console.log(chalk.green('Returning to the main menu...'))
-          main()
-          break
-        case 'Exit the application':
-          await typewriterEffect('Thanks for using the app. Goodbye!', 50)
-          await fadeOutEffect('Closing the application...', 10, 100)
-          process.exit(0)
-      }
-    })
-    .catch((error: unknown) => handleError(error, 'An error occurred while choosing the next action.'))
+): Promise<void> => {
+  const answer: { nextAction: string } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'nextAction',
+      message: 'What would you like to do next?',
+      choices: [
+        'Convert Again.',
+        'Return to Main Menu.',
+        'Exit the Application'
+      ]
+    }
+  ])
+
+  try {
+    switch (answer.nextAction) {
+      case 'Convert Again.':
+        main()
+        break
+      case 'Return to Main Menu.':
+        console.log(chalk.yellow('Returning to the main menu...'))
+        main()
+        break
+      case 'Exit the Application':
+        await typewriterEffect('Thanks for using the base-string-converter. Goodbye!', 50)
+        await fadeOutEffect('Closing the application...', 10, 100)
+        process.exit(0)
+    }
+  } catch (error: unknown) {
+    handleError(error, 'An error occurred while choosing the next action.')
+  }
 }
