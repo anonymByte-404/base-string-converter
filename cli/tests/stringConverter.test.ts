@@ -1,6 +1,6 @@
-import { stringConverter, toCustomBase, stringToBase, askNextAction } from '../handleConversion/stringConverter'
+import { stringConverter, toCustomBase, stringToBase, askNextAction } from '../handleConversion/stringConverter.ts'
 import inquirer from 'inquirer'
-import { addToHistory } from '../storage/historyManager'
+import { addToHistory } from '../storage/historyManager.ts'
 
 jest.mock('inquirer', () => ({
   prompt: jest.fn().mockResolvedValue({ selectedBase: 'Base 2', stringInput: 'Hello' })
@@ -16,7 +16,7 @@ jest.mock('../storage/historyManager', () => ({
   addToHistory: jest.fn()
 }))
 
-const mockedPrompt: any = inquirer.prompt as jest.MockedFunction<typeof inquirer.prompt>
+const mockedPrompt: jest.MockedFunction<typeof inquirer.prompt> = inquirer.prompt as jest.MockedFunction<typeof inquirer.prompt>
 
 describe('toCustomBase', () => {
   it('should convert a number to the specified base', () => {
@@ -45,7 +45,7 @@ describe('stringConverter', () => {
 
     mockedPrompt.mockResolvedValueOnce({ selectedBase: 'Base 2' })
 
-    stringConverter(
+    await stringConverter(
       inquirer,
       baseChoices,
       mockMain,
@@ -53,27 +53,37 @@ describe('stringConverter', () => {
       jest.fn(),
     )
 
-    await new Promise(process.nextTick)
-
-    expect(mockedPrompt).toHaveBeenCalledWith([
-      {
-        type: 'list',
-        name: 'selectedBase',
-        message: 'Select the base to convert your string to:',
-        choices: [...baseChoices, 'Exit the application']
-      }
-    ])
+    expect(mockedPrompt).toHaveBeenCalledWith([{
+      type: 'list',
+      name: 'selectedBase',
+      message: 'Select the base to convert your string to:',
+      choices: [...baseChoices, 'Exit the application']
+    }])
   })
-})
 
-describe('stringToBase', () => {
-  it('should convert a string to the specified base', () => {
+  it('should handle exit option correctly', async () => {
+    const mockMain: jest.Mock<any, any, any> = jest.fn()
+
+    mockedPrompt.mockResolvedValueOnce({ selectedBase: 'Exit the application' })
+
+    await stringConverter(
+      inquirer,
+      ['Base 2', 'Base 16'],
+      mockMain,
+      jest.fn(),
+      jest.fn(),
+    )
+
+    expect(mockMain).toHaveBeenCalled() // Ensure main is called when exiting
+  })
+
+  it('should prompt for string input and convert to the specified base', async () => {
     const mockCallback: jest.Mock<any, any, any> = jest.fn()
     const mockMain: jest.Mock<any, any, any> = jest.fn()
 
     mockedPrompt.mockResolvedValueOnce({ stringInput: 'Hello' })
 
-    stringToBase(
+    await stringToBase(
       inquirer,
       'Base 2',
       2,
@@ -83,29 +93,53 @@ describe('stringToBase', () => {
       jest.fn(),
     )
 
-    expect(mockedPrompt).toHaveBeenCalledWith([
-      {
-        type: 'input',
-        name: 'stringInput',
-        message: 'Enter the string to convert to Base 2:'
-      }
-    ])
+    expect(mockedPrompt).toHaveBeenCalledWith([{
+      type: 'input',
+      name: 'stringInput',
+      message: 'Enter the string to convert to Base 2:'
+    }])
+
     expect(addToHistory).toHaveBeenCalledWith({
       input: 'Hello',
-      output: '01001000 01100101 01101100 01101100 01101111',
+      output: '01001000 01100101 01101100 01101100 01101111', // Adjust expected output based on implementation
       type: 'String to Base 2'
     })
+
+    expect(mockCallback).toHaveBeenCalled() // Ensure callback is called
+  })
+
+  it('should handle empty string input gracefully', async () => {
+    const mockCallback: jest.Mock<any, any, any> = jest.fn()
+    const mockMain: jest.Mock<any, any, any> = jest.fn()
+
+    mockedPrompt.mockResolvedValueOnce({ stringInput: '' })
+
+    await stringToBase(
+      inquirer,
+      'Base 2',
+      2,
+      mockCallback,
+      mockMain,
+      jest.fn(),
+      jest.fn(),
+    )
+
+    expect(mockMain).toHaveBeenCalled() // Ensure main is called when input is empty
   })
 })
 
 describe('askNextAction', () => {
-  it('should prompt the user for the next action', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('should prompt the user for the next action', async () => {
     const mockCallback: jest.Mock<any, any, any> = jest.fn()
     const mockMain: jest.Mock<any, any, any> = jest.fn()
 
-    mockedPrompt.mockResolvedValueOnce({ nextAction: 'Convert another string.' })
+    mockedPrompt.mockResolvedValueOnce({ nextAction: 'Convert Another String.' })
 
-    askNextAction(
+    await askNextAction(
       inquirer,
       mockCallback,
       mockMain,
@@ -113,18 +147,36 @@ describe('askNextAction', () => {
       jest.fn(),
     )
 
-    expect(mockedPrompt).toHaveBeenCalledWith([
-      {
-        type: 'list',
-        name: 'nextAction',
-        message: 'What would you like to do next?',
-        choices: [
-          'Convert another string.',
-          'Return to Main Menu.',
-          'Exit the application.'
-        ]
-      }
-    ])
-    expect(mockCallback).toHaveBeenCalled()
+    expect(mockedPrompt).toHaveBeenCalledWith([{
+      type: 'list',
+      name: 'nextAction',
+      message: 'What would you like to do next?',
+      choices: [
+        'Convert Another String.',
+        'Return to Main Menu.',
+        'Exit the Application.'
+      ]
+    }])
+
+    expect(mockCallback).toHaveBeenCalled() // Ensure the callback is called when converting again
+  })
+
+  it('should handle exiting the application', async () => {
+    const mockCallback: jest.Mock<any, any, any> = jest.fn()
+    const mockMain: jest.Mock<any, any, any> = jest.fn()
+
+    mockedPrompt.mockResolvedValueOnce({ nextAction: 'Exit the Application.' })
+
+    await askNextAction(
+      inquirer,
+      mockCallback,
+      mockMain,
+      jest.fn(),
+      jest.fn(),
+    )
+
+    // Ensure main is not called when exiting
+    expect(mockMain).not.toHaveBeenCalled()
+    expect(mockCallback).not.toHaveBeenCalled()
   })
 })
