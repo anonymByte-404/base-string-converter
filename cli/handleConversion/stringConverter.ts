@@ -9,17 +9,17 @@ import chalk from 'chalk'
  * @returns {string} The string representation of the number in the specified base.
  * @throws {RangeError} If the base is not in the range [1, 64].
  */
-export const toCustomBase = (number: number, base: number): string => {
+export const toCustomBase = (
+  number: number,
+  base: number
+): string => {
   if (base === 1) return '1'.repeat(number) // Unary representation
 
   const digits: string =
     '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/'
 
-  if (base > digits.length) {
-    throw new RangeError(
-      `Base ${base} exceeds maximum supported base (${digits.length}).`
-    )
-  }
+  if (base > digits.length)
+    throw new RangeError(`Base ${base} exceeds maximum supported base (${digits.length}).`)
 
   let result: string = ''
   let current: number = number
@@ -49,7 +49,7 @@ export const stringConverter = async (
   typewriterEffect: (text: string, delay: number) => Promise<void>,
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
 ): Promise<void> => {
-  const startConversion = await inquirer.prompt([{
+  const startConversion: any = await inquirer.prompt([{
     type: 'list',
     name: 'selectedBase',
     message: 'Select the base to convert your string to:',
@@ -111,19 +111,19 @@ export const stringToBase = async (
   typewriterEffect: (text: string, delay: number) => Promise<void>,
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
 ): Promise<void> => {
-  const answer: { stringInput: string } = await inquirer.prompt([{
+  const { stringInput }: {
+    stringInput: string
+  } = await inquirer.prompt([{
     type: 'input',
     name: 'stringInput',
     message: `Enter the string to convert to ${name}:`
-  }])
-
-  const userChoice: string = answer.stringInput.trim()
+  }]).trim()
 
   try {
     const maxWidth: number =
       base > 1 ? Math.ceil(Math.log2(256) / Math.log2(base)) : 0
 
-    const result: string = Array.from(userChoice)
+    const result: string = Array.from(stringInput)
       .map((char) => {
         const charCode: number = char.charCodeAt(0)
         return toCustomBase(charCode, base).padStart(maxWidth, '0')
@@ -132,7 +132,7 @@ export const stringToBase = async (
 
     console.log(`${chalk.green(`Convert to ${name}`)}: ${result}`)
 
-    addToHistory({ input: userChoice, output: result, type: `String to Base ${base}` })
+    addToHistory({ input: stringInput, output: result, type: `String to Base ${base}` })
 
     await askNextAction(
       inquirer,
@@ -163,7 +163,9 @@ export const askNextAction = async (
   typewriterEffect: (text: string, delay: number) => Promise<void>,
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
 ): Promise<void> => {
-  const answer: { nextAction: string } = await inquirer.prompt([{
+  const { nextAction }: {
+    nextAction: string
+  } = await inquirer.prompt([{
     type: 'list',
     name: 'nextAction',
     message: 'What would you like to do next?',
@@ -174,10 +176,8 @@ export const askNextAction = async (
     ]
   }])
 
-  const userChoice: string = answer.nextAction
-
   try {
-    switch (userChoice) {
+    switch (nextAction) {
       case 'Convert Another String.':
         await callback()
         break
@@ -201,7 +201,10 @@ export const askNextAction = async (
  * @param {unknown} error - The error that occurred.
  * @param {string} context - The context in which the error occurred.
  */
-const handleError = (error: unknown, context: string): void => {
+const handleError = (
+  error: unknown,
+  context: string
+): void => {
   const errorMessage: string = error instanceof Error ? error.message : String(error)
   console.error(chalk.red(`${context}: ${errorMessage}`))
 }
