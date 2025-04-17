@@ -13,14 +13,12 @@ export const typewriterEffect = async (
   delay: number = 50
 ): Promise<void> => {
   // Validate inputs
-  if (typeof text !== 'string') {
+  if (typeof text !== 'string')
     throw new Error('The "text" parameter must be a string.')
-  }
-  if (typeof delay !== 'number' || delay <= 0) {
+  if (typeof delay !== 'number' || delay <= 0)
     throw new Error('The "delay" parameter must be a positive number.')
-  }
 
-  const coloredText = chalk.hex('#FFA500')(text)
+  const coloredText: string = chalk.hex('#FFA500')(text)
 
   // Write each character with the specified delay
   for (const char of coloredText) {
@@ -46,17 +44,14 @@ export const fadeOutEffect = async (
   delay: number = 100
 ): Promise<void> => {
   // Validate inputs
-  if (typeof text !== 'string') {
+  if (typeof text !== 'string')
     throw new Error('The "text" parameter must be a string.')
-  }
-  if (typeof steps !== 'number' || steps <= 0) {
+  if (typeof steps !== 'number' || steps <= 0)
     throw new Error('The "steps" parameter must be a positive number.')
-  }
-  if (typeof delay !== 'number' || delay <= 0) {
+  if (typeof delay !== 'number' || delay <= 0)
     throw new Error('The "delay" parameter must be a positive number.')
-  }
 
-  const coloredText = chalk.hex('#FFA500')(text)
+  const coloredText: string = chalk.hex('#FFA500')(text)
 
   // Fade-out effect by adding spaces in each step
   for (let i = 0; i < steps; i++) {
