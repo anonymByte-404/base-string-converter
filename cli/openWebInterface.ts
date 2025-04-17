@@ -22,12 +22,8 @@ export const openWebInterface = async (): Promise<void> => {
     const webLink: string = `http://localhost:${port}`
     const isServerUp: boolean = await checkServer(webLink)
 
-    if (isServerUp) {
-      console.log(chalk.green(`Web interface is ready at ${webLink}`))
-    } else {
-      console.error(chalk.red(`Failed to connect to the web interface at ${webLink}`))
-      return
-    }
+    if (!isServerUp) return console.error(chalk.red(`Failed to connect to the web interface at ${webLink}`))
+    console.log(chalk.green(`Web interface is ready at ${webLink}`))
 
     console.log(chalk.yellow('Tip: Copy and paste the link into your browser.'))
     await typewriterEffect('Returning to main menu...', 50)
