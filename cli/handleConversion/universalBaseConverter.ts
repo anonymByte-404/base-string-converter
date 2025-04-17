@@ -27,20 +27,20 @@ export const universalBaseConverter = async (
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
   selectedBase: number
 ): Promise<void> => {
-  const startConversion: { selectedBase: string } = await inquirer.prompt([
+  const { userSelectedBase }: {
+    userSelectedBase: string
+  } = await inquirer.prompt([
     {
       type: 'list',
-      name: 'selectedBase',
+      name: 'userSelectedBase',
       message: 'Select the base to convert to:',
       choices: [...initialChoices, chalk.red('Exit the application')],
     },
   ])
 
-  const userChoice: string = startConversion.selectedBase
-
   try {
-    const baseMatch: RegExpMatchArray | null = userChoice.match(/Base (\d+)/)
-    switch (userChoice) {
+    const baseMatch: RegExpMatchArray | null = userSelectedBase.match(/Base (\d+)/)
+    switch (userSelectedBase) {
       case 'String':
         await convertToString(
           inquirer,
@@ -82,15 +82,17 @@ export const universalBaseConverter = async (
  * @param base - The base to convert to (1–64).
  * @returns The string representation of the number in the given base.
  */
-export const numberToBase = (num: number, base: number): string => {
-  if (base < 1 || base > 64) {
+export const numberToBase = (
+  num: number,
+  base: number
+): string => {
+  if (base < 1 || base > 64)
     throw new Error('Base must be between 1 and 64.')
-  }
 
   if (num === 0) return '0'
   if (base === 1) return '1'.repeat(num)
 
-  let result = ''
+  let result: string = ''
   while (num > 0) {
     result = BASE_CHARACTERS[num % base] + result
     num = Math.floor(num / base)
@@ -106,14 +108,16 @@ export const numberToBase = (num: number, base: number): string => {
  * @param base - The base to interpret the string in.
  * @returns The numerical value.
  */
-export const baseToNumber = (str: string, base: number): number => {
+export const baseToNumber = (
+  str: string,
+  base: number
+): number => {
   if (base === 1) return str.length
 
   return str.split('').reduce((acc: number, char: string) => {
     const index: number = BASE_CHARACTERS.indexOf(char)
-    if (index === -1 || index >= base) {
+    if (index === -1 || index >= base)
       throw new Error(`Invalid character "${char}" for base ${base}`)
-    }
     return acc * base + index
   }, 0)
 }
@@ -136,33 +140,46 @@ export const convertToBase = async (
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
   selectedBase: number
 ): Promise<void> => {
-  const answer: { inputData: string } = await inquirer.prompt([
+  const { inputData }: {
+    inputData: string[]
+  } = await inquirer.prompt([
     {
       type: 'input',
       name: 'inputData',
-      message: `Enter numbers (space-separated) to convert to Base ${base}:`
+      message: `Enter numbers (space-separated) to convert from Base ${selectedBase} to Base ${base}:`
     }
-  ])
-
-  const userChoice: string[] = answer.inputData.trim().split(' ')
+  ]).trim().split(/\s+/)
 
   try {
-    const output: string = userChoice
-      .map((val: string) => {
+    const output: string = inputData
+      .map((val: string, index: number) => {
         if (val.trim() === '') {
-          console.warn(chalk.yellow('Warning: Empty input detected. Skipping...'))
+          console.warn(chalk.yellow(`Warning: Empty input at index ${index}. Skipping...`))
           return ''
         }
 
-        const parsed: number = baseToNumber(val, selectedBase)
+        let parsed: number
+
+        try {
+          parsed = baseToNumber(val, selectedBase)
+          if (isNaN(parsed)) throw new Error()
+        } catch {
+          console.warn(chalk.red(`Invalid number "${val}" for Base ${selectedBase}. Skipping...`))
+          return ''
+        }
+
         return numberToBase(parsed, base)
       })
-      .filter(Boolean) // Filter out empty strings from the result
+      .filter(Boolean)
       .join(' ')
 
     console.log(`${chalk.green(`Converted to Base ${base}`)}: ${output}`)
 
-    addToHistory({ input: userChoice.join(' '), output: output, type: `Base ${selectedBase} to Base ${base}` })
+    addToHistory({
+      input: inputData.join(' '),
+      output: output,
+      type: `Base ${selectedBase} to Base ${base}`
+    })
 
     await askNextAction(inquirer, main, typewriterEffect, fadeOutEffect)
   } catch (error: unknown) {
@@ -186,30 +203,30 @@ export const convertToString = async (
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
   selectedBase: number
 ): Promise<void> => {
-  const answer: { inputData: string } = await inquirer.prompt([
+  const { inputData }: {
+    inputData: string
+  } = await inquirer.prompt([
     {
       type: 'input',
       name: 'inputData',
       message: 'Enter the base-encoded values (space-separated) to convert back to text:'
     }
-  ])
+  ]).trim()
 
-  const userChoice: string = answer.inputData.trim()
-
-  if (!userChoice) {
+  if (!inputData) {
     console.error(chalk.red('Error: No input provided.'))
     return main()
   }
 
   try {
-    const output: string = userChoice.split(' ').map((val: any) => {
+    const output: string = inputData.split(' ').map((val: any) => {
       const number: number = baseToNumber(val, selectedBase)
       return String.fromCharCode(number)
     }).join('')
 
     console.log(`${chalk.green('Converted to text')}: "${output}"`)
 
-    addToHistory({ input: userChoice, output, type: `Base ${selectedBase} to String` })
+    addToHistory({ input: inputData, output, type: `Base ${selectedBase} to String` })
 
     await askNextAction(inquirer, main, typewriterEffect, fadeOutEffect)
   } catch (error: unknown) {
@@ -223,7 +240,10 @@ export const convertToString = async (
  * @param error - The error object.
  * @param context - The context in which the error occurred.
  */
-const handleError = (error: unknown, context: string): void => {
+const handleError = (
+  error: unknown,
+  context: string
+): void => {
   const errorMessage: string = error instanceof Error ? error.message : String(error)
   console.error(chalk.red(`${context}: ${errorMessage}`))
 }
@@ -242,7 +262,9 @@ const askNextAction = async (
   typewriterEffect: (text: string, delay: number) => Promise<void>,
   fadeOutEffect: (text: string, steps: number, delay: number) => Promise<void>,
 ): Promise<void> => {
-  const answer: { nextAction: string } = await inquirer.prompt([
+  const { nextAction }: {
+    nextAction: string
+  } = await inquirer.prompt([
     {
       type: 'list',
       name: 'nextAction',
@@ -256,7 +278,7 @@ const askNextAction = async (
   ])
 
   try {
-    switch (answer.nextAction) {
+    switch (nextAction) {
       case 'Convert Again.':
         main()
         break
