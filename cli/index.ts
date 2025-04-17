@@ -6,7 +6,10 @@ import { typewriterEffect, fadeOutEffect } from './utils/textAnimation.ts'
 import { loadHistory, clearHistory, searchHistory } from './storage/historyManager.ts'
 import { openWebInterface } from './openWebInterface.ts'
 
-const baseChoices = Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`)
+const baseChoices = Array.from(
+  { length: 64 },
+  (_, i) => `Base ${i + 1}`
+)
 
 /**
  * Main menu for the application
@@ -14,18 +17,18 @@ const baseChoices = Array.from({ length: 64 }, (_, i) => `Base ${i + 1}`)
  */
 export const main = async (): Promise<void> => {
   try {
-    const answers = await inquirer.prompt([
+    const { conversionType }: {
+      conversionType: string
+    } = await inquirer.prompt([
       {
         type: 'list',
         name: 'conversionType',
         message: 'Welcome! What kind of conversion would you like to do?',
-        choices: ['String', 'Base', 'View History', 'Open on Web', 'Exit the Application']
+        choices: ['String', 'Base', 'View History', 'Open on Web', chalk.red('Exit the Application')]
       }
     ])
 
-    const userChoice = answers.conversionType
-
-    switch (userChoice) {
+    switch (conversionType) {
       case 'String':
         await handleStringConversion()
         break
@@ -46,7 +49,7 @@ export const main = async (): Promise<void> => {
       default:
         throw new Error('Invalid choice selected')
     }
-  } catch (error) {
+  } catch (error: unknown) {
     handleError(error, 'Oops! Something unexpected happened in the main menu')
   }
 }
@@ -57,12 +60,14 @@ export const main = async (): Promise<void> => {
  */
 const handleBaseConversion = async (): Promise<void> => {
   try {
-    const { selectedBase } = await inquirer.prompt([
+    const { selectedBase }: {
+      selectedBase: string
+    } = await inquirer.prompt([
       {
         type: 'list',
         name: 'selectedBase',
         message: 'Choose the base you want to convert to:',
-        choices: [...baseChoices, 'Exit the application']
+        choices: [...baseChoices, chalk.red('Exit the application')]
       }
     ])
 
@@ -72,9 +77,10 @@ const handleBaseConversion = async (): Promise<void> => {
       setTimeout(() => process.exit(0), 500)
     }
 
-    const baseMatch = selectedBase.match(/Base (\d+)/)
+    const baseMatch: any = selectedBase.match(/Base (\d+)/)
+
     if (baseMatch) {
-      const base = parseInt(baseMatch[1], 10)
+      const base: number = parseInt(baseMatch[1], 10)
       await universalBaseConverter(inquirer, main, typewriterEffect, fadeOutEffect, base)
     } else {
       console.error(chalk.red('Invalid base selection. Please try again.'))
@@ -90,7 +96,7 @@ const handleBaseConversion = async (): Promise<void> => {
  */
 const handleHistory = async (): Promise<void> => {
   try {
-    const history = loadHistory() ?? []
+    const history: any[] = loadHistory() ?? []
 
     if (history.length === 0) {
       console.log(chalk.yellow('No conversion history available.'))
@@ -103,12 +109,16 @@ const handleHistory = async (): Promise<void> => {
     history.forEach((entry, index) => {
       console.log(
         chalk.blueBright(
-          `${index + 1}. [${entry.date}] (${entry.type})\n- Input: "${entry.input}"\n- Output: "${entry.output}"\n`
+          `${index + 1}. [${entry.date}] (${entry.type})\n
+          - Input: "${entry.input}"\n
+          - Output: "${entry.output}"\n`
         )
       )
     })
 
-    const { action } = await inquirer.prompt([
+    const { action }: {
+      action: string
+    } = await inquirer.prompt([
       {
         type: 'list',
         name: 'action',
@@ -133,7 +143,7 @@ const handleHistory = async (): Promise<void> => {
         await main()
         break
     }
-  } catch (error) {
+  } catch (error: unknown) {
     handleError(error, 'Error in history menu')
   }
 }
@@ -143,7 +153,10 @@ const handleHistory = async (): Promise<void> => {
  * @param {unknown} error - The error that occurred
  * @param {string} context - Context information for the error
  */
-const handleError = (error: any, context: any) => {
+const handleError = (
+  error: any,
+  context: any
+) => {
   console.error(chalk.red(`${context}: ${error instanceof Error ? error.stack || error.message : JSON.stringify(error)}`))
 }
 
@@ -154,7 +167,7 @@ const handleError = (error: any, context: any) => {
 const handleStringConversion = async (): Promise<void> => {
   try {
     await stringConverter(inquirer, baseChoices, main, typewriterEffect, fadeOutEffect)
-  } catch (error) {
+  } catch (error: unknown) {
     handleError(error, 'Error during string conversion')
   }
 }
